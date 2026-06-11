@@ -1,6 +1,6 @@
 ﻿namespace _4915_assignment_pototype
 {
-    partial class OrderMainPage
+    partial class Order
     {
         /// <summary>
         /// Required designer variable.

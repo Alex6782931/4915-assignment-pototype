@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class OrderMainPage : Form
+    public partial class Material : Form
     {
-        public OrderMainPage()
+        public Material()
         {
             InitializeComponent();
         }

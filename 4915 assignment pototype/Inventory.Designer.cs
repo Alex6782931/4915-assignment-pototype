@@ -31,6 +31,9 @@
             btnIback = new Button();
             label1 = new Label();
             datainventory = new DataGridView();
+            btnLsearch = new Button();
+            label2 = new Label();
+            txtbIsearch = new TextBox();
             ((System.ComponentModel.ISupportInitialize)datainventory).BeginInit();
             SuspendLayout();
             // 
@@ -55,16 +58,44 @@
             // datainventory
             // 
             datainventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            datainventory.Location = new Point(51, 85);
+            datainventory.Location = new Point(42, 100);
             datainventory.Name = "datainventory";
             datainventory.Size = new Size(702, 212);
             datainventory.TabIndex = 2;
+            // 
+            // btnLsearch
+            // 
+            btnLsearch.Location = new Point(374, 56);
+            btnLsearch.Name = "btnLsearch";
+            btnLsearch.Size = new Size(75, 23);
+            btnLsearch.TabIndex = 3;
+            btnLsearch.Text = "button1";
+            btnLsearch.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(69, 63);
+            label2.Name = "label2";
+            label2.Size = new Size(63, 15);
+            label2.TabIndex = 4;
+            label2.Text = "Search for:";
+            // 
+            // txtbIsearch
+            // 
+            txtbIsearch.Location = new Point(132, 60);
+            txtbIsearch.Name = "txtbIsearch";
+            txtbIsearch.Size = new Size(220, 23);
+            txtbIsearch.TabIndex = 5;
             // 
             // Inventory
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(txtbIsearch);
+            Controls.Add(label2);
+            Controls.Add(btnLsearch);
             Controls.Add(datainventory);
             Controls.Add(label1);
             Controls.Add(btnIback);
@@ -80,5 +111,8 @@
         private Button btnIback;
         private Label label1;
         private DataGridView datainventory;
+        private Button btnLsearch;
+        private Label label2;
+        private TextBox txtbIsearch;
     }
 }

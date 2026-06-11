@@ -1,6 +1,6 @@
 ﻿namespace _4915_assignment_pototype
 {
-    partial class MaterialMainPage
+    partial class Material
     {
         /// <summary>
         /// Required designer variable.

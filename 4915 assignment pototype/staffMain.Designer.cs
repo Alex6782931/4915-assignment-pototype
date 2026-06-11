@@ -37,6 +37,7 @@
             btnssac = new Button();
             lblstaffname = new Label();
             label2 = new Label();
+            btnprocurement = new Button();
             SuspendLayout();
             // 
             // lblwel
@@ -86,7 +87,7 @@
             // 
             // btnMdm
             // 
-            btnMdm.Location = new Point(138, 215);
+            btnMdm.Location = new Point(174, 214);
             btnMdm.Name = "btnMdm";
             btnMdm.Size = new Size(189, 25);
             btnMdm.TabIndex = 5;
@@ -95,7 +96,7 @@
             // 
             // btnssac
             // 
-            btnssac.Location = new Point(374, 215);
+            btnssac.Location = new Point(404, 215);
             btnssac.Name = "btnssac";
             btnssac.Size = new Size(184, 23);
             btnssac.TabIndex = 6;
@@ -120,11 +121,21 @@
             label2.TabIndex = 8;
             label2.Text = "please choose youe function";
             // 
+            // btnprocurement
+            // 
+            btnprocurement.Location = new Point(587, 155);
+            btnprocurement.Name = "btnprocurement";
+            btnprocurement.Size = new Size(75, 23);
+            btnprocurement.TabIndex = 9;
+            btnprocurement.Text = "Procurement";
+            btnprocurement.UseVisualStyleBackColor = true;
+            // 
             // staffMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnprocurement);
             Controls.Add(label2);
             Controls.Add(lblstaffname);
             Controls.Add(btnssac);
@@ -151,5 +162,6 @@
         private Button btnssac;
         private Label lblstaffname;
         private Label label2;
+        private Button btnprocurement;
     }
 }

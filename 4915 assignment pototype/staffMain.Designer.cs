@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             lblwel = new Label();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
-            button6 = new Button();
-            label1 = new Label();
+            btnOrderdata = new Button();
+            btninventorydata = new Button();
+            btnMaterialdata = new Button();
+            btnLogisticsdata = new Button();
+            btnMdm = new Button();
+            btnssac = new Button();
+            lblstaffname = new Label();
             label2 = new Label();
             SuspendLayout();
             // 
@@ -47,69 +47,69 @@
             lblwel.Size = new Size(0, 15);
             lblwel.TabIndex = 0;
             // 
-            // button1
+            // btnOrderdata
             // 
-            button1.Location = new Point(128, 155);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 1;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            btnOrderdata.Location = new Point(128, 155);
+            btnOrderdata.Name = "btnOrderdata";
+            btnOrderdata.Size = new Size(75, 23);
+            btnOrderdata.TabIndex = 1;
+            btnOrderdata.Text = "Order";
+            btnOrderdata.UseVisualStyleBackColor = true;
+            btnOrderdata.Click += button1_Click;
             // 
-            // button2
+            // btninventorydata
             // 
-            button2.Location = new Point(472, 155);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 2;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
+            btninventorydata.Location = new Point(472, 155);
+            btninventorydata.Name = "btninventorydata";
+            btninventorydata.Size = new Size(75, 23);
+            btninventorydata.TabIndex = 2;
+            btninventorydata.Text = "Inventory";
+            btninventorydata.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // btnMaterialdata
             // 
-            button3.Location = new Point(245, 155);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 23);
-            button3.TabIndex = 3;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
+            btnMaterialdata.Location = new Point(245, 155);
+            btnMaterialdata.Name = "btnMaterialdata";
+            btnMaterialdata.Size = new Size(75, 23);
+            btnMaterialdata.TabIndex = 3;
+            btnMaterialdata.Text = "Material";
+            btnMaterialdata.UseVisualStyleBackColor = true;
             // 
-            // button4
+            // btnLogisticsdata
             // 
-            button4.Location = new Point(364, 155);
-            button4.Name = "button4";
-            button4.Size = new Size(75, 23);
-            button4.TabIndex = 4;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
+            btnLogisticsdata.Location = new Point(364, 155);
+            btnLogisticsdata.Name = "btnLogisticsdata";
+            btnLogisticsdata.Size = new Size(75, 23);
+            btnLogisticsdata.TabIndex = 4;
+            btnLogisticsdata.Text = "Logistics";
+            btnLogisticsdata.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // btnMdm
             // 
-            button5.Location = new Point(138, 215);
-            button5.Name = "button5";
-            button5.Size = new Size(189, 25);
-            button5.TabIndex = 5;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
+            btnMdm.Location = new Point(138, 215);
+            btnMdm.Name = "btnMdm";
+            btnMdm.Size = new Size(189, 25);
+            btnMdm.TabIndex = 5;
+            btnMdm.Text = "Master Data Maintance";
+            btnMdm.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // btnssac
             // 
-            button6.Location = new Point(374, 215);
-            button6.Name = "button6";
-            button6.Size = new Size(184, 23);
-            button6.TabIndex = 6;
-            button6.Text = "button6";
-            button6.UseVisualStyleBackColor = true;
+            btnssac.Location = new Point(374, 215);
+            btnssac.Name = "btnssac";
+            btnssac.Size = new Size(184, 23);
+            btnssac.TabIndex = 6;
+            btnssac.Text = "System security and Control";
+            btnssac.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // lblstaffname
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(134, 48);
-            label1.Name = "label1";
-            label1.Size = new Size(55, 15);
-            label1.TabIndex = 7;
-            label1.Text = "welcome";
+            lblstaffname.AutoSize = true;
+            lblstaffname.Location = new Point(134, 48);
+            lblstaffname.Name = "lblstaffname";
+            lblstaffname.Size = new Size(55, 15);
+            lblstaffname.TabIndex = 7;
+            lblstaffname.Text = "welcome";
             // 
             // label2
             // 
@@ -126,13 +126,13 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(lblstaffname);
+            Controls.Add(btnssac);
+            Controls.Add(btnMdm);
+            Controls.Add(btnLogisticsdata);
+            Controls.Add(btnMaterialdata);
+            Controls.Add(btninventorydata);
+            Controls.Add(btnOrderdata);
             Controls.Add(lblwel);
             Name = "staffMain";
             Text = "staffMain";
@@ -143,13 +143,13 @@
         #endregion
 
         private Label lblwel;
-        private Button button1;
-        private Button button2;
-        private Button button3;
-        private Button button4;
-        private Button button5;
-        private Button button6;
-        private Label label1;
+        private Button btnOrderdata;
+        private Button btninventorydata;
+        private Button btnMaterialdata;
+        private Button btnLogisticsdata;
+        private Button btnMdm;
+        private Button btnssac;
+        private Label lblstaffname;
         private Label label2;
     }
 }

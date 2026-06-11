@@ -8,14 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace _4915_assignment_pototype.staff
+namespace _4915_assignment_pototype
 {
-    public partial class staffMain : Form
+    public partial class OrderMainPage : Form
     {
-        public staffMain()
+        public OrderMainPage()
         {
             InitializeComponent();
         }
-
     }
 }

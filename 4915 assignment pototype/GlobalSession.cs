@@ -1,7 +1,7 @@
 ﻿using System;
 using SDP_EntityModels;
 
-namespace _4915_assignment_pototype.login1 // Note the .login1 at the end
+namespace _4915_assignment_pototype // Note the .login1 at the end
 {
     public static class GlobalSession
     {

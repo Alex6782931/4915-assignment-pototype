@@ -38,6 +38,8 @@
             lblstaffname = new Label();
             label2 = new Label();
             btnprocurement = new Button();
+            btnAS = new Button();
+            btnLogout = new Button();
             SuspendLayout();
             // 
             // lblwel
@@ -87,18 +89,18 @@
             // 
             // btnMdm
             // 
-            btnMdm.Location = new Point(174, 214);
+            btnMdm.Location = new Point(330, 213);
             btnMdm.Name = "btnMdm";
-            btnMdm.Size = new Size(189, 25);
+            btnMdm.Size = new Size(151, 25);
             btnMdm.TabIndex = 5;
             btnMdm.Text = "Master Data Maintance";
             btnMdm.UseVisualStyleBackColor = true;
             // 
             // btnssac
             // 
-            btnssac.Location = new Point(404, 215);
+            btnssac.Location = new Point(499, 215);
             btnssac.Name = "btnssac";
-            btnssac.Size = new Size(184, 23);
+            btnssac.Size = new Size(144, 23);
             btnssac.TabIndex = 6;
             btnssac.Text = "System security and Control";
             btnssac.UseVisualStyleBackColor = true;
@@ -106,7 +108,7 @@
             // lblstaffname
             // 
             lblstaffname.AutoSize = true;
-            lblstaffname.Location = new Point(134, 48);
+            lblstaffname.Location = new Point(47, 26);
             lblstaffname.Name = "lblstaffname";
             lblstaffname.Size = new Size(55, 15);
             lblstaffname.TabIndex = 7;
@@ -115,7 +117,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(135, 97);
+            label2.Location = new Point(47, 90);
             label2.Name = "label2";
             label2.Size = new Size(158, 15);
             label2.TabIndex = 8;
@@ -130,11 +132,31 @@
             btnprocurement.Text = "Procurement";
             btnprocurement.UseVisualStyleBackColor = true;
             // 
+            // btnAS
+            // 
+            btnAS.Location = new Point(163, 212);
+            btnAS.Name = "btnAS";
+            btnAS.Size = new Size(147, 27);
+            btnAS.TabIndex = 10;
+            btnAS.Text = "After service";
+            btnAS.UseVisualStyleBackColor = true;
+            // 
+            // btnLogout
+            // 
+            btnLogout.Location = new Point(694, 26);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(75, 23);
+            btnLogout.TabIndex = 11;
+            btnLogout.Text = "Logout";
+            btnLogout.UseVisualStyleBackColor = true;
+            // 
             // staffMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnLogout);
+            Controls.Add(btnAS);
             Controls.Add(btnprocurement);
             Controls.Add(label2);
             Controls.Add(lblstaffname);
@@ -163,5 +185,7 @@
         private Label lblstaffname;
         private Label label2;
         private Button btnprocurement;
+        private Button btnAS;
+        private Button btnLogout;
     }
 }

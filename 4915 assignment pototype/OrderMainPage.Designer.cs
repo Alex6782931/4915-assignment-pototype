@@ -36,7 +36,7 @@
             btnOview = new Button();
             btnOdelete = new Button();
             btnOcae = new Button();
-            btnoback = new Button();
+            btnOback = new Button();
             ((System.ComponentModel.ISupportInitialize)dataOrder).BeginInit();
             SuspendLayout();
             // 
@@ -109,21 +109,21 @@
             btnOcae.Text = "Create and edit";
             btnOcae.UseVisualStyleBackColor = true;
             // 
-            // btnoback
+            // btnOback
             // 
-            btnoback.Location = new Point(12, 9);
-            btnoback.Name = "btnoback";
-            btnoback.Size = new Size(60, 28);
-            btnoback.TabIndex = 8;
-            btnoback.Text = "back";
-            btnoback.UseVisualStyleBackColor = true;
+            btnOback.Location = new Point(12, 9);
+            btnOback.Name = "btnOback";
+            btnOback.Size = new Size(60, 28);
+            btnOback.TabIndex = 8;
+            btnOback.Text = "back";
+            btnOback.UseVisualStyleBackColor = true;
             // 
             // OrderMainPage
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(btnoback);
+            Controls.Add(btnOback);
             Controls.Add(btnOcae);
             Controls.Add(btnOdelete);
             Controls.Add(btnOview);
@@ -149,6 +149,6 @@
         private Button btnOview;
         private Button btnOdelete;
         private Button btnOcae;
-        private Button btnoback;
+        private Button btnOback;
     }
 }

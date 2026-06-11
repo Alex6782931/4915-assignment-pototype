@@ -116,9 +116,9 @@
             label2.AutoSize = true;
             label2.Location = new Point(135, 97);
             label2.Name = "label2";
-            label2.Size = new Size(38, 15);
+            label2.Size = new Size(158, 15);
             label2.TabIndex = 8;
-            label2.Text = "label2";
+            label2.Text = "please choose youe function";
             // 
             // staffMain
             // 

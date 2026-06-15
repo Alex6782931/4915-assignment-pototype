@@ -1,6 +1,6 @@
 ﻿namespace _4915_assignment_pototype
 {
-    partial class SystemSecurityControl
+    public partial class SystemSecurityControl : UserControl
     {
         /// <summary>
         /// Required designer variable.

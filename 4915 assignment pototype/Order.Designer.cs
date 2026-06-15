@@ -35,7 +35,7 @@
             btnOsearch = new Button();
             btnOview = new Button();
             btnOdelete = new Button();
-            btnOcae = new Button();
+            btnOupdate = new Button();
             btnOback = new Button();
             ((System.ComponentModel.ISupportInitialize)dataOrder).BeginInit();
             SuspendLayout();
@@ -43,88 +43,96 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(87, 22);
+            label1.Location = new Point(99, 29);
             label1.Name = "label1";
-            label1.Size = new Size(37, 15);
+            label1.Size = new Size(47, 20);
             label1.TabIndex = 0;
             label1.Text = "Order";
             // 
             // dataOrder
             // 
             dataOrder.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataOrder.Location = new Point(71, 108);
+            dataOrder.Location = new Point(81, 144);
+            dataOrder.Margin = new Padding(3, 4, 3, 4);
             dataOrder.Name = "dataOrder";
-            dataOrder.Size = new Size(643, 238);
+            dataOrder.RowHeadersWidth = 51;
+            dataOrder.Size = new Size(735, 317);
             dataOrder.TabIndex = 1;
             // 
             // txtbOsearch
             // 
-            txtbOsearch.Location = new Point(207, 67);
+            txtbOsearch.Location = new Point(237, 89);
+            txtbOsearch.Margin = new Padding(3, 4, 3, 4);
             txtbOsearch.Name = "txtbOsearch";
-            txtbOsearch.Size = new Size(217, 23);
+            txtbOsearch.Size = new Size(247, 27);
             txtbOsearch.TabIndex = 2;
             // 
             // lblOsearch
             // 
             lblOsearch.AutoSize = true;
-            lblOsearch.Location = new Point(123, 74);
+            lblOsearch.Location = new Point(141, 99);
             lblOsearch.Name = "lblOsearch";
-            lblOsearch.Size = new Size(63, 15);
+            lblOsearch.Size = new Size(79, 20);
             lblOsearch.TabIndex = 3;
             lblOsearch.Text = "Search for:";
             // 
             // btnOsearch
             // 
-            btnOsearch.Location = new Point(446, 66);
+            btnOsearch.Location = new Point(510, 88);
+            btnOsearch.Margin = new Padding(3, 4, 3, 4);
             btnOsearch.Name = "btnOsearch";
-            btnOsearch.Size = new Size(75, 23);
+            btnOsearch.Size = new Size(86, 31);
             btnOsearch.TabIndex = 4;
             btnOsearch.Text = "Search";
             btnOsearch.UseVisualStyleBackColor = true;
             // 
             // btnOview
             // 
-            btnOview.Location = new Point(639, 370);
+            btnOview.Location = new Point(730, 493);
+            btnOview.Margin = new Padding(3, 4, 3, 4);
             btnOview.Name = "btnOview";
-            btnOview.Size = new Size(75, 23);
+            btnOview.Size = new Size(86, 31);
             btnOview.TabIndex = 5;
             btnOview.Text = "View";
             btnOview.UseVisualStyleBackColor = true;
             // 
             // btnOdelete
             // 
-            btnOdelete.Location = new Point(541, 370);
+            btnOdelete.Location = new Point(618, 493);
+            btnOdelete.Margin = new Padding(3, 4, 3, 4);
             btnOdelete.Name = "btnOdelete";
-            btnOdelete.Size = new Size(75, 23);
+            btnOdelete.Size = new Size(86, 31);
             btnOdelete.TabIndex = 6;
             btnOdelete.Text = "Delete";
             btnOdelete.UseVisualStyleBackColor = true;
             // 
-            // btnOcae
+            // btnOupdate
             // 
-            btnOcae.Location = new Point(415, 370);
-            btnOcae.Name = "btnOcae";
-            btnOcae.Size = new Size(106, 23);
-            btnOcae.TabIndex = 7;
-            btnOcae.Text = "Create and edit";
-            btnOcae.UseVisualStyleBackColor = true;
+            btnOupdate.Location = new Point(474, 493);
+            btnOupdate.Margin = new Padding(3, 4, 3, 4);
+            btnOupdate.Name = "btnOupdate";
+            btnOupdate.Size = new Size(121, 31);
+            btnOupdate.TabIndex = 7;
+            btnOupdate.Text = "Update";
+            btnOupdate.UseVisualStyleBackColor = true;
             // 
             // btnOback
             // 
-            btnOback.Location = new Point(12, 9);
+            btnOback.Location = new Point(14, 12);
+            btnOback.Margin = new Padding(3, 4, 3, 4);
             btnOback.Name = "btnOback";
-            btnOback.Size = new Size(60, 28);
+            btnOback.Size = new Size(69, 37);
             btnOback.TabIndex = 8;
             btnOback.Text = "back";
             btnOback.UseVisualStyleBackColor = true;
             // 
-            // OrderMainPage
+            // Order
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(914, 600);
             Controls.Add(btnOback);
-            Controls.Add(btnOcae);
+            Controls.Add(btnOupdate);
             Controls.Add(btnOdelete);
             Controls.Add(btnOview);
             Controls.Add(btnOsearch);
@@ -132,8 +140,10 @@
             Controls.Add(txtbOsearch);
             Controls.Add(dataOrder);
             Controls.Add(label1);
-            Name = "OrderMainPage";
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "Order";
             Text = "OrderMainPage";
+            Load += Order_Load;
             ((System.ComponentModel.ISupportInitialize)dataOrder).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -148,7 +158,7 @@
         private Button btnOsearch;
         private Button btnOview;
         private Button btnOdelete;
-        private Button btnOcae;
+        private Button btnOupdate;
         private Button btnOback;
     }
 }

@@ -1,0 +1,6 @@
+@SDP_WebAPI_HostAddress = http://localhost:5262
+
+GET {{SDP_WebAPI_HostAddress}}/SimpleGetAPI/
+Accept: application/json
+
+###

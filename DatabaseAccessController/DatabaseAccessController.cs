@@ -39,6 +39,39 @@ namespace DatabaseAccessController
             }
         }
 
+        public int BatchUpdate(String sqlCmd)
+        {
+            // Create the connection (and be sure to dispose it at the end)
+            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    // Open the connection to the database. 
+                    // This is the first critical step in the process.
+                    // If we cannot reach the db then we have connectivity problems
+                    conn.Open();
+
+                    int updatedRows = 0;
+
+                    // Execute the batch query
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCmd, conn))
+                    {
+                        updatedRows = cmd.ExecuteNonQuery();
+                    }
+
+                    return updatedRows;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                    // We should log the error somewhere, 
+                    // for this example let's just show a message
+                    //MessageBox.Show("ERROR:" + ex.Message);
+                }
+            }
+        }
+
+
     }
 
 }

@@ -11,7 +11,7 @@ namespace _4915_assignment_pototype
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Login());
+            Application.Run(new Customer());
         }
     }
 }

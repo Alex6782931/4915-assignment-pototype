@@ -20,194 +20,153 @@ namespace _4915_assignment_pototype
             InitializeComponent();
         }
 
-        private async void Order_Load(object sender, EventArgs e)
+        private async void order_Load(object sender, EventArgs e)
         {
-            DataTable dt = await GetOrderDataFromApiResponse();
-            dataOrder.DataSource = dt;
+            DataTable dt = await GetOrderRecordsDataFromApiResponse();
+            dataOrders.DataSource = dt;
+            if (dt != null) dt.AcceptChanges();
         }
 
-        private async Task<DataTable> GetOrderDataFromApiResponse()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetOrderData");
-                using (JsonDocument doc = JsonDocument.Parse(jsonString))
-                {
-                    DataTable dataTable = new DataTable();
-                    bool columnsCreated = false;
-                    foreach (JsonElement rowElement in doc.RootElement.EnumerateArray())
-                    {
-                        if (!columnsCreated)
-                        {
-                            foreach (JsonProperty property in rowElement.EnumerateObject())
-                            {
-                                dataTable.Columns.Add(property.Name, typeof(string));
-                            }
-                            columnsCreated = true;
-                        }
-                        DataRow newRow = dataTable.NewRow();
-                        foreach (JsonProperty property in rowElement.EnumerateObject())
-                        {
-                            newRow[property.Name] = property.Value.ToString();
-                        }
-                        dataTable.Rows.Add(newRow);
-                    }
-                    return dataTable;
-                }
-            }
-        }
-
-        private async void btnOsearch_Click(object sender, EventArgs e)
-        {
-            string searchName = dataOrder.Text.Trim();
-
-            if (string.IsNullOrEmpty(searchName))
-            {
-                MessageBox.Show("Please enter a customer name to search.");
-                return;
-            }
-
-            // Call the specific search method
-            DataTable dt = await FindOrderDataFromApiResponse(searchName);
-
-            // Bind results to your DataGrid view
-            dataOrder.DataSource = dt;
-            dt.AcceptChanges();
-        }
-
-        private async Task<DataTable> FindOrderDataFromApiResponse(string customerName)
+        private async Task<DataTable> GetOrderRecordsDataFromApiResponse()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ServerAddress"]);
+                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetOrderRecordsData");
+                    return ParseJsonToDataTable(jsonString);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading orders: {ex.Message}");
+                return CreateEmptyOrderTable();
+            }
+        }
 
-                    // Your assignment instruction: Pass customerName as a query string parameter
-                    HttpResponseMessage response = await client.GetAsync($"/api/SimpleGetAPI/FindCustomerData?customerName={customerName}");
+        private async void btnOrderSearch_Click(object sender, EventArgs e)
+        {
+            string searchNum = txtOrderSearch.Text.Trim();
+            if (string.IsNullOrEmpty(searchNum))
+            {
+                MessageBox.Show("Please enter an order number to search.");
+                return;
+            }
+            DataTable dt = await FindOrderRecordsDataFromApiResponse(searchNum);
+            dataOrders.DataSource = dt;
+        }
 
+        private async Task<DataTable> FindOrderRecordsDataFromApiResponse(string orderNumber)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindOrderRecordsData?orderNumber={orderNumber}";
+                    HttpResponseMessage response = await client.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
-
-                        // Uses the Newtonsoft library you downloaded in Part C
-                        DataTable dataTable = System.Text.Json.JsonSerializer.Deserialize<DataTable>(jsonString);
-
-                        return dataTable;
+                        return ParseJsonToDataTable(jsonString);
                     }
-                    else
-                    {
-                        MessageBox.Show($"Server returned error: {response.StatusCode}");
-                        return new DataTable();
-                    }
+                    return CreateEmptyOrderTable();
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while searching: {ex.Message}");
-                return new DataTable();
-            }
+            catch (Exception) { return CreateEmptyOrderTable(); }
         }
 
-        private async void btnOupdate_click(object sender, EventArgs e)
+        private async void btnOrderClear_Click(object sender, EventArgs e)
         {
-            DataTable dtUpdated = (DataTable)dataOrder.DataSource;
-            dtUpdated = dtUpdated.GetChanges();
+            txtOrderSearch.Clear();
+            DataTable dt = await GetOrderRecordsDataFromApiResponse();
+            dataOrders.DataSource = dt;
+            if (dt != null) dt.AcceptChanges();
+        }
 
-            if (dtUpdated != null)
+        private async void btnOrderUpdate_Click(object sender, EventArgs e)
+        {
+            dataOrders.EndEdit();
+            if (dataOrders.DataSource != null) this.BindingContext[dataOrders.DataSource].EndCurrentEdit();
+
+            DataTable mainTable = (DataTable)dataOrders.DataSource;
+            if (mainTable == null || mainTable.Rows.Count == 0) return;
+
+            DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
+
+            int rowsUpdated = await UpdateOrderRecordsToAPI(dtChanges);
+            if (rowsUpdated > 0)
             {
-                int rowsUpdated = await UpdateOrderDataToAPI(dtUpdated);
-                if (rowsUpdated > 0)
-                {
-                    dtUpdated.AcceptChanges();
-                    dataOrder.DataSource = dtUpdated.Copy();
-                }
-                MessageBox.Show($"{rowsUpdated} rows updated successfully.");
+                mainTable.AcceptChanges();
+                MessageBox.Show($"{rowsUpdated} orders updated successfully.");
             }
         }
 
-        private async Task<int> UpdateOrderDataToAPI(DataTable dtUpdated)
+
+        private async Task<int> UpdateOrderRecordsToAPI(DataTable dtUpdated)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ServerAddress"]);
-
-                    // Configure built-in options to format json beautifully (replaces Formatting.Indented)
                     var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
+                    var listModified = new List<Dictionary<string, string>>();
 
-                    // 1. Serialize Added (New) Rows
-                    DataTable dtAdded = dtUpdated.GetChanges(DataRowState.Added);
-                    string jsonAdded = dtAdded != null ? JsonSerializer.Serialize(dtAdded, jsonOptions) : "[]";
-
-                    // 2. Serialize Modified Rows
-                    DataTable dtModified = dtUpdated.GetChanges(DataRowState.Modified);
-                    string jsonModified = dtModified != null ? JsonSerializer.Serialize(dtModified, jsonOptions) : "[]";
-
-                    // 3. Handle Deleted Rows Safely
-                    // Note: Directly serializing a deleted DataTable throws errors because rows are missing.
-                    // We create a clean temporary table to store the original values before they were deleted.
-                    string jsonDeleted = "[]";
-                    DataTable dtDeleted = dtUpdated.GetChanges(DataRowState.Deleted);
-
-                    if (dtDeleted != null)
+                    foreach (DataRow row in dtUpdated.Rows)
                     {
-                        DataTable dtDeletedBackup = dtDeleted.Clone(); // Copy schema structure
-                        foreach (DataRow row in dtDeleted.Rows)
-                        {
-                            DataRow newRow = dtDeletedBackup.NewRow();
-                            // Loop through columns to extract original values safely
-                            foreach (DataColumn col in dtDeleted.Columns)
-                            {
-                                newRow[col.ColumnName] = row[col.ColumnName, DataRowVersion.Original];
-                            }
-                            dtDeletedBackup.Rows.Add(newRow);
-                        }
-                        jsonDeleted = JsonSerializer.Serialize(dtDeletedBackup, jsonOptions);
+                        var dict = new Dictionary<string, string>();
+                        foreach (DataColumn col in dtUpdated.Columns) dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                        listModified.Add(dict);
                     }
 
-                    // 4. Populate your custom Entity Model
                     JsonDataTable jsonDT = new JsonDataTable
                     {
-                        dtAdded = jsonAdded,
-                        dtModified = jsonModified,
-                        dtDeleted = jsonDeleted
+                        dtAdded = "[]",
+                        dtModified = JsonSerializer.Serialize(listModified, jsonOptions),
+                        dtDeleted = "[]"
                     };
 
-                    // Serialize the entire entity wrapper object to a JSON string
                     string jsonString = JsonSerializer.Serialize(jsonDT);
-
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    // Send POST request to the Web API
-                    HttpResponseMessage response = await client.PostAsync("/api/SimpleGetAPI/UpdateOrderData", content);
+                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateOrderRecordsData", content);
+                    if (response.IsSuccessStatusCode) return int.Parse(await response.Content.ReadAsStringAsync());
+                    return 0;
+                }
+            }
+            catch (Exception) { return 0; }
+        }
 
-                    // Ensure the request was successful
-                    if (response.IsSuccessStatusCode)
+        private DataTable ParseJsonToDataTable(string jsonString)
+        {
+            DataTable dataTable = CreateEmptyOrderTable();
+            using (JsonDocument doc = JsonDocument.Parse(jsonString))
+            {
+                if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (JsonElement rowElement in doc.RootElement.EnumerateArray())
                     {
-                        string responseString = await response.Content.ReadAsStringAsync();
-                        int rowsUpdated = int.Parse(responseString);
-                        return rowsUpdated;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                        MessageBox.Show($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                        return 0;
+                        DataRow newRow = dataTable.NewRow();
+                        foreach (JsonProperty property in rowElement.EnumerateObject())
+                        {
+                            if (dataTable.Columns.Contains(property.Name)) newRow[property.Name] = property.Value.ToString();
+                        }
+                        dataTable.Rows.Add(newRow);
                     }
                 }
             }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show($"Request error: {e.Message}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred: {ex.Message}");
-                throw;
-            }
+            return dataTable;
+        }
+
+        private DataTable CreateEmptyOrderTable()
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("orderNumber", typeof(string));
+            dataTable.Columns.Add("orderDate", typeof(string));
+            dataTable.Columns.Add("customerNumber", typeof(string));
+            dataTable.Columns.Add("totalAmount", typeof(string));
+            dataTable.Columns.Add("orderStatus", typeof(string));
+            return dataTable;
         }
     }
 }

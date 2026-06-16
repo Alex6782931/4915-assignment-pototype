@@ -23,22 +23,20 @@ namespace _4915_assignment_pototype
         /// </summary>
         private void AttachEventHandlers()
         {
-            btnmakeorder.Click += Btnmakeorder_Click;
             btnviewhistory.Click += Btnviewhistory_Click;
-            btncancelorder.Click += Btncancelorder_Click;
             btnaddress.Click += Btnaddress_Click;
             btnpayment.Click += Btnpayment_Click;
             btnlogout.Click += Btnlogout_Click;
         }
 
         // 1. Order Product
-        private void Btnmakeorder_Click(object sender, EventArgs e)
+        /*private void Btnmakeorder_Click(object sender, EventArgs e)
         {
             MakeOrder orderForm = new MakeOrder();
             NavigateTo(orderForm);
 
             MessageBox.Show("Navigating to Order Product Screen...", "Prototype Action");
-        }
+        }*/
 
         // 2. View Order History
         private void Btnviewhistory_Click(object sender, EventArgs e)
@@ -50,13 +48,13 @@ namespace _4915_assignment_pototype
         }
 
         // 3. Cancel Order
-        private void Btncancelorder_Click(object sender, EventArgs e)
+        /*private void Btncancelorder_Click(object sender, EventArgs e)
         {
             CancelOrder orderForm = new CancelOrder();
             NavigateTo(orderForm);
 
             MessageBox.Show("Navigating to Cancel Order Screen...", "Prototype Action");
-        }
+        }*/
 
         // 4. Modify / Add Address
         private void Btnaddress_Click(object sender, EventArgs e)

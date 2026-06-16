@@ -35,6 +35,7 @@
             btnASsearch = new Button();
             dataAS = new DataGridView();
             btnASupdate = new Button();
+            btnASclear = new Button();
             ((System.ComponentModel.ISupportInitialize)dataAS).BeginInit();
             SuspendLayout();
             // 
@@ -59,30 +60,30 @@
             // 
             // label2
             // 
-            label2.AutoSize = true;
             label2.Location = new Point(55, 135);
             label2.Name = "label2";
-            label2.Size = new Size(79, 20);
+            label2.Size = new Size(216, 20);
             label2.TabIndex = 2;
-            label2.Text = "Search for:";
+            label2.Text = "Search by(order number):";
             // 
             // txtbASsearch
             // 
-            txtbASsearch.Location = new Point(134, 131);
+            txtbASsearch.Location = new Point(234, 131);
             txtbASsearch.Margin = new Padding(3, 4, 3, 4);
             txtbASsearch.Name = "txtbASsearch";
-            txtbASsearch.Size = new Size(346, 27);
+            txtbASsearch.Size = new Size(420, 27);
             txtbASsearch.TabIndex = 3;
             // 
             // btnASsearch
             // 
-            btnASsearch.Location = new Point(499, 131);
+            btnASsearch.Location = new Point(660, 132);
             btnASsearch.Margin = new Padding(3, 4, 3, 4);
             btnASsearch.Name = "btnASsearch";
-            btnASsearch.Size = new Size(82, 35);
+            btnASsearch.Size = new Size(87, 27);
             btnASsearch.TabIndex = 4;
             btnASsearch.Text = "Search";
             btnASsearch.UseVisualStyleBackColor = true;
+            btnASsearch.Click += btnASsearch_Click;
             // 
             // dataAS
             // 
@@ -93,7 +94,6 @@
             dataAS.RowHeadersWidth = 51;
             dataAS.Size = new Size(794, 287);
             dataAS.TabIndex = 5;
-            dataAS.CellContentClick += dataAS_CellContentClick;
             // 
             // btnASupdate
             // 
@@ -104,12 +104,24 @@
             btnASupdate.TabIndex = 6;
             btnASupdate.Text = "Update";
             btnASupdate.UseVisualStyleBackColor = true;
+            btnASupdate.Click += btnASupdate_click;
+            // 
+            // btnASclear
+            // 
+            btnASclear.Location = new Point(762, 132);
+            btnASclear.Name = "btnASclear";
+            btnASclear.Size = new Size(87, 26);
+            btnASclear.TabIndex = 7;
+            btnASclear.Text = "Clear";
+            btnASclear.UseVisualStyleBackColor = true;
+            btnASclear.Click += btnASclear_Click;
             // 
             // AfterService
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(btnASclear);
             Controls.Add(btnASupdate);
             Controls.Add(dataAS);
             Controls.Add(btnASsearch);
@@ -135,5 +147,6 @@
         private Button btnASsearch;
         private DataGridView dataAS;
         private Button btnASupdate;
+        private Button btnASclear;
     }
 }

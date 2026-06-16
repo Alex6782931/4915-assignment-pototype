@@ -29,100 +29,111 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            dataOrder = new DataGridView();
-            txtbOsearch = new TextBox();
+            dataOrders = new DataGridView();
+            txtOrderSearch = new TextBox();
             lblOsearch = new Label();
-            btnOsearch = new Button();
-            btnOupdate = new Button();
+            btnOrderSearch = new Button();
             btnOback = new Button();
-            ((System.ComponentModel.ISupportInitialize)dataOrder).BeginInit();
+            btnOrderClear = new Button();
+            btnOrderUpdateClick = new Button();
+            ((System.ComponentModel.ISupportInitialize)dataOrders).BeginInit();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(136, 33);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Location = new Point(99, 20);
             label1.Name = "label1";
-            label1.Size = new Size(60, 23);
+            label1.Size = new Size(47, 20);
             label1.TabIndex = 0;
             label1.Text = "Order";
             // 
-            // dataOrder
+            // dataOrders
             // 
-            dataOrder.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataOrder.Location = new Point(52, 166);
-            dataOrder.Margin = new Padding(4, 5, 4, 5);
-            dataOrder.Name = "dataOrder";
-            dataOrder.RowHeadersWidth = 51;
-            dataOrder.Size = new Size(1146, 365);
-            dataOrder.TabIndex = 1;
+            dataOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataOrders.Location = new Point(38, 144);
+            dataOrders.Margin = new Padding(3, 4, 3, 4);
+            dataOrders.Name = "dataOrders";
+            dataOrders.RowHeadersWidth = 51;
+            dataOrders.Size = new Size(833, 317);
+            dataOrders.TabIndex = 1;
             // 
-            // txtbOsearch
+            // txtOrderSearch
             // 
-            txtbOsearch.Location = new Point(326, 102);
-            txtbOsearch.Margin = new Padding(4, 5, 4, 5);
-            txtbOsearch.Name = "txtbOsearch";
-            txtbOsearch.Size = new Size(338, 30);
-            txtbOsearch.TabIndex = 2;
+            txtOrderSearch.Location = new Point(221, 96);
+            txtOrderSearch.Margin = new Padding(3, 4, 3, 4);
+            txtOrderSearch.Name = "txtOrderSearch";
+            txtOrderSearch.Size = new Size(458, 27);
+            txtOrderSearch.TabIndex = 2;
             // 
             // lblOsearch
             // 
             lblOsearch.AutoSize = true;
-            lblOsearch.Location = new Point(194, 114);
-            lblOsearch.Margin = new Padding(4, 0, 4, 0);
+            lblOsearch.Location = new Point(38, 99);
             lblOsearch.Name = "lblOsearch";
-            lblOsearch.Size = new Size(100, 23);
+            lblOsearch.Size = new Size(177, 20);
             lblOsearch.TabIndex = 3;
-            lblOsearch.Text = "Search for:";
+            lblOsearch.Text = "Search by(order number):";
             // 
-            // btnOsearch
+            // btnOrderSearch
             // 
-            btnOsearch.Location = new Point(701, 101);
-            btnOsearch.Margin = new Padding(4, 5, 4, 5);
-            btnOsearch.Name = "btnOsearch";
-            btnOsearch.Size = new Size(118, 36);
-            btnOsearch.TabIndex = 4;
-            btnOsearch.Text = "Search";
-            btnOsearch.UseVisualStyleBackColor = true;
-            // 
-            // btnOupdate
-            // 
-            btnOupdate.Location = new Point(956, 568);
-            btnOupdate.Margin = new Padding(4, 5, 4, 5);
-            btnOupdate.Name = "btnOupdate";
-            btnOupdate.Size = new Size(166, 36);
-            btnOupdate.TabIndex = 7;
-            btnOupdate.Text = "Update";
-            btnOupdate.UseVisualStyleBackColor = true;
+            btnOrderSearch.Location = new Point(685, 95);
+            btnOrderSearch.Margin = new Padding(3, 4, 3, 4);
+            btnOrderSearch.Name = "btnOrderSearch";
+            btnOrderSearch.Size = new Size(86, 31);
+            btnOrderSearch.TabIndex = 4;
+            btnOrderSearch.Text = "Search";
+            btnOrderSearch.UseVisualStyleBackColor = true;
+            btnOrderSearch.Click += btnOrderSearch_Click;
             // 
             // btnOback
             // 
-            btnOback.Location = new Point(19, 14);
-            btnOback.Margin = new Padding(4, 5, 4, 5);
+            btnOback.Location = new Point(14, 12);
+            btnOback.Margin = new Padding(3, 4, 3, 4);
             btnOback.Name = "btnOback";
-            btnOback.Size = new Size(95, 43);
+            btnOback.Size = new Size(69, 37);
             btnOback.TabIndex = 8;
             btnOback.Text = "back";
             btnOback.UseVisualStyleBackColor = true;
             // 
+            // btnOrderClear
+            // 
+            btnOrderClear.Location = new Point(777, 95);
+            btnOrderClear.Name = "btnOrderClear";
+            btnOrderClear.Size = new Size(94, 29);
+            btnOrderClear.TabIndex = 9;
+            btnOrderClear.Text = "Clear";
+            btnOrderClear.UseVisualStyleBackColor = true;
+            btnOrderClear.Click += btnOrderClear_Click;
+            // 
+            // btnOrderUpdateClick
+            // 
+            btnOrderUpdateClick.Location = new Point(747, 481);
+            btnOrderUpdateClick.Name = "btnOrderUpdateClick";
+            btnOrderUpdateClick.Size = new Size(94, 29);
+            btnOrderUpdateClick.TabIndex = 10;
+            btnOrderUpdateClick.Text = "Update";
+            btnOrderUpdateClick.UseVisualStyleBackColor = true;
+            btnOrderUpdateClick.Click += btnOrderUpdate_Click;
+            // 
             // Order
             // 
-            AutoScaleDimensions = new SizeF(11F, 23F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1257, 690);
+            ClientSize = new Size(914, 600);
+            Controls.Add(btnOrderUpdateClick);
+            Controls.Add(btnOrderClear);
             Controls.Add(btnOback);
-            Controls.Add(btnOupdate);
-            Controls.Add(btnOsearch);
+            Controls.Add(btnOrderSearch);
             Controls.Add(lblOsearch);
-            Controls.Add(txtbOsearch);
-            Controls.Add(dataOrder);
+            Controls.Add(txtOrderSearch);
+            Controls.Add(dataOrders);
             Controls.Add(label1);
-            Margin = new Padding(4, 5, 4, 5);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "Order";
             Text = "OrderMainPage";
-            Load += Order_Load;
-            ((System.ComponentModel.ISupportInitialize)dataOrder).EndInit();
+            Load += order_Load;
+            ((System.ComponentModel.ISupportInitialize)dataOrders).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -130,11 +141,12 @@
         #endregion
 
         private Label label1;
-        private DataGridView dataOrder;
-        private TextBox txtbOsearch;
+        private DataGridView dataOrders;
+        private TextBox txtOrderSearch;
         private Label lblOsearch;
-        private Button btnOsearch;
-        private Button btnOupdate;
+        private Button btnOrderSearch;
         private Button btnOback;
+        private Button btnOrderClear;
+        private Button btnOrderUpdateClick;
     }
 }

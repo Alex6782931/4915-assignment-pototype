@@ -30,20 +30,21 @@
         {
             btnPback = new Button();
             label1 = new Label();
-            dataProcurement = new DataGridView();
+            dataProc = new DataGridView();
             label2 = new Label();
-            txtbPsearch = new TextBox();
-            btnPsearch = new Button();
-            btnPupdate = new Button();
-            ((System.ComponentModel.ISupportInitialize)dataProcurement).BeginInit();
+            txtProcSearch = new TextBox();
+            btnProcSearch = new Button();
+            btnProcUpdate = new Button();
+            btnProcClear = new Button();
+            ((System.ComponentModel.ISupportInitialize)dataProc).BeginInit();
             SuspendLayout();
             // 
             // btnPback
             // 
-            btnPback.Location = new Point(14, 11);
-            btnPback.Margin = new Padding(5, 5, 5, 5);
+            btnPback.Location = new Point(10, 10);
+            btnPback.Margin = new Padding(4);
             btnPback.Name = "btnPback";
-            btnPback.Size = new Size(85, 51);
+            btnPback.Size = new Size(62, 44);
             btnPback.TabIndex = 0;
             btnPback.Text = "back";
             btnPback.UseVisualStyleBackColor = true;
@@ -51,77 +52,91 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(126, 23);
-            label1.Margin = new Padding(5, 0, 5, 0);
+            label1.Location = new Point(92, 20);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(121, 23);
+            label1.Size = new Size(93, 20);
             label1.TabIndex = 1;
             label1.Text = "Procurement";
             // 
-            // dataProcurement
+            // dataProc
             // 
-            dataProcurement.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataProcurement.Location = new Point(113, 207);
-            dataProcurement.Margin = new Padding(5, 5, 5, 5);
-            dataProcurement.Name = "dataProcurement";
-            dataProcurement.RowHeadersWidth = 62;
-            dataProcurement.Size = new Size(1043, 294);
-            dataProcurement.TabIndex = 2;
+            dataProc.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataProc.Location = new Point(40, 170);
+            dataProc.Margin = new Padding(4);
+            dataProc.Name = "dataProc";
+            dataProc.RowHeadersWidth = 62;
+            dataProc.Size = new Size(830, 294);
+            dataProc.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(126, 155);
-            label2.Margin = new Padding(5, 0, 5, 0);
+            label2.Location = new Point(40, 137);
+            label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(100, 23);
+            label2.Size = new Size(188, 20);
             label2.TabIndex = 3;
-            label2.Text = "Search for:";
+            label2.Text = "Search by(raw material ID):";
             // 
-            // txtbPsearch
+            // txtProcSearch
             // 
-            txtbPsearch.Location = new Point(234, 150);
-            txtbPsearch.Margin = new Padding(5, 5, 5, 5);
-            txtbPsearch.Name = "txtbPsearch";
-            txtbPsearch.Size = new Size(457, 30);
-            txtbPsearch.TabIndex = 4;
+            txtProcSearch.Location = new Point(236, 132);
+            txtProcSearch.Margin = new Padding(4);
+            txtProcSearch.Name = "txtProcSearch";
+            txtProcSearch.Size = new Size(427, 27);
+            txtProcSearch.TabIndex = 4;
             // 
-            // btnPsearch
+            // btnProcSearch
             // 
-            btnPsearch.Location = new Point(707, 149);
-            btnPsearch.Margin = new Padding(5, 5, 5, 5);
-            btnPsearch.Name = "btnPsearch";
-            btnPsearch.Size = new Size(118, 35);
-            btnPsearch.TabIndex = 5;
-            btnPsearch.Text = "Search";
-            btnPsearch.UseVisualStyleBackColor = true;
+            btnProcSearch.Location = new Point(671, 130);
+            btnProcSearch.Margin = new Padding(4);
+            btnProcSearch.Name = "btnProcSearch";
+            btnProcSearch.Size = new Size(98, 30);
+            btnProcSearch.TabIndex = 5;
+            btnProcSearch.Text = "Search";
+            btnProcSearch.UseVisualStyleBackColor = true;
+            btnProcSearch.Click += btnProcSearch_Click;
             // 
-            // btnPupdate
+            // btnProcUpdate
             // 
-            btnPupdate.Location = new Point(957, 531);
-            btnPupdate.Margin = new Padding(5, 5, 5, 5);
-            btnPupdate.Name = "btnPupdate";
-            btnPupdate.Size = new Size(200, 35);
-            btnPupdate.TabIndex = 6;
-            btnPupdate.Text = "Update";
-            btnPupdate.UseVisualStyleBackColor = true;
+            btnProcUpdate.Location = new Point(679, 481);
+            btnProcUpdate.Margin = new Padding(4);
+            btnProcUpdate.Name = "btnProcUpdate";
+            btnProcUpdate.Size = new Size(145, 30);
+            btnProcUpdate.TabIndex = 6;
+            btnProcUpdate.Text = "Update";
+            btnProcUpdate.UseVisualStyleBackColor = true;
+            btnProcUpdate.Click += btnProcUpdate_Click;
+            // 
+            // btnProcClear
+            // 
+            btnProcClear.Location = new Point(776, 130);
+            btnProcClear.Name = "btnProcClear";
+            btnProcClear.Size = new Size(94, 29);
+            btnProcClear.TabIndex = 7;
+            btnProcClear.Text = "Clear";
+            btnProcClear.UseVisualStyleBackColor = true;
+            btnProcClear.Click += btnProcClear_Click;
             // 
             // Procurement
             // 
-            AutoScaleDimensions = new SizeF(11F, 23F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1257, 690);
-            Controls.Add(btnPupdate);
-            Controls.Add(btnPsearch);
-            Controls.Add(txtbPsearch);
+            ClientSize = new Size(914, 600);
+            Controls.Add(btnProcClear);
+            Controls.Add(btnProcUpdate);
+            Controls.Add(btnProcSearch);
+            Controls.Add(txtProcSearch);
             Controls.Add(label2);
-            Controls.Add(dataProcurement);
+            Controls.Add(dataProc);
             Controls.Add(label1);
             Controls.Add(btnPback);
-            Margin = new Padding(5, 5, 5, 5);
+            Margin = new Padding(4);
             Name = "Procurement";
             Text = "Procurement";
-            ((System.ComponentModel.ISupportInitialize)dataProcurement).EndInit();
+            Load += Procurement_Load;
+            ((System.ComponentModel.ISupportInitialize)dataProc).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -130,10 +145,11 @@
 
         private Button btnPback;
         private Label label1;
-        private DataGridView dataProcurement;
+        private DataGridView dataProc;
         private Label label2;
-        private TextBox txtbPsearch;
-        private Button btnPsearch;
-        private Button btnPupdate;
+        private TextBox txtProcSearch;
+        private Button btnProcSearch;
+        private Button btnProcUpdate;
+        private Button btnProcClear;
     }
 }

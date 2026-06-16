@@ -22,172 +22,108 @@ namespace _4915_assignment_pototype
             InitializeComponent();
         }
 
-        private void dataAS_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private async void AfterService_Load(object sender, EventArgs e)
         {
-            DataTable dt = await GetCustomerDataFromApiResponse();
+            DataTable dt = await GetAfterServiceRecordsDataFromApiResponse();
             dataAS.DataSource = dt;
-            dt.AcceptChanges();
+            if (dt != null) dt.AcceptChanges();
         }
 
-        private async Task<DataTable> GetCustomerDataFromApiResponse()
+        private async Task<DataTable> GetAfterServiceRecordsDataFromApiResponse()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ServerAddress"]); // Adjust the base address as needed
-                    HttpResponseMessage response = await client.GetAsync("https://localhost:7146/api/SimpleGetAPI/GetCustomerData");
-
-
-                    // Check if the response is successful
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string jsonString = await response.Content.ReadAsStringAsync();
-
-                        // Replace the JsonConvert line with this line:
-                        DataTable dataTable = System.Text.Json.JsonSerializer.Deserialize<DataTable>(jsonString);
-
-
-                        return dataTable;
-                    }
-                    else
-                    {
-                        // Log the status code and reason
-                        string error = $"Error: {response.StatusCode} - {response.ReasonPhrase}";
-                        throw new Exception($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                    }
+                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetAfterServiceRecordsData");
+                    return ParseJsonToDataTable(jsonString);
                 }
-            }
-            catch (HttpRequestException e)
-            {
-                // Log the exception message
-                MessageBox.Show($"Request error: {e.Message}");
-                throw e;
             }
             catch (Exception ex)
             {
-                // Log any other exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}");
-                throw ex;
+                MessageBox.Show($"Error loading: {ex.Message}");
+                return CreateEmptyAfterServiceTable();
             }
         }
 
         private async void btnASsearch_Click(object sender, EventArgs e)
         {
-            string searchName = txtbASsearch.Text.Trim();
+            string searchNum = txtbASsearch.Text.Trim();
 
-            if (string.IsNullOrEmpty(searchName))
+            if (string.IsNullOrEmpty(searchNum))
             {
-                MessageBox.Show("Please enter a customer name to search.");
+                MessageBox.Show("Please enter an order number to search.");
                 return;
             }
 
-            // Call the specific search method
-            DataTable dt = await FindCustomerDataFromApiResponse(searchName);
-
-            // Bind results to your DataGrid view
+            DataTable dt = await FindAfterServiceRecordsDataFromApiResponse(searchNum);
             dataAS.DataSource = dt;
             dt.AcceptChanges();
         }
 
-        private async Task<DataTable> FindCustomerDataFromApiResponse(string customerName)
+        private async Task<DataTable> FindAfterServiceRecordsDataFromApiResponse(string orderNumber)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ServerAddress"]);
-
-                    // Your assignment instruction: Pass customerName as a query string parameter
-                    HttpResponseMessage response = await client.GetAsync($"/api/SimpleGetAPI/FindCustomerData?customerName={customerName}");
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindAfterServiceRecordsData?orderNumber={orderNumber}";
+                    HttpResponseMessage response = await client.GetAsync(url);
 
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
-
-                        // Uses the Newtonsoft library you downloaded in Part C
-                        DataTable dataTable = System.Text.Json.JsonSerializer.Deserialize<DataTable>(jsonString);
-
-                        return dataTable;
+                        return ParseJsonToDataTable(jsonString);
                     }
-                    else
-                    {
-                        MessageBox.Show($"Server returned error: {response.StatusCode}");
-                        return new DataTable();
-                    }
+
+                    MessageBox.Show($"Server returned error: {response.StatusCode}");
+                    return CreateEmptyAfterServiceTable();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while searching: {ex.Message}");
-                return new DataTable();
+                MessageBox.Show($"Search error: {ex.Message}");
+                return CreateEmptyAfterServiceTable();
             }
         }
 
         private async void btnASupdate_click(object sender, EventArgs e)
         {
-            DataTable dtUpdated = (DataTable)dataAS.DataSource;
-            dtUpdated = dtUpdated.GetChanges();
+            dataAS.EndEdit();
+            if (dataAS.DataSource != null) this.BindingContext[dataAS.DataSource].EndCurrentEdit();
 
-            if (dtUpdated != null)
+            DataTable mainTable = (DataTable)dataAS.DataSource;
+            if (mainTable == null || mainTable.Rows.Count == 0) return;
+
+            DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
+
+            int rowsUpdated = await UpdateAfterServiceRecordsDataToAPI(dtChanges);
+            if (rowsUpdated > 0)
             {
-                int rowsUpdated = await UpdateCustomerDataToAPI(dtUpdated);
-                if (rowsUpdated > 0)
-                {
-                    dtUpdated.AcceptChanges();
-                    dataAS.DataSource = dtUpdated.Copy();
-                }
-                MessageBox.Show($"{rowsUpdated} rows updated successfully.");
+                mainTable.AcceptChanges();
+                MessageBox.Show($"{rowsUpdated} service logs updated successfully.");
             }
         }
 
-        private async Task<int> UpdateCustomerDataToAPI(DataTable dtUpdated)
+
+        private async Task<int> UpdateAfterServiceRecordsDataToAPI(DataTable dtUpdated)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ServerAddress"]);
-
-                    // Configure built-in options to format json beautifully (replaces Formatting.Indented)
                     var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
-                    // 1. Serialize Added (New) Rows
                     DataTable dtAdded = dtUpdated.GetChanges(DataRowState.Added);
-                    string jsonAdded = dtAdded != null ? JsonSerializer.Serialize(dtAdded, jsonOptions) : "[]";
+                    string jsonAdded = ConvertTableToJson(dtAdded, jsonOptions, false);
 
-                    // 2. Serialize Modified Rows
                     DataTable dtModified = dtUpdated.GetChanges(DataRowState.Modified);
-                    string jsonModified = dtModified != null ? JsonSerializer.Serialize(dtModified, jsonOptions) : "[]";
+                    string jsonModified = ConvertTableToJson(dtModified, jsonOptions, false);
 
-                    // 3. Handle Deleted Rows Safely
-                    // Note: Directly serializing a deleted DataTable throws errors because rows are missing.
-                    // We create a clean temporary table to store the original values before they were deleted.
-                    string jsonDeleted = "[]";
                     DataTable dtDeleted = dtUpdated.GetChanges(DataRowState.Deleted);
+                    string jsonDeleted = ConvertTableToJson(dtDeleted, jsonOptions, true);
 
-                    if (dtDeleted != null)
-                    {
-                        DataTable dtDeletedBackup = dtDeleted.Clone(); // Copy schema structure
-                        foreach (DataRow row in dtDeleted.Rows)
-                        {
-                            DataRow newRow = dtDeletedBackup.NewRow();
-                            // Loop through columns to extract original values safely
-                            foreach (DataColumn col in dtDeleted.Columns)
-                            {
-                                newRow[col.ColumnName] = row[col.ColumnName, DataRowVersion.Original];
-                            }
-                            dtDeletedBackup.Rows.Add(newRow);
-                        }
-                        jsonDeleted = JsonSerializer.Serialize(dtDeletedBackup, jsonOptions);
-                    }
-
-                    // 4. Populate your custom Entity Model
                     JsonDataTable jsonDT = new JsonDataTable
                     {
                         dtAdded = jsonAdded,
@@ -195,39 +131,87 @@ namespace _4915_assignment_pototype
                         dtDeleted = jsonDeleted
                     };
 
-                    // Serialize the entire entity wrapper object to a JSON string
                     string jsonString = JsonSerializer.Serialize(jsonDT);
-
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    // Send POST request to the Web API
-                    HttpResponseMessage response = await client.PostAsync("/api/SimpleGetAPI/UpdateCustomerData", content);
-
-                    // Ensure the request was successful
+                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateAfterServiceRecordsData", content);
                     if (response.IsSuccessStatusCode)
                     {
-                        string responseString = await response.Content.ReadAsStringAsync();
-                        int rowsUpdated = int.Parse(responseString);
-                        return rowsUpdated;
+                        return int.Parse(await response.Content.ReadAsStringAsync());
                     }
-                    else
-                    {
-                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                        MessageBox.Show($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                        return 0;
-                    }
+                    return 0;
                 }
-            }
-            catch (HttpRequestException e)
-            {
-                MessageBox.Show($"Request error: {e.Message}");
-                throw;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred: {ex.Message}");
-                throw;
+                MessageBox.Show($"Update processing error: {ex.Message}");
+                return 0;
             }
+        }
+
+        // HELPER METHOD 1: Safely Parse JSON Arrays to DataTables without Crashing
+        private DataTable ParseJsonToDataTable(string jsonString)
+        {
+            DataTable dataTable = CreateEmptyAfterServiceTable();
+            using (JsonDocument doc = JsonDocument.Parse(jsonString))
+            {
+                if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (JsonElement rowElement in doc.RootElement.EnumerateArray())
+                    {
+                        DataRow newRow = dataTable.NewRow();
+                        foreach (JsonProperty property in rowElement.EnumerateObject())
+                        {
+                            if (dataTable.Columns.Contains(property.Name))
+                            {
+                                newRow[property.Name] = property.Value.ToString();
+                            }
+                        }
+                        dataTable.Rows.Add(newRow);
+                    }
+                }
+            }
+            return dataTable;
+        }
+
+        // HELPER METHOD 2: Formats default table grid design structure dynamically
+        private DataTable CreateEmptyAfterServiceTable()
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("caseID", typeof(string));
+            dataTable.Columns.Add("orderNumber", typeof(string));
+            dataTable.Columns.Add("requestDate", typeof(string));
+            dataTable.Columns.Add("requestType", typeof(string));
+            dataTable.Columns.Add("reason", typeof(string));
+            dataTable.Columns.Add("resolutionStatus", typeof(string));
+            return dataTable;
+        }
+
+        // HELPER METHOD 3: Safe generic data cell parsing logic
+        private string ConvertTableToJson(DataTable dt, JsonSerializerOptions options, bool isDeleted)
+        {
+            if (dt == null || dt.Rows.Count == 0) return "[]";
+            var list = new List<Dictionary<string, string>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var dict = new Dictionary<string, string>();
+                foreach (DataColumn col in dt.Columns)
+                {
+                    dict[col.ColumnName] = (isDeleted ? row[col.ColumnName, DataRowVersion.Original] : row[col.ColumnName])?.ToString() ?? "";
+                }
+                list.Add(dict);
+            }
+            return JsonSerializer.Serialize(list, options);
+        }
+
+        private async void btnASclear_Click(object sender, EventArgs e)
+        {
+            txtbASsearch.Clear();
+
+            DataTable dt = await GetAfterServiceRecordsDataFromApiResponse();
+
+            dataAS.DataSource = dt;
+            if (dt != null) dt.AcceptChanges();
         }
 
     }

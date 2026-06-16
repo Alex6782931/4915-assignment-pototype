@@ -12,96 +12,96 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class Inventory : Form
+    public partial class Production : Form
     {
-        public Inventory()
+        public Production()
         {
             InitializeComponent();
         }
 
-        private async void Inventory_Load(object sender, EventArgs e)
+        private async void Production_Load(object sender, EventArgs e)
         {
-            DataTable dt = await GetInventoryRecordsDataFromApiResponse();
-            dataInv.DataSource = dt;
+            DataTable dt = await GetProductionRecordsDataFromApiResponse();
+            dataProd.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
-        private async Task<DataTable> GetInventoryRecordsDataFromApiResponse()
+
+        private async Task<DataTable> GetProductionRecordsDataFromApiResponse()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetInventoryRecordsData");
+                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetProductionRecordsData");
                     return ParseJsonToDataTable(jsonString);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading stocks: {ex.Message}");
-                return CreateEmptyInventoryTable();
+                MessageBox.Show($"Error loading production: {ex.Message}");
+                return CreateEmptyProductionTable();
             }
         }
 
-        private async void btnInvSearch_Click(object sender, EventArgs e)
+        private async void btnProdSearch_Click(object sender, EventArgs e)
         {
-            string searchItem = txtInvSearch.Text.Trim();
+            string searchItem = txtProdSearch.Text.Trim();
             if (string.IsNullOrEmpty(searchItem))
             {
-                MessageBox.Show("Please enter an item name keyword to search.");
+                MessageBox.Show("Please enter a Finished Item ID (e.g. FG001) to search.");
                 return;
             }
-            DataTable dt = await FindInventoryRecordsDataFromApiResponse(searchItem);
-            dataInv.DataSource = dt;
+            DataTable dt = await FindProductionRecordsDataFromApiResponse(searchItem);
+            dataProd.DataSource = dt;
         }
 
-        private async Task<DataTable> FindInventoryRecordsDataFromApiResponse(string itemName)
+        private async Task<DataTable> FindProductionRecordsDataFromApiResponse(string targetItemID)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindInventoryRecordsData?itemName={itemName}";
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindProductionRecordsData?targetItemID={targetItemID}";
                     HttpResponseMessage response = await client.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
                         return ParseJsonToDataTable(jsonString);
                     }
-                    return CreateEmptyInventoryTable();
+                    return CreateEmptyProductionTable();
                 }
             }
-            catch (Exception) { return CreateEmptyInventoryTable(); }
+            catch (Exception) { return CreateEmptyProductionTable(); }
         }
 
-        private async void btnInvClear_Click(object sender, EventArgs e)
+        private async void btnProdClear_Click(object sender, EventArgs e)
         {
-            txtInvSearch.Clear();
-            DataTable dt = await GetInventoryRecordsDataFromApiResponse();
-            dataInv.DataSource = dt;
+            txtProdSearch.Clear();
+            DataTable dt = await GetProductionRecordsDataFromApiResponse();
+            dataProd.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
 
-        private async void btnInvUpdate_Click(object sender, EventArgs e)
+        private async void btnProdUpdate_Click(object sender, EventArgs e)
         {
-            dataInv.EndEdit();
-            if (dataInv.DataSource != null) this.BindingContext[dataInv.DataSource].EndCurrentEdit();
+            dataProd.EndEdit();
+            if (dataProd.DataSource != null) this.BindingContext[dataProd.DataSource].EndCurrentEdit();
 
-            DataTable mainTable = (DataTable)dataInv.DataSource;
+            DataTable mainTable = (DataTable)dataProd.DataSource;
             if (mainTable == null || mainTable.Rows.Count == 0) return;
 
             DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
-            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Your search mode fallback feature!
 
-            int rowsUpdated = await UpdateInventoryRecordsToAPI(dtChanges);
+            int rowsUpdated = await UpdateProductionRecordsToAPI(dtChanges);
             if (rowsUpdated > 0)
             {
                 mainTable.AcceptChanges();
-                MessageBox.Show($"{rowsUpdated} stock counts updated successfully.");
+                MessageBox.Show($"{rowsUpdated} production requests updated successfully.");
             }
         }
 
-
-        private async Task<int> UpdateInventoryRecordsToAPI(DataTable dtUpdated)
+        private async Task<int> UpdateProductionRecordsToAPI(DataTable dtUpdated)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace _4915_assignment_pototype
                     string jsonString = JsonSerializer.Serialize(jsonDT);
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateInventoryRecordsData", content);
+                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateProductionRecordsData", content);
                     if (response.IsSuccessStatusCode) return int.Parse(await response.Content.ReadAsStringAsync());
                     return 0;
                 }
@@ -137,7 +137,7 @@ namespace _4915_assignment_pototype
 
         private DataTable ParseJsonToDataTable(string jsonString)
         {
-            DataTable dataTable = CreateEmptyInventoryTable();
+            DataTable dataTable = CreateEmptyProductionTable();
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {
                 if (doc.RootElement.ValueKind == JsonValueKind.Array)
@@ -156,15 +156,15 @@ namespace _4915_assignment_pototype
             return dataTable;
         }
 
-        private DataTable CreateEmptyInventoryTable()
+        private DataTable CreateEmptyProductionTable()
         {
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add("itemID", typeof(string));
-            dataTable.Columns.Add("itemName", typeof(string));
-            dataTable.Columns.Add("itemType", typeof(string));
-            dataTable.Columns.Add("quantityInStock", typeof(string));
-            dataTable.Columns.Add("unit", typeof(string));
-            dataTable.Columns.Add("location", typeof(string));
+            dataTable.Columns.Add("requestID", typeof(string));
+            dataTable.Columns.Add("requestDate", typeof(string));
+            dataTable.Columns.Add("targetItemID", typeof(string));
+            dataTable.Columns.Add("rawMaterialID", typeof(string));
+            dataTable.Columns.Add("quantityRequested", typeof(string));
+            dataTable.Columns.Add("status", typeof(string));
             return dataTable;
         }
     }

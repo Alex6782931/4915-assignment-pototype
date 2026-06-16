@@ -21,8 +21,6 @@ namespace _4915_assignment_pototype
         {
             InitializeComponent();
         }
-
-        // Inside Customer.cs UI Form file:
         private async void Customer_Load(object sender, EventArgs e)
         {
             DataTable dt = await GetCustomerDataFromApiResponse();
@@ -64,7 +62,7 @@ namespace _4915_assignment_pototype
 
         private async void btnCustsearch_Click(object sender, EventArgs e)
         {
-            
+
             string searchName = txtbCustsearch.Text.Trim();
 
             if (string.IsNullOrEmpty(searchName))
@@ -87,7 +85,6 @@ namespace _4915_assignment_pototype
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // Direct URL to prevent ConfigurationManager null reference crashes
                     string url = $"https://localhost:7146/api/SimpleGetAPI/FindCustomerData?customerName={customerName}";
                     HttpResponseMessage response = await client.GetAsync(url);
 
@@ -117,51 +114,43 @@ namespace _4915_assignment_pototype
                                 }
                                 dataTable.Rows.Add(newRow);
                             }
-                            return dataTable; // Path 1: Success returns the filled dataTable
+                            return dataTable;
                         }
                     }
                     else
                     {
                         MessageBox.Show($"Server returned error: {response.StatusCode}");
-                        return new DataTable(); // Path 2: Non-success returns empty table
+                        return new DataTable();
                     }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred while searching: {ex.Message}");
-                return new DataTable(); // Path 3: Exception returns empty table
+                return new DataTable();
             }
         }
 
 
-        private async void btnCustupdate_click(object sender, EventArgs e)
+        private async void btnCustupdate_Click(object sender, EventArgs e)
         {
-            // Force UI commits
             dataCust.EndEdit();
-            if (dataCust.DataSource != null)
-            {
-                this.BindingContext[dataCust.DataSource].EndCurrentEdit();
-            }
+            if (dataCust.DataSource != null) this.BindingContext[dataCust.DataSource].EndCurrentEdit();
 
             DataTable mainTable = (DataTable)dataCust.DataSource;
+            if (mainTable == null || mainTable.Rows.Count == 0) return;
 
-            if (mainTable != null && mainTable.Rows.Count > 0)
-            {
-                // Fallback: Send the whole table instead of just dtChanges
-                int rowsUpdated = await UpdateCustomerDataToAPI(mainTable);
+            DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
 
-                if (rowsUpdated > 0)
-                {
-                    mainTable.AcceptChanges();
-                }
-                MessageBox.Show($"{rowsUpdated} rows processed/updated successfully.");
-            }
-            else
+            int rowsUpdated = await UpdateCustomerDataToAPI(dtChanges);
+            if (rowsUpdated > 0)
             {
-                MessageBox.Show("No data found in grid to update.");
+                mainTable.AcceptChanges();
+                MessageBox.Show($"{rowsUpdated} customer records updated successfully.");
             }
         }
+
 
 
         private async Task<int> UpdateCustomerDataToAPI(DataTable dtUpdated)
@@ -251,5 +240,14 @@ namespace _4915_assignment_pototype
             }
         }
 
+        private async void btnCustReset_Click(object sender, EventArgs e)
+        {
+            txtbCustsearch.Clear();
+
+            DataTable dt = await GetCustomerDataFromApiResponse();
+
+            dataCust.DataSource = dt;
+            if (dt != null) dt.AcceptChanges();
+        }
     }
 }

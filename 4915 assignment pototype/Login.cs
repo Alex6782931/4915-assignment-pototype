@@ -1,3 +1,4 @@
+using _4915_assignment_pototype.staff;
 using Microsoft.VisualBasic.ApplicationServices;
 using System.Runtime.CompilerServices;
 
@@ -5,51 +6,64 @@ namespace _4915_assignment_pototype
 {
     public partial class Login : Form
     {
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
+        public Login() 
+        { 
+            InitializeComponent();
         }
 
-        private void txtUsername_TextChanged(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
+            string user = txtUsername.Text.Trim();
+            string pass = txtPassword.Text.Trim();
 
-        }
-
-        private void btnLogin_Click(object sender, EventArgs e)
-        {
-            String username = txtUsername.Text;
-            String password = txtPassword.Text;
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
             {
-                MessageBox.Show("please fill username or password¡I", "require values is not fill in", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please type in both fields to request access verification.");
                 return;
             }
 
-            //Write sql code
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/VerifyLogin?username={user}&password={pass}";
+                    HttpResponseMessage response = await client.PostAsync(url, null);
 
-            //// if login success
-            ///
-            //if (...)
-            //{
-            //    CustomerMain customer = new CustomerMain();
-            //    customer.Show();
-            //    this.Hide();
-            //}
-            //else
-            //{
-            //    MessageBox.Show("user name or pawwword is wrong¡I", "login unsuccessful", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
 
-            //    txtbpassword.Clear();
-            //    txtbpassword.Focus();
-            //}
+                        if (result.Contains("FAILED_USER_NOT_FOUND"))
+                        {
+                            MessageBox.Show("Access Denied: Invalid username provided.");
+                        }
+                        else if (result.Contains("FAILED_WRONG_PASSWORD"))
+                        {
+                            MessageBox.Show("Access Denied: Invalid security password provided.");
+                        }
+                        else
+                        {
+                            // Success! Authorization Level is retrieved (e.g. 'Admin', 'Sales')
+                            MessageBox.Show($"Access Granted! Welcome back. Authorized Role: {result}");
+
+                            // Route user to your main program menu interface file
+                            staffMain mainMenu = new staffMain();
+                            mainMenu.Show();
+
+                            this.Hide(); // Hides the login screen cleanly
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Security authentication routing server error: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to connect to authentication server module: {ex.Message}");
+            }
         }
 
-        private void btnregister_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            Register registerForm = new Register();
-            registerForm.Show();
-        }
     }
 }

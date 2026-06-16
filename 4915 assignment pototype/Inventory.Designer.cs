@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnIback = new Button();
+            btnBack = new Button();
             label1 = new Label();
             dataInv = new DataGridView();
             btnInvSearch = new Button();
@@ -39,30 +39,31 @@
             ((System.ComponentModel.ISupportInitialize)dataInv).BeginInit();
             SuspendLayout();
             // 
-            // btnIback
+            // btnBack
             // 
-            btnIback.Location = new Point(10, 17);
-            btnIback.Margin = new Padding(4);
-            btnIback.Name = "btnIback";
-            btnIback.Size = new Size(55, 40);
-            btnIback.TabIndex = 0;
-            btnIback.Text = "back";
-            btnIback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(10, 17);
+            btnBack.Margin = new Padding(4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(55, 40);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(79, 25);
+            label1.Location = new Point(50, 73);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(70, 20);
+            label1.Size = new Size(135, 20);
             label1.TabIndex = 1;
-            label1.Text = "Inventory";
+            label1.Text = "Inventory database";
             // 
             // dataInv
             // 
             dataInv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataInv.Location = new Point(48, 114);
+            dataInv.Location = new Point(50, 201);
             dataInv.Margin = new Padding(4);
             dataInv.Name = "dataInv";
             dataInv.RowHeadersWidth = 62;
@@ -71,7 +72,7 @@
             // 
             // btnInvSearch
             // 
-            btnInvSearch.Location = new Point(648, 76);
+            btnInvSearch.Location = new Point(650, 163);
             btnInvSearch.Margin = new Padding(4);
             btnInvSearch.Name = "btnInvSearch";
             btnInvSearch.Size = new Size(94, 30);
@@ -83,7 +84,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(48, 85);
+            label2.Location = new Point(50, 172);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
             label2.Size = new Size(157, 20);
@@ -92,7 +93,7 @@
             // 
             // txtInvSearch
             // 
-            txtInvSearch.Location = new Point(213, 79);
+            txtInvSearch.Location = new Point(215, 166);
             txtInvSearch.Margin = new Padding(4);
             txtInvSearch.Name = "txtInvSearch";
             txtInvSearch.Size = new Size(427, 27);
@@ -100,7 +101,7 @@
             // 
             // btnInvUpdate
             // 
-            btnInvUpdate.Location = new Point(727, 457);
+            btnInvUpdate.Location = new Point(729, 544);
             btnInvUpdate.Margin = new Padding(2, 3, 2, 3);
             btnInvUpdate.Name = "btnInvUpdate";
             btnInvUpdate.Size = new Size(116, 28);
@@ -111,7 +112,7 @@
             // 
             // btnInvClear
             // 
-            btnInvClear.Location = new Point(749, 76);
+            btnInvClear.Location = new Point(751, 163);
             btnInvClear.Name = "btnInvClear";
             btnInvClear.Size = new Size(94, 29);
             btnInvClear.TabIndex = 7;
@@ -131,7 +132,7 @@
             Controls.Add(btnInvSearch);
             Controls.Add(dataInv);
             Controls.Add(label1);
-            Controls.Add(btnIback);
+            Controls.Add(btnBack);
             Margin = new Padding(4);
             Name = "Inventory";
             Text = "Inventory";
@@ -143,7 +144,7 @@
 
         #endregion
 
-        private Button btnIback;
+        private Button btnBack;
         private Label label1;
         private DataGridView dataInv;
         private Button btnInvSearch;

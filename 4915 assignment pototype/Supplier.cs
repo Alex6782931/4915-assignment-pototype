@@ -13,97 +13,96 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class Procurement : Form
+    public partial class Supplier : Form
     {
-        public Procurement()
+        public Supplier()
         {
             InitializeComponent();
         }
 
-        private async void Procurement_Load(object sender, EventArgs e)
+        private async void Supplier_Load(object sender, EventArgs e)
         {
-            DataTable dt = await GetProcurementRecordsDataFromApiResponse();
-            dataProc.DataSource = dt;
+            DataTable dt = await GetSupplierRecordsDataFromApiResponse();
+            dataSuppliers.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
 
-        private async Task<DataTable> GetProcurementRecordsDataFromApiResponse()
+        private async Task<DataTable> GetSupplierRecordsDataFromApiResponse()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetProcurementRecordsData");
+                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetSupplierRecordsData");
                     return ParseJsonToDataTable(jsonString);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading procurements: {ex.Message}");
-                return CreateEmptyProcurementTable();
+                MessageBox.Show($"Error loading suppliers: {ex.Message}");
+                return CreateEmptySupplierTable();
             }
         }
 
-        private async void btnProcSearch_Click(object sender, EventArgs e)
+        private async void btnSupplierSearch_Click(object sender, EventArgs e)
         {
-            string searchMaterial = txtProcSearch.Text.Trim();
-            if (string.IsNullOrEmpty(searchMaterial))
+            string searchName = txtSupplierSearch.Text.Trim();
+            if (string.IsNullOrEmpty(searchName))
             {
-                MessageBox.Show("Please enter a Raw Material ID (e.g., RM001) to search.");
+                MessageBox.Show("Please enter a supplier name keyword to search.");
                 return;
             }
-            DataTable dt = await FindProcurementRecordsDataFromApiResponse(searchMaterial);
-            dataProc.DataSource = dt;
+            DataTable dt = await FindSupplierRecordsDataFromApiResponse(searchName);
+            dataSuppliers.DataSource = dt;
         }
 
-        private async Task<DataTable> FindProcurementRecordsDataFromApiResponse(string rawMaterialID)
+        private async Task<DataTable> FindSupplierRecordsDataFromApiResponse(string supplierName)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindProcurementRecordsData?rawMaterialID={rawMaterialID}";
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindSupplierRecordsData?supplierName={supplierName}";
                     HttpResponseMessage response = await client.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
                         return ParseJsonToDataTable(jsonString);
                     }
-                    return CreateEmptyProcurementTable();
+                    return CreateEmptySupplierTable();
                 }
             }
-            catch (Exception) { return CreateEmptyProcurementTable(); }
+            catch (Exception) { return CreateEmptySupplierTable(); }
         }
 
-        private async void btnProcClear_Click(object sender, EventArgs e)
+        private async void btnSupplierClear_Click(object sender, EventArgs e)
         {
-            txtProcSearch.Clear();
-            DataTable dt = await GetProcurementRecordsDataFromApiResponse();
-            dataProc.DataSource = dt;
+            txtSupplierSearch.Clear();
+            DataTable dt = await GetSupplierRecordsDataFromApiResponse();
+            dataSuppliers.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
 
-        private async void btnProcUpdate_Click(object sender, EventArgs e)
+        private async void btnSupplierUpdate_Click(object sender, EventArgs e)
         {
-            dataProc.EndEdit();
-            if (dataProc.DataSource != null) this.BindingContext[dataProc.DataSource].EndCurrentEdit();
+            dataSuppliers.EndEdit();
+            if (dataSuppliers.DataSource != null) this.BindingContext[dataSuppliers.DataSource].EndCurrentEdit();
 
-            DataTable mainTable = (DataTable)dataProc.DataSource;
+            DataTable mainTable = (DataTable)dataSuppliers.DataSource;
             if (mainTable == null || mainTable.Rows.Count == 0) return;
 
             DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
-            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Integrated Search Fallback
 
-            int rowsUpdated = await UpdateProcurementRecordsToAPI(dtChanges);
+            int rowsUpdated = await UpdateSupplierRecordsToAPI(dtChanges);
             if (rowsUpdated > 0)
             {
                 mainTable.AcceptChanges();
-                MessageBox.Show($"{rowsUpdated} procurement rows updated successfully.");
+                MessageBox.Show($"{rowsUpdated} vendor accounts updated successfully.");
             }
         }
 
-
-        private async Task<int> UpdateProcurementRecordsToAPI(DataTable dtUpdated)
+        private async Task<int> UpdateSupplierRecordsToAPI(DataTable dtUpdated)
         {
             try
             {
@@ -129,7 +128,7 @@ namespace _4915_assignment_pototype
                     string jsonString = JsonSerializer.Serialize(jsonDT);
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateProcurementRecordsData", content);
+                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateSupplierRecordsData", content);
                     if (response.IsSuccessStatusCode) return int.Parse(await response.Content.ReadAsStringAsync());
                     return 0;
                 }
@@ -139,7 +138,7 @@ namespace _4915_assignment_pototype
 
         private DataTable ParseJsonToDataTable(string jsonString)
         {
-            DataTable dataTable = CreateEmptyProcurementTable();
+            DataTable dataTable = CreateEmptySupplierTable();
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {
                 if (doc.RootElement.ValueKind == JsonValueKind.Array)
@@ -158,16 +157,14 @@ namespace _4915_assignment_pototype
             return dataTable;
         }
 
-        private DataTable CreateEmptyProcurementTable()
+        private DataTable CreateEmptySupplierTable()
         {
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add("procurementID", typeof(string));
-            dataTable.Columns.Add("orderDate", typeof(string));
             dataTable.Columns.Add("supplierID", typeof(string));
-            dataTable.Columns.Add("rawMaterialID", typeof(string));
-            dataTable.Columns.Add("quantityOrdered", typeof(string));
-            dataTable.Columns.Add("expectedDelivery", typeof(string));
-            dataTable.Columns.Add("status", typeof(string));
+            dataTable.Columns.Add("supplierName", typeof(string));
+            dataTable.Columns.Add("contactName", typeof(string));
+            dataTable.Columns.Add("phone", typeof(string));
+            dataTable.Columns.Add("address", typeof(string));
             return dataTable;
         }
 

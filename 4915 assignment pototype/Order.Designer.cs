@@ -33,7 +33,7 @@
             txtOrderSearch = new TextBox();
             lblOsearch = new Label();
             btnOrderSearch = new Button();
-            btnOback = new Button();
+            btnBack = new Button();
             btnOrderClear = new Button();
             btnOrderUpdateClick = new Button();
             ((System.ComponentModel.ISupportInitialize)dataOrders).BeginInit();
@@ -42,11 +42,11 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(99, 20);
+            label1.Location = new Point(38, 53);
             label1.Name = "label1";
-            label1.Size = new Size(47, 20);
+            label1.Size = new Size(112, 20);
             label1.TabIndex = 0;
-            label1.Text = "Order";
+            label1.Text = "Order database";
             // 
             // dataOrders
             // 
@@ -86,15 +86,16 @@
             btnOrderSearch.UseVisualStyleBackColor = true;
             btnOrderSearch.Click += btnOrderSearch_Click;
             // 
-            // btnOback
+            // btnBack
             // 
-            btnOback.Location = new Point(14, 12);
-            btnOback.Margin = new Padding(3, 4, 3, 4);
-            btnOback.Name = "btnOback";
-            btnOback.Size = new Size(69, 37);
-            btnOback.TabIndex = 8;
-            btnOback.Text = "back";
-            btnOback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(14, 12);
+            btnBack.Margin = new Padding(3, 4, 3, 4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(69, 37);
+            btnBack.TabIndex = 8;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // btnOrderClear
             // 
@@ -123,7 +124,7 @@
             ClientSize = new Size(914, 600);
             Controls.Add(btnOrderUpdateClick);
             Controls.Add(btnOrderClear);
-            Controls.Add(btnOback);
+            Controls.Add(btnBack);
             Controls.Add(btnOrderSearch);
             Controls.Add(lblOsearch);
             Controls.Add(txtOrderSearch);
@@ -145,7 +146,7 @@
         private TextBox txtOrderSearch;
         private Label lblOsearch;
         private Button btnOrderSearch;
-        private Button btnOback;
+        private Button btnBack;
         private Button btnOrderClear;
         private Button btnOrderUpdateClick;
     }

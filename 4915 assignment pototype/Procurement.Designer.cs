@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnPback = new Button();
+            btnBack = new Button();
             label1 = new Label();
             dataProc = new DataGridView();
             label2 = new Label();
@@ -39,25 +39,26 @@
             ((System.ComponentModel.ISupportInitialize)dataProc).BeginInit();
             SuspendLayout();
             // 
-            // btnPback
+            // btnBack
             // 
-            btnPback.Location = new Point(10, 10);
-            btnPback.Margin = new Padding(4);
-            btnPback.Name = "btnPback";
-            btnPback.Size = new Size(62, 44);
-            btnPback.TabIndex = 0;
-            btnPback.Text = "back";
-            btnPback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(10, 10);
+            btnBack.Margin = new Padding(4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(62, 44);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(92, 20);
+            label1.Location = new Point(40, 67);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(93, 20);
+            label1.Size = new Size(158, 20);
             label1.TabIndex = 1;
-            label1.Text = "Procurement";
+            label1.Text = "Procurement database";
             // 
             // dataProc
             // 
@@ -131,7 +132,7 @@
             Controls.Add(label2);
             Controls.Add(dataProc);
             Controls.Add(label1);
-            Controls.Add(btnPback);
+            Controls.Add(btnBack);
             Margin = new Padding(4);
             Name = "Procurement";
             Text = "Procurement";
@@ -143,7 +144,7 @@
 
         #endregion
 
-        private Button btnPback;
+        private Button btnBack;
         private Label label1;
         private DataGridView dataProc;
         private Label label2;

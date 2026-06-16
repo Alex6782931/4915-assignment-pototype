@@ -1,4 +1,5 @@
-﻿using SDP_EntityModels;
+﻿using _4915_assignment_pototype.staff;
+using SDP_EntityModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -249,5 +250,19 @@ namespace _4915_assignment_pototype
             dataCust.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
+
+        private void btnBack_Click(object sender, EventArgs e)
+        {
+            // Find the hidden main menu that is already running and bring it back to the screen
+            Form mainForm = Application.OpenForms["staffMain"];
+            if (mainForm != null)
+            {
+                mainForm.Show();
+            }
+
+            // Close the current table form cleanly
+            this.Close();
+        }
+
     }
 }

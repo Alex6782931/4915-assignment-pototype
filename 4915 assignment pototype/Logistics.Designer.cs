@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnLback = new Button();
+            btnBack = new Button();
             dataLog = new DataGridView();
             label1 = new Label();
             btnLogUpdate = new Button();
@@ -39,15 +39,16 @@
             ((System.ComponentModel.ISupportInitialize)dataLog).BeginInit();
             SuspendLayout();
             // 
-            // btnLback
+            // btnBack
             // 
-            btnLback.Location = new Point(20, 16);
-            btnLback.Margin = new Padding(4);
-            btnLback.Name = "btnLback";
-            btnLback.Size = new Size(57, 50);
-            btnLback.TabIndex = 0;
-            btnLback.Text = "back";
-            btnLback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(20, 16);
+            btnBack.Margin = new Padding(4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(57, 50);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // dataLog
             // 
@@ -62,12 +63,12 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(100, 28);
+            label1.Location = new Point(45, 80);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(66, 20);
+            label1.Size = new Size(131, 20);
             label1.TabIndex = 2;
-            label1.Text = "Logistics";
+            label1.Text = "Logistics database";
             // 
             // btnLogUpdate
             // 
@@ -131,7 +132,7 @@
             Controls.Add(btnLogUpdate);
             Controls.Add(label1);
             Controls.Add(dataLog);
-            Controls.Add(btnLback);
+            Controls.Add(btnBack);
             Margin = new Padding(4);
             Name = "Logistics";
             Text = "Logistics";
@@ -143,7 +144,7 @@
 
         #endregion
 
-        private Button btnLback;
+        private Button btnBack;
         private DataGridView dataLog;
         private Label label1;
         private Button btnLogUpdate;

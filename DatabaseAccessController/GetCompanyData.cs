@@ -130,5 +130,20 @@ namespace DatabaseAccessController
             return base.GetData(sqlCmd);
         }
 
+        //SUPPLIER TABLE
+
+        public DataTable GetSupplierRecordsData() 
+        {
+            String sqlCmd = "SELECT * FROM suppliers";
+            return base.GetData(sqlCmd);
+        }
+
+        //USER_ACCOUNT TABLE
+
+        public DataTable GetUserAccountRecordsData() 
+        {
+            String sqlCmd = "SELECT * FROM user_accounts";
+            return base.GetData(sqlCmd);
+        }
     }
 }

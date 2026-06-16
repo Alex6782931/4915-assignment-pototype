@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnCustback = new Button();
+            btnBack = new Button();
             label1 = new Label();
             btnCustsearch = new Button();
             label2 = new Label();
@@ -39,24 +39,25 @@
             ((System.ComponentModel.ISupportInitialize)dataCust).BeginInit();
             SuspendLayout();
             // 
-            // btnCustback
+            // btnBack
             // 
-            btnCustback.Location = new Point(13, 16);
-            btnCustback.Margin = new Padding(3, 4, 3, 4);
-            btnCustback.Name = "btnCustback";
-            btnCustback.Size = new Size(48, 37);
-            btnCustback.TabIndex = 0;
-            btnCustback.Text = "back";
-            btnCustback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(13, 16);
+            btnBack.Margin = new Padding(3, 4, 3, 4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(48, 37);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(101, 29);
+            label1.Location = new Point(41, 67);
             label1.Name = "label1";
-            label1.Size = new Size(72, 20);
+            label1.Size = new Size(137, 20);
             label1.TabIndex = 1;
-            label1.Text = "Customer";
+            label1.Text = "Customer database";
             // 
             // btnCustsearch
             // 
@@ -129,7 +130,7 @@
             Controls.Add(label2);
             Controls.Add(btnCustsearch);
             Controls.Add(label1);
-            Controls.Add(btnCustback);
+            Controls.Add(btnBack);
             Margin = new Padding(3, 4, 3, 4);
             Name = "Customer";
             Text = "Customer";
@@ -141,7 +142,7 @@
 
         #endregion
 
-        private Button btnCustback;
+        private Button btnBack;
         private Label label1;
         private Button btnCustsearch;
         private Label label2;

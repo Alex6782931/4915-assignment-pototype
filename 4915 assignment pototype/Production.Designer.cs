@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
+            btnBack = new Button();
             label1 = new Label();
             dataProd = new DataGridView();
             txtProdSearch = new TextBox();
@@ -39,25 +39,26 @@
             ((System.ComponentModel.ISupportInitialize)dataProd).BeginInit();
             SuspendLayout();
             // 
-            // button1
+            // btnBack
             // 
-            button1.Location = new Point(14, 24);
-            button1.Margin = new Padding(4);
-            button1.Name = "button1";
-            button1.Size = new Size(71, 45);
-            button1.TabIndex = 0;
-            button1.Text = "Back";
-            button1.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(13, 13);
+            btnBack.Margin = new Padding(4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(71, 45);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(105, 32);
+            label1.Location = new Point(55, 62);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(173, 20);
+            label1.Size = new Size(238, 20);
             label1.TabIndex = 1;
-            label1.Text = "Production Management";
+            label1.Text = "Production Management database";
             // 
             // dataProd
             // 
@@ -131,7 +132,7 @@
             Controls.Add(txtProdSearch);
             Controls.Add(dataProd);
             Controls.Add(label1);
-            Controls.Add(button1);
+            Controls.Add(btnBack);
             Margin = new Padding(4);
             Name = "Production";
             Text = "Production";
@@ -143,7 +144,7 @@
 
         #endregion
 
-        private Button button1;
+        private Button btnBack;
         private Label label1;
         private DataGridView dataProd;
         private TextBox txtProdSearch;

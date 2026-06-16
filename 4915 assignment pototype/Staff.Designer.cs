@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btnStaffback = new Button();
+            btnBack = new Button();
             label1 = new Label();
             btnStaffSearch = new Button();
             btnStaffUpdate = new Button();
@@ -39,25 +39,26 @@
             ((System.ComponentModel.ISupportInitialize)dataStaff).BeginInit();
             SuspendLayout();
             // 
-            // btnStaffback
+            // btnBack
             // 
-            btnStaffback.Location = new Point(14, 16);
-            btnStaffback.Margin = new Padding(4);
-            btnStaffback.Name = "btnStaffback";
-            btnStaffback.Size = new Size(60, 43);
-            btnStaffback.TabIndex = 0;
-            btnStaffback.Text = "back";
-            btnStaffback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(14, 16);
+            btnBack.Margin = new Padding(4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(78, 43);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(100, 30);
+            label1.Location = new Point(52, 77);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(40, 20);
+            label1.Size = new Size(105, 20);
             label1.TabIndex = 1;
-            label1.Text = "Staff";
+            label1.Text = "Staff database";
             // 
             // btnStaffSearch
             // 
@@ -131,7 +132,7 @@
             Controls.Add(btnStaffUpdate);
             Controls.Add(btnStaffSearch);
             Controls.Add(label1);
-            Controls.Add(btnStaffback);
+            Controls.Add(btnBack);
             Margin = new Padding(4);
             Name = "Staff";
             Text = "Staff";
@@ -143,7 +144,7 @@
 
         #endregion
 
-        private Button btnStaffback;
+        private Button btnBack;
         private Label label1;
         private Button btnStaffSearch;
         private Button btnStaffcd;

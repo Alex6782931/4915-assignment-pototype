@@ -718,6 +718,160 @@ namespace SDP_WebAPI.Controllers
             catch (Exception) { return 0; }
         }
 
+        //SUPPLIER TABLE
+
+        [HttpGet("GetSupplierRecordsData")]
+        public string GetSupplierRecordsData()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            GetCompanyData dboGetCompanyData = new GetCompanyData(connString);
+            DataTable dtResult = dboGetCompanyData.GetAllProcurementData(); // We will use your existing database worker instance
+
+            // Fallback query override to pull supplier list safely
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
+            DataTable dtSuppliers = db.GetData("SELECT * FROM suppliers");
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtSuppliers.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtSuppliers.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+        [HttpGet("FindSupplierRecordsData")]
+        public string FindSupplierRecordsData([FromQuery] string supplierName)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
+            DataTable dtResult = db.GetData($"SELECT * FROM suppliers WHERE supplierName LIKE '%{supplierName.Replace("'", "''")}%'");
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtResult.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtResult.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+        [HttpPost("UpdateSupplierRecordsData")]
+        public int UpdateSupplierRecordsData([FromBody] SDP_EntityModels.JsonDataTable json)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                int totalProcessedRows = 0;
+
+                if (!string.IsNullOrEmpty(json.dtModified) && json.dtModified != "[]")
+                {
+                    var modifiedRows = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, string>>>(json.dtModified, options);
+                    if (modifiedRows != null)
+                    {
+                        using (MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connString))
+                        {
+                            conn.Open();
+                            foreach (var row in modifiedRows)
+                            {
+                                string sqlUpdate = $@"UPDATE suppliers SET 
+                            supplierName = '{row["supplierName"]?.Replace("'", "''")}',
+                            contactName = '{row["contactName"]?.Replace("'", "''")}',
+                            phone = '{row["phone"]?.Replace("'", "''")}',
+                            address = '{row["address"]?.Replace("'", "''")}'
+                            WHERE supplierID = {row["supplierID"]};";
+
+                                using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sqlUpdate, conn))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                totalProcessedRows++;
+                            }
+                        }
+                    }
+                }
+                return totalProcessedRows;
+            }
+            catch (Exception) { return 0; }
+        }
+
+        //USER_SUPPLIER TABLE
+
+        [HttpGet("GetUserAccountRecordsData")]
+        public string GetUserAccountRecordsData()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
+            DataTable dtResult = db.GetData("SELECT username, passwordHash, staffID, accessLevel FROM user_accounts");
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtResult.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtResult.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+        [HttpGet("FindUserAccountRecordsData")]
+        public string FindUserAccountRecordsData([FromQuery] string username)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
+            DataTable dtResult = db.GetData($"SELECT username, passwordHash, staffID, accessLevel FROM user_accounts WHERE username LIKE '%{username.Replace("'", "''")}%'");
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtResult.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtResult.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+        [HttpPost("UpdateUserAccountRecordsData")]
+        public int UpdateUserAccountRecordsData([FromBody] SDP_EntityModels.JsonDataTable json)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                int totalProcessedRows = 0;
+
+                if (!string.IsNullOrEmpty(json.dtModified) && json.dtModified != "[]")
+                {
+                    var modifiedRows = System.Text.Json.JsonSerializer.Deserialize<List<Dictionary<string, string>>>(json.dtModified, options);
+                    if (modifiedRows != null)
+                    {
+                        using (MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connString))
+                        {
+                            conn.Open();
+                            foreach (var row in modifiedRows)
+                            {
+                                string sqlUpdate = $@"UPDATE user_accounts SET 
+                            passwordHash = '{row["passwordHash"]?.Replace("'", "''")}',
+                            accessLevel = '{row["accessLevel"]?.Replace("'", "''")}'
+                            WHERE username = '{row["username"]?.Replace("'", "''")}';";
+
+                                using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sqlUpdate, conn))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                totalProcessedRows++;
+                            }
+                        }
+                    }
+                }
+                return totalProcessedRows;
+            }
+            catch (Exception) { return 0; }
+        }
+
     }
 }
 

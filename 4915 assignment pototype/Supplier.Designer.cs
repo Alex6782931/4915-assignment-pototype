@@ -1,0 +1,146 @@
+﻿namespace _4915_assignment_pototype
+{
+    partial class Supplier
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            btnBack = new Button();
+            btnSupplierSearch = new Button();
+            btnSupplierClear = new Button();
+            btnSupplierUpdate = new Button();
+            dataSuppliers = new DataGridView();
+            label1 = new Label();
+            txtSupplierSearch = new TextBox();
+            label2 = new Label();
+            ((System.ComponentModel.ISupportInitialize)dataSuppliers).BeginInit();
+            SuspendLayout();
+            // 
+            // btnBack
+            // 
+            btnBack.Location = new Point(12, 12);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(94, 29);
+            btnBack.TabIndex = 0;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
+            // 
+            // btnSupplierSearch
+            // 
+            btnSupplierSearch.Location = new Point(617, 104);
+            btnSupplierSearch.Name = "btnSupplierSearch";
+            btnSupplierSearch.Size = new Size(94, 29);
+            btnSupplierSearch.TabIndex = 1;
+            btnSupplierSearch.Text = "Search";
+            btnSupplierSearch.UseVisualStyleBackColor = true;
+            btnSupplierSearch.Click += btnSupplierSearch_Click;
+            // 
+            // btnSupplierClear
+            // 
+            btnSupplierClear.Location = new Point(717, 102);
+            btnSupplierClear.Name = "btnSupplierClear";
+            btnSupplierClear.Size = new Size(94, 29);
+            btnSupplierClear.TabIndex = 2;
+            btnSupplierClear.Text = "Clear";
+            btnSupplierClear.UseVisualStyleBackColor = true;
+            btnSupplierClear.Click += btnSupplierClear_Click;
+            // 
+            // btnSupplierUpdate
+            // 
+            btnSupplierUpdate.Location = new Point(654, 431);
+            btnSupplierUpdate.Name = "btnSupplierUpdate";
+            btnSupplierUpdate.Size = new Size(94, 29);
+            btnSupplierUpdate.TabIndex = 3;
+            btnSupplierUpdate.Text = "Update";
+            btnSupplierUpdate.UseVisualStyleBackColor = true;
+            btnSupplierUpdate.Click += btnSupplierUpdate_Click;
+            // 
+            // dataSuppliers
+            // 
+            dataSuppliers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataSuppliers.Location = new Point(33, 144);
+            dataSuppliers.Name = "dataSuppliers";
+            dataSuppliers.RowHeadersWidth = 51;
+            dataSuppliers.Size = new Size(778, 270);
+            dataSuppliers.TabIndex = 4;
+            // 
+            // label1
+            // 
+            label1.Location = new Point(46, 107);
+            label1.Name = "label1";
+            label1.Size = new Size(185, 25);
+            label1.TabIndex = 5;
+            label1.Text = "Search by(supplier name):";
+            // 
+            // txtSupplierSearch
+            // 
+            txtSupplierSearch.Location = new Point(229, 104);
+            txtSupplierSearch.Name = "txtSupplierSearch";
+            txtSupplierSearch.Size = new Size(368, 27);
+            txtSupplierSearch.TabIndex = 6;
+            // 
+            // label2
+            // 
+            label2.Location = new Point(46, 54);
+            label2.Name = "label2";
+            label2.Size = new Size(147, 25);
+            label2.TabIndex = 7;
+            label2.Text = "Supplier database";
+            // 
+            // Supplier
+            // 
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(838, 494);
+            Controls.Add(label2);
+            Controls.Add(txtSupplierSearch);
+            Controls.Add(label1);
+            Controls.Add(dataSuppliers);
+            Controls.Add(btnSupplierUpdate);
+            Controls.Add(btnSupplierClear);
+            Controls.Add(btnSupplierSearch);
+            Controls.Add(btnBack);
+            Name = "Supplier";
+            Text = "Supplier";
+            Load += Supplier_Load;
+            ((System.ComponentModel.ISupportInitialize)dataSuppliers).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private Button btnBack;
+        private Button btnSupplierSearch;
+        private Button btnSupplierClear;
+        private Button btnSupplierUpdate;
+        private DataGridView dataSuppliers;
+        private Label label1;
+        private TextBox txtSupplierSearch;
+        private Label label2;
+    }
+}

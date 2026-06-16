@@ -13,97 +13,96 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class Procurement : Form
+    public partial class User_Account : Form
     {
-        public Procurement()
+        public User_Account()
         {
             InitializeComponent();
         }
 
-        private async void Procurement_Load(object sender, EventArgs e)
+        private async void User_Account_Load(object sender, EventArgs e)
         {
-            DataTable dt = await GetProcurementRecordsDataFromApiResponse();
-            dataProc.DataSource = dt;
+            DataTable dt = await GetUserAccountRecordsDataFromApiResponse();
+            dataAccounts.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
 
-        private async Task<DataTable> GetProcurementRecordsDataFromApiResponse()
+        private async Task<DataTable> GetUserAccountRecordsDataFromApiResponse()
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetProcurementRecordsData");
+                    string jsonString = await client.GetStringAsync("https://localhost:7146/api/SimpleGetAPI/GetUserAccountRecordsData");
                     return ParseJsonToDataTable(jsonString);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading procurements: {ex.Message}");
-                return CreateEmptyProcurementTable();
+                MessageBox.Show($"Error loading security logs: {ex.Message}");
+                return CreateEmptyAccountTable();
             }
         }
 
-        private async void btnProcSearch_Click(object sender, EventArgs e)
+        private async void btnAccountSearch_Click(object sender, EventArgs e)
         {
-            string searchMaterial = txtProcSearch.Text.Trim();
-            if (string.IsNullOrEmpty(searchMaterial))
+            string searchUser = txtAccountSearch.Text.Trim();
+            if (string.IsNullOrEmpty(searchUser))
             {
-                MessageBox.Show("Please enter a Raw Material ID (e.g., RM001) to search.");
+                MessageBox.Show("Please enter a username keyword to filter accounts.");
                 return;
             }
-            DataTable dt = await FindProcurementRecordsDataFromApiResponse(searchMaterial);
-            dataProc.DataSource = dt;
+            DataTable dt = await FindUserAccountRecordsDataFromApiResponse(searchUser);
+            dataAccounts.DataSource = dt;
         }
 
-        private async Task<DataTable> FindProcurementRecordsDataFromApiResponse(string rawMaterialID)
+        private async Task<DataTable> FindUserAccountRecordsDataFromApiResponse(string username)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindProcurementRecordsData?rawMaterialID={rawMaterialID}";
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/FindUserAccountRecordsData?username={username}";
                     HttpResponseMessage response = await client.GetAsync(url);
                     if (response.IsSuccessStatusCode)
                     {
                         string jsonString = await response.Content.ReadAsStringAsync();
                         return ParseJsonToDataTable(jsonString);
                     }
-                    return CreateEmptyProcurementTable();
+                    return CreateEmptyAccountTable();
                 }
             }
-            catch (Exception) { return CreateEmptyProcurementTable(); }
+            catch (Exception) { return CreateEmptyAccountTable(); }
         }
 
-        private async void btnProcClear_Click(object sender, EventArgs e)
+        private async void btnAccountClear_Click(object sender, EventArgs e)
         {
-            txtProcSearch.Clear();
-            DataTable dt = await GetProcurementRecordsDataFromApiResponse();
-            dataProc.DataSource = dt;
+            txtAccountSearch.Clear();
+            DataTable dt = await GetUserAccountRecordsDataFromApiResponse();
+            dataAccounts.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
         }
 
-        private async void btnProcUpdate_Click(object sender, EventArgs e)
+        private async void btnAccountUpdate_Click(object sender, EventArgs e)
         {
-            dataProc.EndEdit();
-            if (dataProc.DataSource != null) this.BindingContext[dataProc.DataSource].EndCurrentEdit();
+            dataAccounts.EndEdit();
+            if (dataAccounts.DataSource != null) this.BindingContext[dataAccounts.DataSource].EndCurrentEdit();
 
-            DataTable mainTable = (DataTable)dataProc.DataSource;
+            DataTable mainTable = (DataTable)dataAccounts.DataSource;
             if (mainTable == null || mainTable.Rows.Count == 0) return;
 
             DataTable dtChanges = mainTable.GetChanges(DataRowState.Modified);
-            if (dtChanges == null) dtChanges = mainTable.Copy(); // Fallback for search mode
+            if (dtChanges == null) dtChanges = mainTable.Copy(); // Integrated Search Fallback Fix
 
-            int rowsUpdated = await UpdateProcurementRecordsToAPI(dtChanges);
+            int rowsUpdated = await UpdateUserAccountRecordsToAPI(dtChanges);
             if (rowsUpdated > 0)
             {
                 mainTable.AcceptChanges();
-                MessageBox.Show($"{rowsUpdated} procurement rows updated successfully.");
+                MessageBox.Show($"{rowsUpdated} security profiles updated successfully.");
             }
         }
 
-
-        private async Task<int> UpdateProcurementRecordsToAPI(DataTable dtUpdated)
+        private async Task<int> UpdateUserAccountRecordsToAPI(DataTable dtUpdated)
         {
             try
             {
@@ -129,7 +128,7 @@ namespace _4915_assignment_pototype
                     string jsonString = JsonSerializer.Serialize(jsonDT);
                     StringContent content = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateProcurementRecordsData", content);
+                    HttpResponseMessage response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/UpdateUserAccountRecordsData", content);
                     if (response.IsSuccessStatusCode) return int.Parse(await response.Content.ReadAsStringAsync());
                     return 0;
                 }
@@ -139,7 +138,7 @@ namespace _4915_assignment_pototype
 
         private DataTable ParseJsonToDataTable(string jsonString)
         {
-            DataTable dataTable = CreateEmptyProcurementTable();
+            DataTable dataTable = CreateEmptyAccountTable();
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {
                 if (doc.RootElement.ValueKind == JsonValueKind.Array)
@@ -158,16 +157,13 @@ namespace _4915_assignment_pototype
             return dataTable;
         }
 
-        private DataTable CreateEmptyProcurementTable()
+        private DataTable CreateEmptyAccountTable()
         {
             DataTable dataTable = new DataTable();
-            dataTable.Columns.Add("procurementID", typeof(string));
-            dataTable.Columns.Add("orderDate", typeof(string));
-            dataTable.Columns.Add("supplierID", typeof(string));
-            dataTable.Columns.Add("rawMaterialID", typeof(string));
-            dataTable.Columns.Add("quantityOrdered", typeof(string));
-            dataTable.Columns.Add("expectedDelivery", typeof(string));
-            dataTable.Columns.Add("status", typeof(string));
+            dataTable.Columns.Add("username", typeof(string));
+            dataTable.Columns.Add("passwordHash", typeof(string));
+            dataTable.Columns.Add("staffID", typeof(string));
+            dataTable.Columns.Add("accessLevel", typeof(string));
             return dataTable;
         }
 

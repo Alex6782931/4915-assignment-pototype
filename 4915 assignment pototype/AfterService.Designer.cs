@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             label1 = new Label();
-            btnASback = new Button();
+            btnBack = new Button();
             label2 = new Label();
             txtbASsearch = new TextBox();
             btnASsearch = new Button();
@@ -42,21 +42,22 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(93, 28);
+            label1.Location = new Point(55, 60);
             label1.Name = "label1";
-            label1.Size = new Size(121, 20);
+            label1.Size = new Size(186, 20);
             label1.TabIndex = 0;
-            label1.Text = "After sale service";
+            label1.Text = "After sale service database";
             // 
-            // btnASback
+            // btnBack
             // 
-            btnASback.Location = new Point(15, 19);
-            btnASback.Margin = new Padding(3, 4, 3, 4);
-            btnASback.Name = "btnASback";
-            btnASback.Size = new Size(57, 37);
-            btnASback.TabIndex = 1;
-            btnASback.Text = "back";
-            btnASback.UseVisualStyleBackColor = true;
+            btnBack.Location = new Point(15, 19);
+            btnBack.Margin = new Padding(3, 4, 3, 4);
+            btnBack.Name = "btnBack";
+            btnBack.Size = new Size(57, 37);
+            btnBack.TabIndex = 1;
+            btnBack.Text = "Back";
+            btnBack.UseVisualStyleBackColor = true;
+            btnBack.Click += btnBack_Click;
             // 
             // label2
             // 
@@ -127,7 +128,7 @@
             Controls.Add(btnASsearch);
             Controls.Add(txtbASsearch);
             Controls.Add(label2);
-            Controls.Add(btnASback);
+            Controls.Add(btnBack);
             Controls.Add(label1);
             Margin = new Padding(3, 4, 3, 4);
             Name = "AfterService";
@@ -141,7 +142,7 @@
         #endregion
 
         private Label label1;
-        private Button btnASback;
+        private Button btnBack;
         private Label label2;
         private TextBox txtbASsearch;
         private Button btnASsearch;

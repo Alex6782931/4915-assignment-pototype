@@ -46,6 +46,7 @@
             btnCOback.TabIndex = 0;
             btnCOback.Text = "back";
             btnCOback.UseVisualStyleBackColor = true;
+            btnCOback.Click += btnCOback_Click;
             // 
             // label1
             // 

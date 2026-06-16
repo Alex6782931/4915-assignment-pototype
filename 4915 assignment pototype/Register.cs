@@ -10,11 +10,19 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class CustomerMian : Form
+    public partial class Register : Form
     {
-        public CustomerMian()
+        public Register()
         {
             InitializeComponent();
+        }
+
+        private void btnRback_Click(object sender, EventArgs e)
+        {
+                this.Hide();
+                Login loginForm = new Login();
+                loginForm.Show();
+            
         }
     }
 }

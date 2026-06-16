@@ -1,6 +1,6 @@
 ﻿namespace _4915_assignment_pototype
 {
-    partial class CustomerMian
+    partial class CustomerMain
     {
         /// <summary>
         /// Required designer variable.
@@ -35,6 +35,8 @@
             btnaddress = new Button();
             btnlogout = new Button();
             btnpayment = new Button();
+            label1 = new Label();
+            label2 = new Label();
             SuspendLayout();
             // 
             // lblwelcome
@@ -48,7 +50,7 @@
             // 
             // btnmakeorder
             // 
-            btnmakeorder.Location = new Point(91, 120);
+            btnmakeorder.Location = new Point(94, 176);
             btnmakeorder.Name = "btnmakeorder";
             btnmakeorder.Size = new Size(169, 31);
             btnmakeorder.TabIndex = 1;
@@ -57,7 +59,7 @@
             // 
             // btnviewhistory
             // 
-            btnviewhistory.Location = new Point(90, 186);
+            btnviewhistory.Location = new Point(94, 224);
             btnviewhistory.Name = "btnviewhistory";
             btnviewhistory.Size = new Size(190, 29);
             btnviewhistory.TabIndex = 2;
@@ -66,7 +68,7 @@
             // 
             // btncancelorder
             // 
-            btncancelorder.Location = new Point(96, 253);
+            btncancelorder.Location = new Point(94, 273);
             btncancelorder.Name = "btncancelorder";
             btncancelorder.Size = new Size(157, 35);
             btncancelorder.TabIndex = 3;
@@ -75,7 +77,7 @@
             // 
             // btnaddress
             // 
-            btnaddress.Location = new Point(94, 314);
+            btnaddress.Location = new Point(446, 176);
             btnaddress.Name = "btnaddress";
             btnaddress.Size = new Size(220, 29);
             btnaddress.TabIndex = 4;
@@ -93,18 +95,38 @@
             // 
             // btnpayment
             // 
-            btnpayment.Location = new Point(101, 375);
+            btnpayment.Location = new Point(446, 224);
             btnpayment.Name = "btnpayment";
             btnpayment.Size = new Size(295, 35);
             btnpayment.TabIndex = 6;
             btnpayment.Text = "modify payment information";
             btnpayment.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(94, 123);
+            label1.Name = "label1";
+            label1.Size = new Size(128, 23);
+            label1.TabIndex = 7;
+            label1.Text = "product order";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(445, 123);
+            label2.Name = "label2";
+            label2.Size = new Size(189, 23);
+            label2.TabIndex = 8;
+            label2.Text = "personal information";
+            // 
             // CustomerMian
             // 
             AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label2);
+            Controls.Add(label1);
             Controls.Add(btnpayment);
             Controls.Add(btnlogout);
             Controls.Add(btnaddress);
@@ -127,5 +149,7 @@
         private Button btnaddress;
         private Button btnlogout;
         private Button btnpayment;
+        private Label label1;
+        private Label label2;
     }
 }

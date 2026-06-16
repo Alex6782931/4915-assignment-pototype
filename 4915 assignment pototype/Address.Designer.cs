@@ -51,6 +51,7 @@
             btnAback.TabIndex = 0;
             btnAback.Text = "back";
             btnAback.UseVisualStyleBackColor = true;
+            btnAback.Click += btnAback_Click;
             // 
             // label1
             // 

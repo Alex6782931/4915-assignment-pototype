@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace _4915_assignment_pototype
 {
     public partial class MakeOrder : Form
@@ -15,6 +16,13 @@ namespace _4915_assignment_pototype
         public MakeOrder()
         {
             InitializeComponent();
+        }
+
+        private void btnMOback_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            CustomerMain mainForm = new CustomerMain();
+            mainForm.Show();
         }
     }
 }

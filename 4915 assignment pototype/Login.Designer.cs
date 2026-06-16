@@ -34,6 +34,7 @@
             txtPassword = new TextBox();
             btnLogin = new Button();
             btnregister = new Button();
+            label1 = new Label();
             SuspendLayout();
             // 
             // lbluserName
@@ -59,7 +60,7 @@
             // txtUsername
             // 
             txtUsername.Location = new Point(526, 153);
-            txtUsername.Margin = new Padding(5, 5, 5, 5);
+            txtUsername.Margin = new Padding(5);
             txtUsername.Name = "txtUsername";
             txtUsername.Size = new Size(193, 30);
             txtUsername.TabIndex = 3;
@@ -68,7 +69,7 @@
             // txtPassword
             // 
             txtPassword.Location = new Point(526, 251);
-            txtPassword.Margin = new Padding(5, 5, 5, 5);
+            txtPassword.Margin = new Padding(5);
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(193, 30);
             txtPassword.TabIndex = 4;
@@ -76,12 +77,13 @@
             // btnLogin
             // 
             btnLogin.Location = new Point(432, 340);
-            btnLogin.Margin = new Padding(5, 5, 5, 5);
+            btnLogin.Margin = new Padding(5);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(118, 35);
             btnLogin.TabIndex = 5;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Click += btnLogin_Click;
             // 
             // btnregister
             // 
@@ -91,19 +93,30 @@
             btnregister.TabIndex = 6;
             btnregister.Text = "Register";
             btnregister.UseVisualStyleBackColor = true;
+            btnregister.Click += btnregister_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(387, 80);
+            label1.Name = "label1";
+            label1.Size = new Size(62, 23);
+            label1.TabIndex = 7;
+            label1.Text = "Login ";
             // 
             // Login
             // 
             AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1257, 690);
+            Controls.Add(label1);
             Controls.Add(btnregister);
             Controls.Add(btnLogin);
             Controls.Add(txtPassword);
             Controls.Add(txtUsername);
             Controls.Add(lblpassword);
             Controls.Add(lbluserName);
-            Margin = new Padding(5, 5, 5, 5);
+            Margin = new Padding(5);
             Name = "Login";
             Text = "Form1";
             ResumeLayout(false);
@@ -117,5 +130,6 @@
         private TextBox txtPassword;
         private Button btnLogin;
         private Button btnregister;
+        private Label label1;
     }
 }

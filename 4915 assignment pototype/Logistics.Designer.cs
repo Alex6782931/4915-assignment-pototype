@@ -31,7 +31,7 @@
             btnLback = new Button();
             dataLogistics = new DataGridView();
             label1 = new Label();
-            btnLcreate = new Button();
+            btnLupdate = new Button();
             label2 = new Label();
             txtbLsearch = new TextBox();
             btnLsearch = new Button();
@@ -40,9 +40,10 @@
             // 
             // btnLback
             // 
-            btnLback.Location = new Point(18, 12);
+            btnLback.Location = new Point(28, 18);
+            btnLback.Margin = new Padding(5, 5, 5, 5);
             btnLback.Name = "btnLback";
-            btnLback.Size = new Size(50, 38);
+            btnLback.Size = new Size(79, 58);
             btnLback.TabIndex = 0;
             btnLback.Text = "back";
             btnLback.UseVisualStyleBackColor = true;
@@ -50,66 +51,74 @@
             // dataLogistics
             // 
             dataLogistics.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataLogistics.Location = new Point(53, 90);
+            dataLogistics.Location = new Point(83, 138);
+            dataLogistics.Margin = new Padding(5, 5, 5, 5);
             dataLogistics.Name = "dataLogistics";
-            dataLogistics.Size = new Size(686, 213);
+            dataLogistics.RowHeadersWidth = 62;
+            dataLogistics.Size = new Size(1078, 327);
             dataLogistics.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(88, 21);
+            label1.Location = new Point(138, 32);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(53, 15);
+            label1.Size = new Size(83, 23);
             label1.TabIndex = 2;
             label1.Text = "Logistics";
             // 
-            // btnLcreate
+            // btnLupdate
             // 
-            btnLcreate.Location = new Point(639, 327);
-            btnLcreate.Name = "btnLcreate";
-            btnLcreate.Size = new Size(75, 23);
-            btnLcreate.TabIndex = 3;
-            btnLcreate.Text = "create";
-            btnLcreate.UseVisualStyleBackColor = true;
+            btnLupdate.Location = new Point(1004, 501);
+            btnLupdate.Margin = new Padding(5, 5, 5, 5);
+            btnLupdate.Name = "btnLupdate";
+            btnLupdate.Size = new Size(118, 35);
+            btnLupdate.TabIndex = 3;
+            btnLupdate.Text = "Update";
+            btnLupdate.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(100, 64);
+            label2.Location = new Point(157, 98);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(60, 15);
+            label2.Size = new Size(96, 23);
             label2.TabIndex = 5;
             label2.Text = "Search for";
             // 
             // txtbLsearch
             // 
-            txtbLsearch.Location = new Point(166, 61);
+            txtbLsearch.Location = new Point(261, 94);
+            txtbLsearch.Margin = new Padding(5, 5, 5, 5);
             txtbLsearch.Name = "txtbLsearch";
-            txtbLsearch.Size = new Size(260, 23);
+            txtbLsearch.Size = new Size(406, 30);
             txtbLsearch.TabIndex = 6;
             // 
             // btnLsearch
             // 
-            btnLsearch.Location = new Point(435, 60);
+            btnLsearch.Location = new Point(684, 92);
+            btnLsearch.Margin = new Padding(5, 5, 5, 5);
             btnLsearch.Name = "btnLsearch";
-            btnLsearch.Size = new Size(75, 23);
+            btnLsearch.Size = new Size(118, 35);
             btnLsearch.TabIndex = 7;
             btnLsearch.Text = "Search";
             btnLsearch.UseVisualStyleBackColor = true;
             // 
             // Logistics
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1257, 690);
             Controls.Add(btnLsearch);
             Controls.Add(txtbLsearch);
             Controls.Add(label2);
-            Controls.Add(btnLcreate);
+            Controls.Add(btnLupdate);
             Controls.Add(label1);
             Controls.Add(dataLogistics);
             Controls.Add(btnLback);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "Logistics";
             Text = "Logistics";
             ((System.ComponentModel.ISupportInitialize)dataLogistics).EndInit();
@@ -122,7 +131,7 @@
         private Button btnLback;
         private DataGridView dataLogistics;
         private Label label1;
-        private Button btnLcreate;
+        private Button btnLupdate;
         private Label label2;
         private TextBox txtbLsearch;
         private Button btnLsearch;

@@ -34,15 +34,16 @@
             txtbMDMsearch = new TextBox();
             label2 = new Label();
             btnMDMsearch = new Button();
-            btnMDMcreate = new Button();
+            btnMDMupdate = new Button();
             ((System.ComponentModel.ISupportInitialize)dataMDM).BeginInit();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(12, 18);
+            button1.Location = new Point(19, 28);
+            button1.Margin = new Padding(5, 5, 5, 5);
             button1.Name = "button1";
-            button1.Size = new Size(52, 34);
+            button1.Size = new Size(82, 52);
             button1.TabIndex = 0;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
@@ -50,66 +51,74 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(92, 24);
+            label1.Location = new Point(145, 37);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(31, 15);
+            label1.Size = new Size(51, 23);
             label1.TabIndex = 1;
             label1.Text = "Data";
             // 
             // dataMDM
             // 
             dataMDM.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataMDM.Location = new Point(48, 110);
+            dataMDM.Location = new Point(75, 169);
+            dataMDM.Margin = new Padding(5, 5, 5, 5);
             dataMDM.Name = "dataMDM";
-            dataMDM.Size = new Size(712, 239);
+            dataMDM.RowHeadersWidth = 62;
+            dataMDM.Size = new Size(1119, 366);
             dataMDM.TabIndex = 2;
             // 
             // txtbMDMsearch
             // 
-            txtbMDMsearch.Location = new Point(174, 75);
+            txtbMDMsearch.Location = new Point(273, 115);
+            txtbMDMsearch.Margin = new Padding(5, 5, 5, 5);
             txtbMDMsearch.Name = "txtbMDMsearch";
-            txtbMDMsearch.Size = new Size(257, 23);
+            txtbMDMsearch.Size = new Size(402, 30);
             txtbMDMsearch.TabIndex = 3;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(96, 78);
+            label2.Location = new Point(151, 120);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(63, 15);
+            label2.Size = new Size(100, 23);
             label2.TabIndex = 4;
             label2.Text = "Search for:";
             // 
             // btnMDMsearch
             // 
-            btnMDMsearch.Location = new Point(459, 73);
+            btnMDMsearch.Location = new Point(721, 112);
+            btnMDMsearch.Margin = new Padding(5, 5, 5, 5);
             btnMDMsearch.Name = "btnMDMsearch";
-            btnMDMsearch.Size = new Size(67, 23);
+            btnMDMsearch.Size = new Size(105, 35);
             btnMDMsearch.TabIndex = 5;
             btnMDMsearch.Text = "Search";
             btnMDMsearch.UseVisualStyleBackColor = true;
             // 
-            // btnMDMcreate
+            // btnMDMupdate
             // 
-            btnMDMcreate.Location = new Point(685, 367);
-            btnMDMcreate.Name = "btnMDMcreate";
-            btnMDMcreate.Size = new Size(75, 23);
-            btnMDMcreate.TabIndex = 6;
-            btnMDMcreate.Text = "Create";
-            btnMDMcreate.UseVisualStyleBackColor = true;
+            btnMDMupdate.Location = new Point(1076, 563);
+            btnMDMupdate.Margin = new Padding(5, 5, 5, 5);
+            btnMDMupdate.Name = "btnMDMupdate";
+            btnMDMupdate.Size = new Size(118, 35);
+            btnMDMupdate.TabIndex = 6;
+            btnMDMupdate.Text = "Update";
+            btnMDMupdate.UseVisualStyleBackColor = true;
             // 
             // MasterDataMaintance
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnMDMcreate);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btnMDMupdate);
             Controls.Add(btnMDMsearch);
             Controls.Add(label2);
             Controls.Add(txtbMDMsearch);
             Controls.Add(dataMDM);
             Controls.Add(label1);
             Controls.Add(button1);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "MasterDataMaintance";
             Text = "MasterDataMaintance";
             ((System.ComponentModel.ISupportInitialize)dataMDM).EndInit();
@@ -125,6 +134,6 @@
         private TextBox txtbMDMsearch;
         private Label label2;
         private Button btnMDMsearch;
-        private Button btnMDMcreate;
+        private Button btnMDMupdate;
     }
 }

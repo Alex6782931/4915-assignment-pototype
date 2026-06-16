@@ -35,16 +35,15 @@
             txtbCustsearch = new TextBox();
             btnCustupdate = new Button();
             dataCust = new DataGridView();
-            btnCustadjust = new Button();
             ((System.ComponentModel.ISupportInitialize)dataCust).BeginInit();
             SuspendLayout();
             // 
             // btnCustback
             // 
-            btnCustback.Location = new Point(13, 16);
-            btnCustback.Margin = new Padding(3, 4, 3, 4);
+            btnCustback.Location = new Point(18, 18);
+            btnCustback.Margin = new Padding(4, 5, 4, 5);
             btnCustback.Name = "btnCustback";
-            btnCustback.Size = new Size(48, 37);
+            btnCustback.Size = new Size(66, 43);
             btnCustback.TabIndex = 0;
             btnCustback.Text = "back";
             btnCustback.UseVisualStyleBackColor = true;
@@ -52,18 +51,19 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(101, 29);
+            label1.Location = new Point(139, 33);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(72, 20);
+            label1.Size = new Size(93, 23);
             label1.TabIndex = 1;
             label1.Text = "Customer";
             // 
             // btnCustsearch
             // 
-            btnCustsearch.Location = new Point(448, 131);
-            btnCustsearch.Margin = new Padding(3, 4, 3, 4);
+            btnCustsearch.Location = new Point(616, 151);
+            btnCustsearch.Margin = new Padding(4, 5, 4, 5);
             btnCustsearch.Name = "btnCustsearch";
-            btnCustsearch.Size = new Size(86, 31);
+            btnCustsearch.Size = new Size(118, 36);
             btnCustsearch.TabIndex = 2;
             btnCustsearch.Text = "Search";
             btnCustsearch.UseVisualStyleBackColor = true;
@@ -72,26 +72,27 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(111, 132);
+            label2.Location = new Point(153, 152);
+            label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(79, 20);
+            label2.Size = new Size(100, 23);
             label2.TabIndex = 3;
             label2.Text = "Search for:";
             // 
             // txtbCustsearch
             // 
-            txtbCustsearch.Location = new Point(190, 132);
-            txtbCustsearch.Margin = new Padding(3, 4, 3, 4);
+            txtbCustsearch.Location = new Point(261, 152);
+            txtbCustsearch.Margin = new Padding(4, 5, 4, 5);
             txtbCustsearch.Name = "txtbCustsearch";
-            txtbCustsearch.Size = new Size(251, 27);
+            txtbCustsearch.Size = new Size(344, 30);
             txtbCustsearch.TabIndex = 4;
             // 
             // btnCustupdate
             // 
-            btnCustupdate.Location = new Point(735, 487);
-            btnCustupdate.Margin = new Padding(3, 4, 3, 4);
+            btnCustupdate.Location = new Point(1011, 560);
+            btnCustupdate.Margin = new Padding(4, 5, 4, 5);
             btnCustupdate.Name = "btnCustupdate";
-            btnCustupdate.Size = new Size(141, 31);
+            btnCustupdate.Size = new Size(194, 36);
             btnCustupdate.TabIndex = 5;
             btnCustupdate.Text = "Update";
             btnCustupdate.UseVisualStyleBackColor = true;
@@ -100,29 +101,18 @@
             // dataCust
             // 
             dataCust.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataCust.Location = new Point(41, 193);
-            dataCust.Margin = new Padding(3, 4, 3, 4);
+            dataCust.Location = new Point(56, 222);
+            dataCust.Margin = new Padding(4, 5, 4, 5);
             dataCust.Name = "dataCust";
             dataCust.RowHeadersWidth = 51;
-            dataCust.Size = new Size(834, 265);
+            dataCust.Size = new Size(1147, 305);
             dataCust.TabIndex = 6;
-            // 
-            // btnCustadjust
-            // 
-            btnCustadjust.Location = new Point(610, 487);
-            btnCustadjust.Margin = new Padding(3, 4, 3, 4);
-            btnCustadjust.Name = "btnCustadjust";
-            btnCustadjust.Size = new Size(86, 31);
-            btnCustadjust.TabIndex = 7;
-            btnCustadjust.Text = "adjust";
-            btnCustadjust.UseVisualStyleBackColor = true;
             // 
             // Customer
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(914, 600);
-            Controls.Add(btnCustadjust);
+            ClientSize = new Size(1257, 690);
             Controls.Add(dataCust);
             Controls.Add(btnCustupdate);
             Controls.Add(txtbCustsearch);
@@ -130,7 +120,7 @@
             Controls.Add(btnCustsearch);
             Controls.Add(label1);
             Controls.Add(btnCustback);
-            Margin = new Padding(3, 4, 3, 4);
+            Margin = new Padding(4, 5, 4, 5);
             Name = "Customer";
             Text = "Customer";
             Load += Customer_Load;
@@ -148,6 +138,5 @@
         private TextBox txtbCustsearch;
         private Button btnCustupdate;
         private DataGridView dataCust;
-        private Button btnCustadjust;
     }
 }

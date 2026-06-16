@@ -34,14 +34,16 @@
             btnLsearch = new Button();
             label2 = new Label();
             txtbIsearch = new TextBox();
+            btnIupdate = new Button();
             ((System.ComponentModel.ISupportInitialize)datainventory).BeginInit();
             SuspendLayout();
             // 
             // btnIback
             // 
-            btnIback.Location = new Point(9, 13);
+            btnIback.Location = new Point(14, 20);
+            btnIback.Margin = new Padding(5, 5, 5, 5);
             btnIback.Name = "btnIback";
-            btnIback.Size = new Size(48, 30);
+            btnIback.Size = new Size(75, 46);
             btnIback.TabIndex = 0;
             btnIback.Text = "back";
             btnIback.UseVisualStyleBackColor = true;
@@ -49,25 +51,29 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(69, 19);
+            label1.Location = new Point(108, 29);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(57, 15);
+            label1.Size = new Size(90, 23);
             label1.TabIndex = 1;
             label1.Text = "Inventory";
             // 
             // datainventory
             // 
             datainventory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            datainventory.Location = new Point(42, 100);
+            datainventory.Location = new Point(66, 153);
+            datainventory.Margin = new Padding(5, 5, 5, 5);
             datainventory.Name = "datainventory";
-            datainventory.Size = new Size(702, 212);
+            datainventory.RowHeadersWidth = 62;
+            datainventory.Size = new Size(1103, 325);
             datainventory.TabIndex = 2;
             // 
             // btnLsearch
             // 
-            btnLsearch.Location = new Point(374, 56);
+            btnLsearch.Location = new Point(588, 86);
+            btnLsearch.Margin = new Padding(5, 5, 5, 5);
             btnLsearch.Name = "btnLsearch";
-            btnLsearch.Size = new Size(75, 23);
+            btnLsearch.Size = new Size(118, 35);
             btnLsearch.TabIndex = 3;
             btnLsearch.Text = "button1";
             btnLsearch.UseVisualStyleBackColor = true;
@@ -75,30 +81,43 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(69, 63);
+            label2.Location = new Point(108, 97);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(63, 15);
+            label2.Size = new Size(100, 23);
             label2.TabIndex = 4;
             label2.Text = "Search for:";
             // 
             // txtbIsearch
             // 
-            txtbIsearch.Location = new Point(132, 60);
+            txtbIsearch.Location = new Point(207, 92);
+            txtbIsearch.Margin = new Padding(5, 5, 5, 5);
             txtbIsearch.Name = "txtbIsearch";
-            txtbIsearch.Size = new Size(220, 23);
+            txtbIsearch.Size = new Size(343, 30);
             txtbIsearch.TabIndex = 5;
+            // 
+            // btnIupdate
+            // 
+            btnIupdate.Location = new Point(1000, 526);
+            btnIupdate.Name = "btnIupdate";
+            btnIupdate.Size = new Size(160, 32);
+            btnIupdate.TabIndex = 6;
+            btnIupdate.Text = "Update";
+            btnIupdate.UseVisualStyleBackColor = true;
             // 
             // Inventory
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btnIupdate);
             Controls.Add(txtbIsearch);
             Controls.Add(label2);
             Controls.Add(btnLsearch);
             Controls.Add(datainventory);
             Controls.Add(label1);
             Controls.Add(btnIback);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "Inventory";
             Text = "Inventory";
             ((System.ComponentModel.ISupportInitialize)datainventory).EndInit();
@@ -114,5 +133,6 @@
         private Button btnLsearch;
         private Label label2;
         private TextBox txtbIsearch;
+        private Button btnIupdate;
     }
 }

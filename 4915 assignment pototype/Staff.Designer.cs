@@ -31,8 +31,7 @@
             btnStaffback = new Button();
             label1 = new Label();
             btnStaffsearch = new Button();
-            btnStaffcd = new Button();
-            btnSaffadjust = new Button();
+            btnSaffupdate = new Button();
             label2 = new Label();
             txtbStaffsearch = new TextBox();
             dataStaff = new DataGridView();
@@ -41,9 +40,10 @@
             // 
             // btnStaffback
             // 
-            btnStaffback.Location = new Point(12, 12);
+            btnStaffback.Location = new Point(19, 18);
+            btnStaffback.Margin = new Padding(5, 5, 5, 5);
             btnStaffback.Name = "btnStaffback";
-            btnStaffback.Size = new Size(52, 32);
+            btnStaffback.Size = new Size(82, 49);
             btnStaffback.TabIndex = 0;
             btnStaffback.Text = "back";
             btnStaffback.UseVisualStyleBackColor = true;
@@ -51,76 +51,74 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(88, 22);
+            label1.Location = new Point(138, 34);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(31, 15);
+            label1.Size = new Size(49, 23);
             label1.TabIndex = 1;
             label1.Text = "Staff";
             // 
             // btnStaffsearch
             // 
-            btnStaffsearch.Location = new Point(406, 101);
+            btnStaffsearch.Location = new Point(638, 155);
+            btnStaffsearch.Margin = new Padding(5, 5, 5, 5);
             btnStaffsearch.Name = "btnStaffsearch";
-            btnStaffsearch.Size = new Size(75, 23);
+            btnStaffsearch.Size = new Size(118, 35);
             btnStaffsearch.TabIndex = 2;
             btnStaffsearch.Text = "Search";
             btnStaffsearch.UseVisualStyleBackColor = true;
             // 
-            // btnStaffcd
+            // btnSaffupdate
             // 
-            btnStaffcd.Location = new Point(593, 341);
-            btnStaffcd.Name = "btnStaffcd";
-            btnStaffcd.Size = new Size(126, 23);
-            btnStaffcd.TabIndex = 3;
-            btnStaffcd.Text = "create and delete";
-            btnStaffcd.UseVisualStyleBackColor = true;
-            // 
-            // btnSaffadjust
-            // 
-            btnSaffadjust.Location = new Point(496, 341);
-            btnSaffadjust.Name = "btnSaffadjust";
-            btnSaffadjust.Size = new Size(75, 23);
-            btnSaffadjust.TabIndex = 4;
-            btnSaffadjust.Text = "adjust";
-            btnSaffadjust.UseVisualStyleBackColor = true;
+            btnSaffupdate.Location = new Point(1070, 541);
+            btnSaffupdate.Margin = new Padding(5, 5, 5, 5);
+            btnSaffupdate.Name = "btnSaffupdate";
+            btnSaffupdate.Size = new Size(118, 35);
+            btnSaffupdate.TabIndex = 4;
+            btnSaffupdate.Text = "Update";
+            btnSaffupdate.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(91, 105);
+            label2.Location = new Point(143, 161);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(63, 15);
+            label2.Size = new Size(100, 23);
             label2.TabIndex = 5;
             label2.Text = "Search for:";
             // 
             // txtbStaffsearch
             // 
-            txtbStaffsearch.Location = new Point(173, 102);
+            txtbStaffsearch.Location = new Point(272, 156);
+            txtbStaffsearch.Margin = new Padding(5, 5, 5, 5);
             txtbStaffsearch.Name = "txtbStaffsearch";
-            txtbStaffsearch.Size = new Size(188, 23);
+            txtbStaffsearch.Size = new Size(293, 30);
             txtbStaffsearch.TabIndex = 6;
             // 
             // dataStaff
             // 
             dataStaff.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataStaff.Location = new Point(35, 142);
+            dataStaff.Location = new Point(55, 218);
+            dataStaff.Margin = new Padding(5, 5, 5, 5);
             dataStaff.Name = "dataStaff";
-            dataStaff.Size = new Size(721, 186);
+            dataStaff.RowHeadersWidth = 62;
+            dataStaff.Size = new Size(1133, 285);
             dataStaff.TabIndex = 7;
             // 
             // Staff
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1257, 690);
             Controls.Add(dataStaff);
             Controls.Add(txtbStaffsearch);
             Controls.Add(label2);
-            Controls.Add(btnSaffadjust);
-            Controls.Add(btnStaffcd);
+            Controls.Add(btnSaffupdate);
             Controls.Add(btnStaffsearch);
             Controls.Add(label1);
             Controls.Add(btnStaffback);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "Staff";
             Text = "Staff";
             ((System.ComponentModel.ISupportInitialize)dataStaff).EndInit();
@@ -134,7 +132,7 @@
         private Label label1;
         private Button btnStaffsearch;
         private Button btnStaffcd;
-        private Button btnSaffadjust;
+        private Button btnSaffupdate;
         private Label label2;
         private TextBox txtbStaffsearch;
         private DataGridView dataStaff;

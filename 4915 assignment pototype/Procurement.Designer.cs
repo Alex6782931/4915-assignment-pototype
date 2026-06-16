@@ -34,15 +34,16 @@
             label2 = new Label();
             txtbPsearch = new TextBox();
             btnPsearch = new Button();
-            btnPce = new Button();
+            btnPupdate = new Button();
             ((System.ComponentModel.ISupportInitialize)dataProcurement).BeginInit();
             SuspendLayout();
             // 
             // btnPback
             // 
-            btnPback.Location = new Point(9, 7);
+            btnPback.Location = new Point(14, 11);
+            btnPback.Margin = new Padding(5, 5, 5, 5);
             btnPback.Name = "btnPback";
-            btnPback.Size = new Size(54, 33);
+            btnPback.Size = new Size(85, 51);
             btnPback.TabIndex = 0;
             btnPback.Text = "back";
             btnPback.UseVisualStyleBackColor = true;
@@ -50,66 +51,74 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(80, 15);
+            label1.Location = new Point(126, 23);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(76, 15);
+            label1.Size = new Size(121, 23);
             label1.TabIndex = 1;
             label1.Text = "Procurement";
             // 
             // dataProcurement
             // 
             dataProcurement.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataProcurement.Location = new Point(72, 135);
+            dataProcurement.Location = new Point(113, 207);
+            dataProcurement.Margin = new Padding(5, 5, 5, 5);
             dataProcurement.Name = "dataProcurement";
-            dataProcurement.Size = new Size(664, 192);
+            dataProcurement.RowHeadersWidth = 62;
+            dataProcurement.Size = new Size(1043, 294);
             dataProcurement.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(80, 101);
+            label2.Location = new Point(126, 155);
+            label2.Margin = new Padding(5, 0, 5, 0);
             label2.Name = "label2";
-            label2.Size = new Size(63, 15);
+            label2.Size = new Size(100, 23);
             label2.TabIndex = 3;
             label2.Text = "Search for:";
             // 
             // txtbPsearch
             // 
-            txtbPsearch.Location = new Point(149, 98);
+            txtbPsearch.Location = new Point(234, 150);
+            txtbPsearch.Margin = new Padding(5, 5, 5, 5);
             txtbPsearch.Name = "txtbPsearch";
-            txtbPsearch.Size = new Size(292, 23);
+            txtbPsearch.Size = new Size(457, 30);
             txtbPsearch.TabIndex = 4;
             // 
             // btnPsearch
             // 
-            btnPsearch.Location = new Point(450, 97);
+            btnPsearch.Location = new Point(707, 149);
+            btnPsearch.Margin = new Padding(5, 5, 5, 5);
             btnPsearch.Name = "btnPsearch";
-            btnPsearch.Size = new Size(75, 23);
+            btnPsearch.Size = new Size(118, 35);
             btnPsearch.TabIndex = 5;
             btnPsearch.Text = "Search";
             btnPsearch.UseVisualStyleBackColor = true;
             // 
-            // btnPce
+            // btnPupdate
             // 
-            btnPce.Location = new Point(609, 346);
-            btnPce.Name = "btnPce";
-            btnPce.Size = new Size(127, 23);
-            btnPce.TabIndex = 6;
-            btnPce.Text = "Create and Edit";
-            btnPce.UseVisualStyleBackColor = true;
+            btnPupdate.Location = new Point(957, 531);
+            btnPupdate.Margin = new Padding(5, 5, 5, 5);
+            btnPupdate.Name = "btnPupdate";
+            btnPupdate.Size = new Size(200, 35);
+            btnPupdate.TabIndex = 6;
+            btnPupdate.Text = "Update";
+            btnPupdate.UseVisualStyleBackColor = true;
             // 
             // Procurement
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnPce);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btnPupdate);
             Controls.Add(btnPsearch);
             Controls.Add(txtbPsearch);
             Controls.Add(label2);
             Controls.Add(dataProcurement);
             Controls.Add(label1);
             Controls.Add(btnPback);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "Procurement";
             Text = "Procurement";
             ((System.ComponentModel.ISupportInitialize)dataProcurement).EndInit();
@@ -125,6 +134,6 @@
         private Label label2;
         private TextBox txtbPsearch;
         private Button btnPsearch;
-        private Button btnPce;
+        private Button btnPupdate;
     }
 }

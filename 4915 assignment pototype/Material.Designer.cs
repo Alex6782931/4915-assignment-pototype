@@ -34,24 +34,26 @@
             btnMsearch = new Button();
             txtbMseacrh = new TextBox();
             label1 = new Label();
-            btnMcreate = new Button();
+            btnMupdate = new Button();
             ((System.ComponentModel.ISupportInitialize)dataMaterial).BeginInit();
             SuspendLayout();
             // 
             // lblM
             // 
             lblM.AutoSize = true;
-            lblM.Location = new Point(97, 23);
+            lblM.Location = new Point(152, 35);
+            lblM.Margin = new Padding(5, 0, 5, 0);
             lblM.Name = "lblM";
-            lblM.Size = new Size(50, 15);
+            lblM.Size = new Size(81, 23);
             lblM.TabIndex = 0;
             lblM.Text = "Material";
             // 
             // btnMback
             // 
-            btnMback.Location = new Point(28, 12);
+            btnMback.Location = new Point(44, 18);
+            btnMback.Margin = new Padding(5, 5, 5, 5);
             btnMback.Name = "btnMback";
-            btnMback.Size = new Size(56, 36);
+            btnMback.Size = new Size(88, 55);
             btnMback.TabIndex = 1;
             btnMback.Text = "back";
             btnMback.UseVisualStyleBackColor = true;
@@ -59,58 +61,65 @@
             // dataMaterial
             // 
             dataMaterial.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataMaterial.Location = new Point(97, 127);
+            dataMaterial.Location = new Point(33, 195);
+            dataMaterial.Margin = new Padding(5, 5, 5, 5);
             dataMaterial.Name = "dataMaterial";
-            dataMaterial.Size = new Size(585, 216);
+            dataMaterial.RowHeadersWidth = 62;
+            dataMaterial.Size = new Size(1164, 331);
             dataMaterial.TabIndex = 2;
             // 
             // btnMsearch
             // 
-            btnMsearch.Location = new Point(371, 91);
+            btnMsearch.Location = new Point(583, 140);
+            btnMsearch.Margin = new Padding(5, 5, 5, 5);
             btnMsearch.Name = "btnMsearch";
-            btnMsearch.Size = new Size(75, 23);
+            btnMsearch.Size = new Size(118, 35);
             btnMsearch.TabIndex = 3;
             btnMsearch.Text = "Search";
             btnMsearch.UseVisualStyleBackColor = true;
             // 
             // txtbMseacrh
             // 
-            txtbMseacrh.Location = new Point(166, 88);
+            txtbMseacrh.Location = new Point(261, 135);
+            txtbMseacrh.Margin = new Padding(5, 5, 5, 5);
             txtbMseacrh.Name = "txtbMseacrh";
-            txtbMseacrh.Size = new Size(165, 23);
+            txtbMseacrh.Size = new Size(257, 30);
             txtbMseacrh.TabIndex = 4;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(97, 91);
+            label1.Location = new Point(152, 140);
+            label1.Margin = new Padding(5, 0, 5, 0);
             label1.Name = "label1";
-            label1.Size = new Size(63, 15);
+            label1.Size = new Size(100, 23);
             label1.TabIndex = 5;
             label1.Text = "Search for:";
             // 
-            // btnMcreate
+            // btnMupdate
             // 
-            btnMcreate.Location = new Point(597, 358);
-            btnMcreate.Name = "btnMcreate";
-            btnMcreate.Size = new Size(75, 23);
-            btnMcreate.TabIndex = 6;
-            btnMcreate.Text = "Create request";
-            btnMcreate.UseVisualStyleBackColor = true;
+            btnMupdate.Location = new Point(1079, 557);
+            btnMupdate.Margin = new Padding(5, 5, 5, 5);
+            btnMupdate.Name = "btnMupdate";
+            btnMupdate.Size = new Size(118, 35);
+            btnMupdate.TabIndex = 6;
+            btnMupdate.Text = "Update";
+            btnMupdate.UseVisualStyleBackColor = true;
             // 
-            // MaterialMainPage
+            // Material
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Controls.Add(btnMcreate);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btnMupdate);
             Controls.Add(label1);
             Controls.Add(txtbMseacrh);
             Controls.Add(btnMsearch);
             Controls.Add(dataMaterial);
             Controls.Add(btnMback);
             Controls.Add(lblM);
-            Name = "MaterialMainPage";
+            Margin = new Padding(5, 5, 5, 5);
+            Name = "Material";
             Text = "MaterialMainPage";
             ((System.ComponentModel.ISupportInitialize)dataMaterial).EndInit();
             ResumeLayout(false);
@@ -125,6 +134,6 @@
         private Button btnMsearch;
         private TextBox txtbMseacrh;
         private Label label1;
-        private Button btnMcreate;
+        private Button btnMupdate;
     }
 }

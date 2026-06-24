@@ -16,5 +16,10 @@ namespace _4915_assignment_pototype
         {
             InitializeComponent();
         }
+
+        private void btnOHback_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
     }
 }

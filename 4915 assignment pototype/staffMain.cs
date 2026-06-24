@@ -89,5 +89,10 @@ namespace _4915_assignment_pototype.staff
             // 2. Permanently close and dispose of the main menu form
             this.Close();
         }
+        private void StaffMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+            Application.Exit();
+        }
     }
 }

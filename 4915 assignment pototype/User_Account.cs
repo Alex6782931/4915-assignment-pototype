@@ -1,4 +1,4 @@
-﻿using _4915_assignment_pototype.staff;
+﻿using _4915_assignment_pototype;
 using SDP_EntityModels;
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -146,7 +147,7 @@ namespace _4915_assignment_pototype
                     foreach (JsonElement rowElement in doc.RootElement.EnumerateArray())
                     {
                         DataRow newRow = dataTable.NewRow();
-                        foreach (JsonProperty property in rowElement.EnumerateObject())
+                        foreach (JsonProperty property in doc.RootElement.EnumerateObject())
                         {
                             if (dataTable.Columns.Contains(property.Name)) newRow[property.Name] = property.Value.ToString();
                         }
@@ -163,6 +164,7 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("username", typeof(string));
             dataTable.Columns.Add("passwordHash", typeof(string));
             dataTable.Columns.Add("staffID", typeof(string));
+            dataTable.Columns.Add("customerID", typeof(string)); // Added
             dataTable.Columns.Add("accessLevel", typeof(string));
             return dataTable;
         }
@@ -179,6 +181,12 @@ namespace _4915_assignment_pototype
             // Close the current table form cleanly
             this.Close();
         }
+    }
 
+    public class JsonDataTable
+    {
+        public string dtAdded { get; set; }
+        public string dtModified { get; set; }
+        public string dtDeleted { get; set; }
     }
 }

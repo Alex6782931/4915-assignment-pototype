@@ -39,10 +39,25 @@ namespace SDP_WebAPI.Controllers
             string dbPassword = userRow["passwordHash"]?.ToString();
             string accessLevel = userRow["accessLevel"]?.ToString();
 
+            // Check which profile ID contains data to determine the user type
+            string staffId = dtResult.Columns.Contains("staffID") ? userRow["staffID"]?.ToString() : null;
+            string customerId = dtResult.Columns.Contains("customerID") ? userRow["customerID"]?.ToString() : null;
+
             // Verify if typed text matches the active database row parameters
             if (dbPassword == password)
             {
-                return accessLevel; // Returns 'Admin', 'Sales', etc., to determine authorization routing
+                // Prioritize routing based on which field in the row has data
+                if (!string.IsNullOrEmpty(staffId))
+                {
+                    return $"STAFF_ROUTE:{accessLevel}";
+                }
+                else if (!string.IsNullOrEmpty(customerId))
+                {
+                    return $"CUSTOMER_ROUTE:{accessLevel}";
+                }
+
+                // Fallback safe return if both are somehow null
+                return accessLevel;
             }
 
             return "FAILED_WRONG_PASSWORD";
@@ -805,7 +820,9 @@ namespace SDP_WebAPI.Controllers
         {
             string connString = _configuration["ConnectionStrings"];
             DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
-            DataTable dtResult = db.GetData("SELECT username, passwordHash, staffID, accessLevel FROM user_accounts");
+
+            // Added customerID to query selection string
+            DataTable dtResult = db.GetData("SELECT username, passwordHash, staffID, customerID, accessLevel FROM user_accounts");
 
             var list = new List<Dictionary<string, object>>();
             foreach (DataRow row in dtResult.Rows)
@@ -822,7 +839,9 @@ namespace SDP_WebAPI.Controllers
         {
             string connString = _configuration["ConnectionStrings"];
             DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
-            DataTable dtResult = db.GetData($"SELECT username, passwordHash, staffID, accessLevel FROM user_accounts WHERE username LIKE '%{username.Replace("'", "''")}%'");
+
+            // Added customerID to query selection string
+            DataTable dtResult = db.GetData($"SELECT username, passwordHash, staffID, customerID, accessLevel FROM user_accounts WHERE username LIKE '%{username.Replace("'", "''")}%'");
 
             var list = new List<Dictionary<string, object>>();
             foreach (DataRow row in dtResult.Rows)
@@ -833,7 +852,6 @@ namespace SDP_WebAPI.Controllers
             }
             return System.Text.Json.JsonSerializer.Serialize(list);
         }
-
         [HttpPost("UpdateUserAccountRecordsData")]
         public int UpdateUserAccountRecordsData([FromBody] SDP_EntityModels.JsonDataTable json)
         {
@@ -853,8 +871,19 @@ namespace SDP_WebAPI.Controllers
                             conn.Open();
                             foreach (var row in modifiedRows)
                             {
+                                // Handle the Staff foreign key context cleanly (Avoid putting explicit empty string '' if null)
+                                string staffIdRaw = row.ContainsKey("staffID") ? row["staffID"] : null;
+                                string staffSqlValue = string.IsNullOrEmpty(staffIdRaw) ? "NULL" : $"'{staffIdRaw.Replace("'", "''")}'";
+
+                                // Handle the Customer foreign key context cleanly (Avoid putting explicit empty string '' if null)
+                                string customerIdRaw = row.ContainsKey("customerID") ? row["customerID"] : null;
+                                string customerSqlValue = string.IsNullOrEmpty(customerIdRaw) ? "NULL" : $"'{customerIdRaw.Replace("'", "''")}'";
+
+                                // Modified SQL layout structure to integrate staffID updates and customerID updates securely
                                 string sqlUpdate = $@"UPDATE user_accounts SET 
                             passwordHash = '{row["passwordHash"]?.Replace("'", "''")}',
+                            staffID = {staffSqlValue},
+                            customerID = {customerSqlValue},
                             accessLevel = '{row["accessLevel"]?.Replace("'", "''")}'
                             WHERE username = '{row["username"]?.Replace("'", "''")}';";
 

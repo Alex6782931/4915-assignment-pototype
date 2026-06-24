@@ -20,8 +20,7 @@ namespace _4915_assignment_pototype
         private void btnAback_Click(object sender, EventArgs e)
         {
             this.Hide();
-            CustomerMain mainForm = new CustomerMain();
-            mainForm.Show();
+
         }
     }
 }

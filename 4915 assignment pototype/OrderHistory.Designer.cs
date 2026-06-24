@@ -54,6 +54,7 @@
             btnOHback.TabIndex = 1;
             btnOHback.Text = "back";
             btnOHback.UseVisualStyleBackColor = true;
+            btnOHback.Click += btnOHback_Click;
             // 
             // label2
             // 
@@ -77,7 +78,7 @@
             btnOHsearch.Name = "btnOHsearch";
             btnOHsearch.Size = new Size(132, 31);
             btnOHsearch.TabIndex = 4;
-            btnOHsearch.Text = "button2";
+            btnOHsearch.Text = "Search";
             btnOHsearch.UseVisualStyleBackColor = true;
             // 
             // dataOH

@@ -12,6 +12,7 @@ namespace _4915_assignment_pototype
 {
     public partial class CustomerMain : Form
     {
+
         public CustomerMain()
         {
             InitializeComponent();
@@ -47,16 +48,7 @@ namespace _4915_assignment_pototype
             MessageBox.Show("Navigating to Order History Screen...", "Prototype Action");
         }
 
-        // 3. Cancel Order
-        /*private void Btncancelorder_Click(object sender, EventArgs e)
-        {
-            CancelOrder orderForm = new CancelOrder();
-            NavigateTo(orderForm);
 
-            MessageBox.Show("Navigating to Cancel Order Screen...", "Prototype Action");
-        }*/
-
-        // 4. Modify / Add Address
         private void Btnaddress_Click(object sender, EventArgs e)
         {
             Address orderForm = new Address();
@@ -100,6 +92,12 @@ namespace _4915_assignment_pototype
             this.Hide();            // Hides the current dashboard
             nextForm.ShowDialog();  // Opens the next screen as a modal window
             this.Show();            // Brings the dashboard back once the sub-screen is closed
+        }
+
+        private void CustomerMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+
+            Application.Exit();
         }
     }
 }

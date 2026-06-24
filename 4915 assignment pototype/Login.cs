@@ -1,13 +1,15 @@
+using _4915_assignment_pototype;
 using _4915_assignment_pototype.staff;
 using Microsoft.VisualBasic.ApplicationServices;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
     public partial class Login : Form
     {
-        public Login() 
-        { 
+        public Login()
+        {
             InitializeComponent();
         }
 
@@ -41,16 +43,37 @@ namespace _4915_assignment_pototype
                         {
                             MessageBox.Show("Access Denied: Invalid security password provided.");
                         }
-                        else
+                        else if (result.StartsWith("STAFF_ROUTE:"))
                         {
-                            // Success! Authorization Level is retrieved (e.g. 'Admin', 'Sales')
-                            MessageBox.Show($"Access Granted! Welcome back. Authorized Role: {result}");
+                            string actualRole = result.Replace("STAFF_ROUTE:", "");
+                            MessageBox.Show($"Access Granted! Welcome back Internal Staff. Authorized Role: {actualRole}");
 
-                            // Route user to your main program menu interface file
+                            // Route user to your main staff program menu interface file
                             staffMain mainMenu = new staffMain();
                             mainMenu.Show();
 
                             this.Hide(); // Hides the login screen cleanly
+                        }
+                        else if (result.StartsWith("CUSTOMER_ROUTE:"))
+                        {
+                            string actualRole = result.Replace("CUSTOMER_ROUTE:", "");
+                            MessageBox.Show($"Access Granted! Welcome back Customer. Authorized Role: {actualRole}");
+
+                            // Route customer to your dedicated Customer Portal interface file
+                            CustomerMain customerMenu = new CustomerMain();
+                            customerMenu.Show();
+
+                            this.Hide(); // Hides the login screen cleanly
+                        }
+                        else
+                        {
+                            // Fallback catch-all logic matching your original routing configuration
+                            MessageBox.Show($"Access Granted! Welcome back. Authorized Role: {result}");
+
+                            staffMain mainMenu = new staffMain();
+                            mainMenu.Show();
+
+                            this.Hide();
                         }
                     }
                     else

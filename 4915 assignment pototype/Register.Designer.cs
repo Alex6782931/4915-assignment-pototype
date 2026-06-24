@@ -93,6 +93,7 @@
             btnRregister.TabIndex = 5;
             btnRregister.Text = "Register";
             btnRregister.UseVisualStyleBackColor = true;
+            btnRregister.Click += btnRregister_Click;
             // 
             // txtbRusername
             // 

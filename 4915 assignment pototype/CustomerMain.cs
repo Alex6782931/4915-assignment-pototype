@@ -121,7 +121,7 @@ namespace _4915_assignment_pototype
 
         private void CustomerMain_Load(object sender, EventArgs e)
         {
-            lblwelcome.Text = $"Welcome, User: {_loggedInCustomerId}";
+            lblwelcome.Text = $"Welcome back,: {_loggedInCustomerId}";
         }
     }
 }

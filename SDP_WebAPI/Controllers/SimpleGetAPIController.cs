@@ -21,7 +21,6 @@ namespace SDP_WebAPI.Controllers
         }
 
         //LOGIN
-
         [HttpPost("VerifyLogin")]
         public string VerifyLogin([FromQuery] string username, [FromQuery] string password)
         {
@@ -46,23 +45,21 @@ namespace SDP_WebAPI.Controllers
             // Verify if typed text matches the active database row parameters
             if (dbPassword == password)
             {
-                // Prioritize routing based on which field in the row has data
                 if (!string.IsNullOrEmpty(staffId))
                 {
-                    return $"STAFF_ROUTE:{accessLevel}";
+                    return $"STAFF_ROUTE:{accessLevel},{staffId}";
                 }
                 else if (!string.IsNullOrEmpty(customerId))
                 {
-                    return $"CUSTOMER_ROUTE:{accessLevel}";
+                    return $"CUSTOMER_ROUTE:{accessLevel},{customerId}";
                 }
 
-                // Fallback safe return if both are somehow null
-                return accessLevel;
+                // Fallback safe return if both IDs are somehow null but password is right
+                return $"UNKNOWN_ROUTE:{accessLevel},";
             }
 
             return "FAILED_WRONG_PASSWORD";
         }
-
 
         //CUSTOMER TABLE
 

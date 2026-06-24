@@ -12,11 +12,27 @@ namespace _4915_assignment_pototype
 {
     public partial class CustomerMain : Form
     {
+        // 【新增】定义一个私有变量，用来在当前窗体中保存登录成功的 customerId
+        private string _loggedInCustomerId;
 
+        /// <summary>
+        /// 保留无参数构造函数，防止 Visual Studio 窗体设计器（Designer）报错
+        /// </summary>
         public CustomerMain()
         {
             InitializeComponent();
             AttachEventHandlers();
+        }
+
+        /// <summary>
+        /// 【新增】带有参数的构造函数，用于从登录界面传入 customerId
+        /// </summary>
+        public CustomerMain(string customerId) : this() // : this() 会自动先调用上面的无参构造函数（初始化组件和绑定事件）
+        {
+            _loggedInCustomerId = customerId;
+
+            // 选填：你可以在这里或者 Load 事件里测试是否成功拿到 ID
+            // MessageBox.Show($"当前登录的客户 ID 是: {_loggedInCustomerId}");
         }
 
         /// <summary>
@@ -69,18 +85,22 @@ namespace _4915_assignment_pototype
         // 6. Logout
         private void Btnlogout_Click(object sender, EventArgs e)
         {
-            Login orderForm = new Login();
-            NavigateTo(orderForm);
-
+            // 1. 先弹窗询问，不要先急着建新窗体
             DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
             if (result == DialogResult.Yes)
             {
-                // Closes this main dashboard screen
-                this.Close();
+                // 2. 解除 FormClosed 事件绑定（非常关键！）
+                // 因为你的 FormClosed 绑定了 Application.Exit()。
+                // 如果不解除，点注销关闭当前窗体时，会把整个程序（包括新打开的登录页）一起强行关掉。
+                this.FormClosed -= CustomerMain_FormClosed;
 
-                // OPTIONAL: If you want to bring back a login screen:
-                // LoginForm login = new LoginForm();
-                // login.Show();
+                // 3. 打开登录新窗体
+                Login loginForm = new Login();
+                loginForm.Show();
+
+                // 4. 【核心修复】使用 Close() 彻底关闭并释放当前的 CustomerMain，而不是 Hide()
+                this.Close();
             }
         }
 
@@ -96,8 +116,12 @@ namespace _4915_assignment_pototype
 
         private void CustomerMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-
             Application.Exit();
+        }
+
+        private void CustomerMain_Load(object sender, EventArgs e)
+        {
+            lblwelcome.Text = $"Welcome, User: {_loggedInCustomerId}";
         }
     }
 }

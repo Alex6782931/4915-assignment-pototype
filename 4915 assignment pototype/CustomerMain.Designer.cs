@@ -120,7 +120,7 @@
             label2.TabIndex = 8;
             label2.Text = "personal information";
             // 
-            // CustomerMian
+            // CustomerMain
             // 
             AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -134,8 +134,9 @@
             Controls.Add(btnviewhistory);
             Controls.Add(btnmakeorder);
             Controls.Add(lblwelcome);
-            Name = "CustomerMian";
+            Name = "CustomerMain";
             Text = "CustomerMian";
+            Load += CustomerMain_Load;
             ResumeLayout(false);
             PerformLayout();
         }

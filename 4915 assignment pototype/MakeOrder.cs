@@ -10,21 +10,17 @@ using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
-    public partial class OrderHistory : Form
+    public partial class MakeOrder : Form
     {
-        public OrderHistory()
+        public MakeOrder()
         {
             InitializeComponent();
         }
 
-        private void btnOHback_Click(object sender, EventArgs e)
+        private void btnBack_Click(object sender, EventArgs e)
         {
             Form mainForm = Application.OpenForms["CustomerMain"];
-            if (mainForm != null)
-            {
-                mainForm.Show();
-
-            }
+            mainForm.Show();
             this.Close();
         }
     }

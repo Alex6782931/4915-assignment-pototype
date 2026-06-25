@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 using SDP_EntityModels;
 using System;
 using System.Data;
@@ -902,6 +903,180 @@ namespace SDP_WebAPI.Controllers
             }
             catch (Exception) { return 0; }
         }
+        // --- NEW ENDPOINT: GET CUSTOMER ADDRESS ---
+        // URL Path: GET https://localhost:7146/api/SimpleGetAPI/GetCustomerAddress?customerNumber=103
+        [HttpGet("GetCustomerAddress")]
+        public string GetCustomerAddress([FromQuery] int customerNumber)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            string query = "SELECT floor, building, street, city, country FROM customer WHERE customerNumber = @custNum";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var result = new Dictionary<string, string>
+                                {
+                                    { "floor", reader["floor"] != DBNull.Value ? reader["floor"].ToString() : "" },
+                                    { "building", reader["building"] != DBNull.Value ? reader["building"].ToString() : "" },
+                                    { "street", reader["street"] != DBNull.Value ? reader["street"].ToString() : "" },
+                                    { "city", reader["city"].ToString() },
+                                    { "country", reader["country"].ToString() }
+                                };
+                                return JsonSerializer.Serialize(result);
+                            }
+                        }
+                    }
+                    return "FAILED_NOT_FOUND";
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
+        // --- NEW ENDPOINT: UPDATE CUSTOMER ADDRESS ---
+        // URL Path: POST https://localhost:7146/api/SimpleGetAPI/UpdateCustomerAddress
+        [HttpPost("UpdateCustomerAddress")]
+        public string UpdateCustomerAddress([FromBody] Dictionary<string, string> payload)
+        {
+            if (payload == null || !payload.ContainsKey("customerNumber") || !int.TryParse(payload["customerNumber"], out int customerNumber))
+            {
+                return "FAILED_INVALID_PAYLOAD";
+            }
+
+            string connString = _configuration["ConnectionStrings"];
+            string query = "UPDATE customer SET floor = @floor, building = @building, street = @street, city = @city, country = @country WHERE customerNumber = @custNum";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        string floor = payload.GetValueOrDefault("floor")?.Trim();
+                        string building = payload.GetValueOrDefault("building")?.Trim();
+                        string street = payload.GetValueOrDefault("street")?.Trim();
+                        string city = payload.GetValueOrDefault("city")?.Trim();
+                        string country = payload.GetValueOrDefault("country")?.Trim();
+
+                        if (string.IsNullOrEmpty(city) || string.IsNullOrEmpty(country))
+                        {
+                            return "FAILED_MANDATORY_FIELDS_MISSING";
+                        }
+
+                        cmd.Parameters.AddWithValue("@floor", string.IsNullOrEmpty(floor) ? DBNull.Value : (object)floor);
+                        cmd.Parameters.AddWithValue("@building", string.IsNullOrEmpty(building) ? DBNull.Value : (object)building);
+                        cmd.Parameters.AddWithValue("@street", string.IsNullOrEmpty(street) ? DBNull.Value : (object)street);
+                        cmd.Parameters.AddWithValue("@city", city);
+                        cmd.Parameters.AddWithValue("@country", country);
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0 ? "SUCCESS" : "FAILED_NO_ROWS_AFFECTED";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+        // --- NEW ENDPOINT: GET CUSTOMER PAYMENT ---
+        // URL 路徑: GET https://localhost:7146/api/SimpleGetAPI/GetCustomerPayment?customerNumber=103
+        [HttpGet("GetCustomerPayment")]
+        public string GetCustomerPayment([FromQuery] int customerNumber)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            string query = "SELECT cardNumber, expiredDay, cvv FROM customer WHERE customerNumber = @custNum";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var result = new Dictionary<string, string>
+                                {
+                                    { "cardNumber", reader["cardNumber"] != DBNull.Value ? reader["cardNumber"].ToString() : "" },
+                                    { "expiredDay", reader["expiredDay"] != DBNull.Value ? reader["expiredDay"].ToString() : "" },
+                                    { "cvv", reader["cvv"] != DBNull.Value ? reader["cvv"].ToString() : "" }
+                                };
+                                return JsonSerializer.Serialize(result);
+                            }
+                        }
+                    }
+                    return "FAILED_NOT_FOUND";
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
+        // --- NEW ENDPOINT: UPDATE CUSTOMER PAYMENT ---
+        // URL 路徑: POST https://localhost:7146/api/SimpleGetAPI/UpdateCustomerPayment
+        [HttpPost("UpdateCustomerPayment")]
+        public string UpdateCustomerPayment([FromBody] Dictionary<string, string> payload)
+        {
+            if (payload == null || !payload.ContainsKey("customerNumber") || !int.TryParse(payload["customerNumber"], out int customerNumber))
+            {
+                return "FAILED_INVALID_PAYLOAD";
+            }
+
+            string connString = _configuration["ConnectionStrings"];
+            string query = "UPDATE customer SET cardNumber = @card, expiredDay = @expired, cvv = @cvv WHERE customerNumber = @custNum";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        string cardNumber = payload.GetValueOrDefault("cardNumber")?.Trim();
+                        string expiredDay = payload.GetValueOrDefault("expiredDay")?.Trim();
+                        string cvv = payload.GetValueOrDefault("cvv")?.Trim();
+
+                        // 驗證必要欄位是否遺漏
+                        if (string.IsNullOrEmpty(cardNumber) || string.IsNullOrEmpty(expiredDay) || string.IsNullOrEmpty(cvv))
+                        {
+                            return "FAILED_MANDATORY_FIELDS_MISSING";
+                        }
+
+                        cmd.Parameters.AddWithValue("@card", cardNumber);
+                        cmd.Parameters.AddWithValue("@expired", expiredDay);
+                        cmd.Parameters.AddWithValue("@cvv", cvv);
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+                        return rowsAffected > 0 ? "SUCCESS" : "FAILED_NO_ROWS_AFFECTED";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
 
         //USER_SUPPLIER TABLE
 
@@ -990,7 +1165,78 @@ namespace SDP_WebAPI.Controllers
             }
             catch (Exception) { return 0; }
         }
+        [HttpPost("CancelOrder")]
+        public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequest request)
+        {
+            if (request == null || request.OrderNumber <= 0)
+            {
+                return BadRequest("Invalid order verification structure.");
+            }
 
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+
+                using (MySqlConnection conn = new MySqlConnection(connString))
+                {
+                    await conn.OpenAsync();
+
+                    // Step 1: Query database state to assert data invariants
+                    string statusCheckQuery = "SELECT orderStatus FROM orders WHERE orderNumber = @orderNumber;";
+                    string currentStatus = null;
+
+                    using (MySqlCommand checkCmd = new MySqlCommand(statusCheckQuery, conn))
+                    {
+                        checkCmd.Parameters.AddWithValue("@orderNumber", request.OrderNumber);
+                        object result = await checkCmd.ExecuteScalarAsync();
+
+                        if (result == null)
+                        {
+                            return NotFound("The specified order number does not exist.");
+                        }
+                        currentStatus = result.ToString();
+                    }
+
+                    // Step 2: Validate against business state workflows 
+                    if (currentStatus == "Cancelled")
+                    {
+                        return BadRequest("This order has already been cancelled.");
+                    }
+
+                    if (currentStatus == "Shipped")
+                    {
+                        return BadRequest("This order has already been shipped and cannot be cancelled.");
+                    }
+
+                    // Step 3: Run target safe mutation
+                    string updateQuery = "UPDATE orders SET orderStatus = 'Cancelled' WHERE orderNumber = @orderNumber;";
+                    using (MySqlCommand updateCmd = new MySqlCommand(updateQuery, conn))
+                    {
+                        updateCmd.Parameters.AddWithValue("@orderNumber", request.OrderNumber);
+                        await updateCmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                return Ok("Order successfully cancelled.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Cancel Order Error: " + ex.Message);
+                return StatusCode(500, $"An error occurred during mutation: {ex.Message}");
+            }
+        }
     }
+
+    /// <summary>
+    /// Data Transfer Object (DTO) matching the anonymous payload serialized by the frontend.
+    /// </summary>
+    public class CancelOrderRequest
+    {
+        // System.Text.Json uses case-insensitive matching by default, 
+        // mapping 'orderNumber' from frontend to this property.
+        public int OrderNumber { get; set; }
+    }
+
 }
+
 

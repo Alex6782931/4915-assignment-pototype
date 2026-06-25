@@ -12,22 +12,15 @@ namespace _4915_assignment_pototype
 {
     public partial class CustomerMain : Form
     {
-        // 【新增】定义一个私有变量，用来在当前窗体中保存登录成功的 customerId
         private string _loggedInCustomerId;
 
-        /// <summary>
-        /// 保留无参数构造函数，防止 Visual Studio 窗体设计器（Designer）报错
-        /// </summary>
         public CustomerMain()
         {
             InitializeComponent();
             AttachEventHandlers();
         }
 
-        /// <summary>
-        /// 【新增】带有参数的构造函数，用于从登录界面传入 customerId
-        /// </summary>
-        public CustomerMain(string customerId) : this() // : this() 会自动先调用上面的无参构造函数（初始化组件和绑定事件）
+        public CustomerMain(string customerId) : this()
         {
             _loggedInCustomerId = customerId;
 
@@ -61,26 +54,38 @@ namespace _4915_assignment_pototype
             OrderHistory orderForm = new OrderHistory();
             NavigateTo(orderForm);
 
-            MessageBox.Show("Navigating to Order History Screen...", "Prototype Action");
         }
 
 
         private void Btnaddress_Click(object sender, EventArgs e)
         {
-            Address orderForm = new Address();
-            NavigateTo(orderForm);
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                Address addressForm = new Address(customerIdInt);
+                NavigateTo(addressForm);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Customer ID format. Cannot load profile details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
-            MessageBox.Show("Navigating to Address Management Screen...", "Prototype Action");
         }
 
         // 5. Modify Payment Information
+        // 5. Modify Payment Information
         private void Btnpayment_Click(object sender, EventArgs e)
         {
-            payment orderForm = new payment();
-            NavigateTo(orderForm);
-
-            MessageBox.Show("Navigating to Payment Information Screen...", "Prototype Action");
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                payment paymentForm = new payment(customerIdInt); 
+                NavigateTo(paymentForm);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Customer ID format. Cannot load payment profile.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
 
         // 6. Logout
         private void Btnlogout_Click(object sender, EventArgs e)
@@ -90,16 +95,11 @@ namespace _4915_assignment_pototype
 
             if (result == DialogResult.Yes)
             {
-                // 2. 解除 FormClosed 事件绑定（非常关键！）
-                // 因为你的 FormClosed 绑定了 Application.Exit()。
-                // 如果不解除，点注销关闭当前窗体时，会把整个程序（包括新打开的登录页）一起强行关掉。
                 this.FormClosed -= CustomerMain_FormClosed;
 
-                // 3. 打开登录新窗体
                 Login loginForm = new Login();
                 loginForm.Show();
 
-                // 4. 【核心修复】使用 Close() 彻底关闭并释放当前的 CustomerMain，而不是 Hide()
                 this.Close();
             }
         }
@@ -122,6 +122,25 @@ namespace _4915_assignment_pototype
         private void CustomerMain_Load(object sender, EventArgs e)
         {
             lblwelcome.Text = $"Welcome back,: {_loggedInCustomerId}";
+        }
+
+        private void btnpayment_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        private void btncancelorder_Click(object sender, EventArgs e)
+        {
+            Cancel cancelForm = new Cancel(_loggedInCustomerId);
+            cancelForm.Show();
+            this.Hide();
+        }
+
+        private void btnmakeorder_Click(object sender, EventArgs e)
+        {
+            MakeOrder orderForm = new MakeOrder();
+            NavigateTo(orderForm);
         }
     }
 }

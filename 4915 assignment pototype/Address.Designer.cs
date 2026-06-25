@@ -45,9 +45,10 @@
             // 
             // btnAback
             // 
-            btnAback.Location = new Point(12, 12);
+            btnAback.Location = new Point(8, 8);
+            btnAback.Margin = new Padding(2, 2, 2, 2);
             btnAback.Name = "btnAback";
-            btnAback.Size = new Size(128, 37);
+            btnAback.Size = new Size(81, 24);
             btnAback.TabIndex = 0;
             btnAback.Text = "back";
             btnAback.UseVisualStyleBackColor = true;
@@ -56,106 +57,119 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(167, 19);
+            label1.Location = new Point(106, 12);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(146, 23);
+            label1.Size = new Size(99, 15);
             label1.TabIndex = 1;
             label1.Text = "Address Modify ";
             // 
             // txtbAfloor
             // 
-            txtbAfloor.Location = new Point(159, 90);
+            txtbAfloor.Location = new Point(101, 59);
+            txtbAfloor.Margin = new Padding(2, 2, 2, 2);
             txtbAfloor.Name = "txtbAfloor";
-            txtbAfloor.Size = new Size(312, 30);
+            txtbAfloor.Size = new Size(200, 23);
             txtbAfloor.TabIndex = 2;
             // 
             // txtbAbuilding
             // 
-            txtbAbuilding.Location = new Point(159, 156);
+            txtbAbuilding.Location = new Point(101, 102);
+            txtbAbuilding.Margin = new Padding(2, 2, 2, 2);
             txtbAbuilding.Name = "txtbAbuilding";
-            txtbAbuilding.Size = new Size(150, 30);
+            txtbAbuilding.Size = new Size(97, 23);
             txtbAbuilding.TabIndex = 3;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(40, 98);
+            label2.Location = new Point(25, 64);
+            label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(50, 23);
+            label2.Size = new Size(34, 15);
             label2.TabIndex = 4;
             label2.Text = "floor";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(40, 159);
+            label3.Location = new Point(25, 104);
+            label3.Margin = new Padding(2, 0, 2, 0);
             label3.Name = "label3";
-            label3.Size = new Size(80, 23);
+            label3.Size = new Size(54, 15);
             label3.TabIndex = 5;
             label3.Text = "building";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(40, 224);
+            label4.Location = new Point(25, 146);
+            label4.Margin = new Padding(2, 0, 2, 0);
             label4.Name = "label4";
-            label4.Size = new Size(59, 23);
+            label4.Size = new Size(38, 15);
             label4.TabIndex = 6;
             label4.Text = "street";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(42, 281);
+            label5.Location = new Point(27, 183);
+            label5.Margin = new Padding(2, 0, 2, 0);
             label5.Name = "label5";
-            label5.Size = new Size(40, 23);
+            label5.Size = new Size(26, 15);
             label5.TabIndex = 7;
             label5.Text = "city";
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(40, 340);
+            label6.Location = new Point(25, 222);
+            label6.Margin = new Padding(2, 0, 2, 0);
             label6.Name = "label6";
-            label6.Size = new Size(75, 23);
+            label6.Size = new Size(49, 15);
             label6.TabIndex = 8;
             label6.Text = "country";
             // 
             // txtbAstreet
             // 
-            txtbAstreet.Location = new Point(159, 217);
+            txtbAstreet.Location = new Point(101, 142);
+            txtbAstreet.Margin = new Padding(2, 2, 2, 2);
             txtbAstreet.Name = "txtbAstreet";
-            txtbAstreet.Size = new Size(302, 30);
+            txtbAstreet.Size = new Size(194, 23);
             txtbAstreet.TabIndex = 9;
             // 
             // txtbAcity
             // 
-            txtbAcity.Location = new Point(159, 281);
+            txtbAcity.Location = new Point(101, 183);
+            txtbAcity.Margin = new Padding(2, 2, 2, 2);
             txtbAcity.Name = "txtbAcity";
-            txtbAcity.Size = new Size(304, 30);
+            txtbAcity.Size = new Size(195, 23);
             txtbAcity.TabIndex = 10;
             // 
             // txtbcountry
             // 
-            txtbcountry.Location = new Point(159, 340);
+            txtbcountry.Location = new Point(101, 222);
+            txtbcountry.Margin = new Padding(2, 2, 2, 2);
             txtbcountry.Name = "txtbcountry";
-            txtbcountry.Size = new Size(325, 30);
+            txtbcountry.Size = new Size(208, 23);
             txtbcountry.TabIndex = 11;
             // 
             // btnAmodify
             // 
-            btnAmodify.Location = new Point(535, 409);
+            btnAmodify.Location = new Point(333, 255);
+            btnAmodify.Margin = new Padding(2, 2, 2, 2);
             btnAmodify.Name = "btnAmodify";
-            btnAmodify.Size = new Size(171, 29);
+            btnAmodify.Size = new Size(109, 27);
             btnAmodify.TabIndex = 12;
             btnAmodify.Text = "modify";
             btnAmodify.UseVisualStyleBackColor = true;
+            btnAmodify.Click += btnAmodify_Click;
             // 
             // Address
             // 
-            AutoScaleDimensions = new SizeF(11F, 23F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(509, 293);
             Controls.Add(btnAmodify);
             Controls.Add(txtbcountry);
             Controls.Add(txtbAcity);
@@ -169,6 +183,7 @@
             Controls.Add(txtbAfloor);
             Controls.Add(label1);
             Controls.Add(btnAback);
+            Margin = new Padding(2, 2, 2, 2);
             Name = "Address";
             Text = "Address";
             ResumeLayout(false);

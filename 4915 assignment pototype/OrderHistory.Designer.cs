@@ -40,17 +40,19 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(124, 25);
+            label1.Location = new Point(79, 16);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(126, 23);
+            label1.Size = new Size(82, 15);
             label1.TabIndex = 0;
             label1.Text = "Order History";
             // 
             // btnOHback
             // 
-            btnOHback.Location = new Point(19, 19);
+            btnOHback.Location = new Point(12, 12);
+            btnOHback.Margin = new Padding(2, 2, 2, 2);
             btnOHback.Name = "btnOHback";
-            btnOHback.Size = new Size(87, 29);
+            btnOHback.Size = new Size(55, 27);
             btnOHback.TabIndex = 1;
             btnOHback.Text = "back";
             btnOHback.UseVisualStyleBackColor = true;
@@ -59,24 +61,27 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(45, 111);
+            label2.Location = new Point(29, 72);
+            label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(65, 23);
+            label2.Size = new Size(43, 15);
             label2.TabIndex = 2;
             label2.Text = "search";
             // 
             // txtbOHsearch
             // 
-            txtbOHsearch.Location = new Point(122, 105);
+            txtbOHsearch.Location = new Point(78, 68);
+            txtbOHsearch.Margin = new Padding(2, 2, 2, 2);
             txtbOHsearch.Name = "txtbOHsearch";
-            txtbOHsearch.Size = new Size(290, 30);
+            txtbOHsearch.Size = new Size(186, 23);
             txtbOHsearch.TabIndex = 3;
             // 
             // btnOHsearch
             // 
-            btnOHsearch.Location = new Point(429, 105);
+            btnOHsearch.Location = new Point(273, 68);
+            btnOHsearch.Margin = new Padding(2, 2, 2, 2);
             btnOHsearch.Name = "btnOHsearch";
-            btnOHsearch.Size = new Size(132, 31);
+            btnOHsearch.Size = new Size(84, 20);
             btnOHsearch.TabIndex = 4;
             btnOHsearch.Text = "Search";
             btnOHsearch.UseVisualStyleBackColor = true;
@@ -84,23 +89,25 @@
             // dataOH
             // 
             dataOH.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataOH.Location = new Point(18, 160);
+            dataOH.Location = new Point(11, 104);
+            dataOH.Margin = new Padding(2, 2, 2, 2);
             dataOH.Name = "dataOH";
             dataOH.RowHeadersWidth = 62;
-            dataOH.Size = new Size(750, 175);
+            dataOH.Size = new Size(477, 114);
             dataOH.TabIndex = 5;
             // 
             // OrderHistory
             // 
-            AutoScaleDimensions = new SizeF(11F, 23F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(509, 293);
             Controls.Add(dataOH);
             Controls.Add(btnOHsearch);
             Controls.Add(txtbOHsearch);
             Controls.Add(label2);
             Controls.Add(btnOHback);
             Controls.Add(label1);
+            Margin = new Padding(2, 2, 2, 2);
             Name = "OrderHistory";
             Text = "OrderHistory";
             ((System.ComponentModel.ISupportInitialize)dataOH).EndInit();

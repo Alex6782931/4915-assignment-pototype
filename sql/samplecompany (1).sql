@@ -8,25 +8,22 @@ DROP DATABASE IF EXISTS `samplecompany`;
 CREATE DATABASE IF NOT EXISTS `samplecompany` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `samplecompany`;
 
-
 -- Drop tables in reverse order of dependencies to avoid foreign key blocks
-DROP TABLE IF EXISTS `staff`;
-DROP TABLE IF EXISTS `customer`;
-DROP TABLE IF EXISTS `suppliers`;
-DROP TABLE IF EXISTS `user_accounts`;
-DROP TABLE IF EXISTS `inventory`;
-DROP TABLE IF EXISTS `orders`;
-DROP TABLE IF EXISTS `order_details`;
-DROP TABLE IF EXISTS `after_service_records`;
-DROP TABLE IF EXISTS `logistics_shipments`;
-DROP TABLE IF EXISTS `procurements`;
 DROP TABLE IF EXISTS `production_requests`;
-
+DROP TABLE IF EXISTS `procurements`;
+DROP TABLE IF EXISTS `logistics_shipments`;
+DROP TABLE IF EXISTS `after_service_records`;
+DROP TABLE IF EXISTS `order_details`;
+DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `inventory`;
+DROP TABLE IF EXISTS `user_accounts`;
+DROP TABLE IF EXISTS `suppliers`;
+DROP TABLE IF EXISTS `customer`;
+DROP TABLE IF EXISTS `staff`;
 
 -- ============================================================================
 -- 1. CREATE STAFF TABLE FIRST (Parent Table)
 -- ============================================================================
-
 CREATE TABLE `staff` (
   `staffID` varchar(10) NOT NULL,
   `fullName` varchar(100) NOT NULL,
@@ -48,9 +45,8 @@ INSERT INTO `staff` (`staffID`, `fullName`, `role`, `department`, `email`) VALUE
 ('STF009', 'Ivy Ma', 'Warehouse Assistant', 'Warehouse', 'ivy.ma@furniture.com'),
 ('STF010', 'Jack Tang', 'Procurement Agent', 'Purchasing', 'jack.tang@furniture.com');
 
-
 -- ============================================================================
--- 2. CREATE CUSTOMER TABLE SECOND (Child Table - staffID Changed to VARCHAR(10))
+-- 2. CREATE CUSTOMER TABLE SECOND
 -- ============================================================================
 CREATE TABLE `customer` (
   `customerNumber` int(11) NOT NULL,
@@ -61,45 +57,38 @@ CREATE TABLE `customer` (
   `addressLine1` varchar(50) NOT NULL,
   `addressLine2` varchar(50) DEFAULT NULL,
   `city` varchar(50) NOT NULL,
-  `state` varchar(50) DEFAULT NULL,
-  `postalCode` varchar(15) DEFAULT NULL,
   `country` varchar(50) NOT NULL,
-  `staffID` varchar(10) DEFAULT NULL, -- FIXED: Changed from INT to VARCHAR(10) to match staff table
+  `cardNumber` varchar(19) DEFAULT NULL,
+  `expiredDay` varchar(10) DEFAULT NULL,
+  `cvv` varchar(4) DEFAULT NULL,
+  `staffID` varchar(10) DEFAULT NULL,
   `creditLimit` double DEFAULT NULL,
-  PRIMARY KEY (`customerNumber`),
-  KEY `idx_staffID` (`staffID`), -- FIXED: Fixed standard index declaration formatting syntax
-  CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`staffID`) REFERENCES `staff` (`staffID`) ON DELETE SET NULL
+  PRIMARY KEY (`customerNumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `customer` WRITE;
-INSERT INTO `customer` (
-  `customerNumber`, `customerName`, `contactLastName`, `contactFirstName`, 
-  `phone`, `addressLine1`, `addressLine2`, `city`, 
-  `state`, `postalCode`, `country`, `staffID`, `creditLimit`
-) VALUES
-(103, 'Atelier graphique', 'Schmtt', 'Carine', '40.32.2555', '54, rue Royale', NULL, 'Paris', NULL, '75008', 'France', NULL, 21000.00),
-(112, 'Signal Gift Stores', 'King', 'Jean', '7025551838', '8489 Strong St.', NULL, 'Las Vegas', 'NV', '83030', 'USA', NULL, 71800.00),
-(114, 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', '636 St Kilda Road', 'Level 3', 'Melbourne', 'Victoria', '3004', 'Australia', NULL, 117300.00),
-(119, 'La Rochelle Gifts', 'Labrune', 'Janine', '40.67.8555', '67, rue des Cinquante Otages', NULL, 'Nantes', NULL, '44000', 'France', NULL, 118200.00),
-(121, 'Baane Mini Imports', 'Bergulfsen', 'Jonas', '07-98 9555', 'Erling Skakkes gate 78', NULL, 'Stavern', NULL, '4110', 'Norway', NULL, 81700.00),
-(124, 'Mini Gifts Distributions Ltd.', 'Nelson', 'Susan', '4155551450', '5677 Strong St.', NULL, 'San Rafael', 'CA', '97562', 'USA', NULL, 210500.00),
-(125, 'Havel & Zbyszek Co.', 'Piestrzeniewicz', 'Zbyszek', '(26) 642-7555', 'ul. Filtrowa 68', NULL, 'Warszawa', NULL, '01-012', 'Poland', NULL, 0.00),
-(128, 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', 'Lyonerstr. 34', NULL, 'Frankfurt', NULL, '60528', 'Germany', NULL, 59700.00),
-(129, 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', '5557 North Line Rd.', NULL, 'South San Francisco', 'CA', '94080', 'USA', NULL, 64600.00),
-(131, 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', '897 Long Airport Avenue', NULL, 'NYC', 'NY', '10022', 'USA', NULL, 114900.00),
-(141, 'Euro+ Shopping Channel', 'Freyre', 'Diego', '(91) 555 94 44', 'C/ Moralzarzal, 86', NULL, 'Madrid', NULL, '28034', 'Spain', NULL, 227600.00),
-(144, 'Volvo Model Replicas, Co.', 'Berglund', 'Christina', '0921-12 3555', 'Berguvsvägen  8', NULL, 'Luleå', NULL, 'S-958 22', 'Sweden', NULL, 53100.00),
-(145, 'Danish Wholesale Imports', 'Petersen', 'Jytte', '31 12 3555', 'Vinbæltet 34', NULL, 'København', NULL, '1734', 'Denmark', NULL, 83400.00),
-(146, 'Saveley & Henriot Co.', 'Saveley', 'Mary', '78.32.5555', '2, rue du Commerce', NULL, 'Lyon', NULL, '69004', 'France', NULL, 123900.00),
-(148, 'Dragon Souvenirs, Ltd.', 'Natividad', 'Eric', '+65 221 7555', 'Bronzini St.', NULL, 'Singapore', NULL, '079903', 'Singapore', NULL, 103800.00);
+INSERT INTO `customer` VALUES 
+(103, 'Atelier graphique', 'Schmtt', 'Carine', '40.32.2555', NULL, NULL, '54, rue Royale', 'Paris', 'France', '4532 7153 9024 1485', '2028-11-15', '382', NULL, 21000.00),
+(112, 'Signal Gift Stores', 'King', 'Jean', '7025551838', NULL, NULL, '8489 Strong St.', 'Las Vegas', 'USA', '5412 8831 0047 6291', '2027-04-02', '915', NULL, 71800.00),
+(114, 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', 'Level 3', NULL, '636 St Kilda Road', 'Melbourne', 'Australia', '3782 4916 2503 774', '2029-08-22', '4421', NULL, 117300.00),
+(119, 'La Rochelle Gifts', 'Labrune', 'Janine', '40.67.8555', NULL, NULL, '67, rue des Cinquante Otages', 'Nantes', 'France', '6011 0284 5591 3306', '2026-12-09', '073', NULL, 118200.00),
+(121, 'Baane Mini Imports', 'Bergulfsen', 'Jonas', '07-98 9555', NULL, NULL, 'Erling Skakkes gate 78', 'Stavern', 'Norway', '4916 9312 0054 8819', '2030-05-18', '516', NULL, 81700.00),
+(124, 'Mini Gifts Distributions Ltd.', 'Nelson', 'Susan', '4155551450', NULL, NULL, '5677 Strong St.', 'San Rafael', 'USA', NULL, NULL, NULL, NULL, 210500.00),
+(125, 'Havel & Zbyszek Co.', 'Piestrzeniewicz', 'Zbyszek', '(26) 642-7555', NULL, NULL, 'ul. Filtrowa 68', 'Warszawa', 'Poland', NULL, NULL, NULL, NULL, 0.00),
+(128, 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', NULL, NULL, 'Lyonerstr. 34', 'Frankfurt', 'Germany', NULL, NULL, NULL, NULL, 59700.00),
+(129, 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', NULL, NULL, '5557 North Line Rd.', 'South San Francisco', 'USA', NULL, NULL, NULL, NULL, 64600.00),
+(131, 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', NULL, NULL, '897 Long Airport Avenue', 'NYC', 'USA', NULL, NULL, NULL, NULL, 114900.00),
+(141, 'Euro+ Shopping Channel', 'Freyre', 'Diego', '(91) 555 94 44', NULL, NULL, 'C/ Moralzarzal, 86', 'Madrid', 'Spain', NULL, NULL, NULL, NULL, 227600.00),
+(144, 'Volvo Model Replicas, Co.', 'Berglund', 'Christina', '0921-12 3555', NULL, NULL, 'Berguvsvägen 8', 'Luleå', 'Sweden', NULL, NULL, NULL, NULL, 53100.00),
+(145, 'Danish Wholesale Imports', 'Petersen', 'Jytte', '31 12 3555', NULL, NULL, 'Vinbæltet 34', 'København', 'Denmark', NULL, NULL, NULL, NULL, 83400.00),
+(146, 'Saveley & Henriot Co.', 'Saveley', 'Mary', '78.32.5555', NULL, NULL, '2, rue du Commerce', 'Lyon', 'France', NULL, NULL, NULL, NULL, 123900.00),
+(148, 'Dragon Souvenirs, Ltd.', 'Natividad', 'Eric', '+65 221 7555', NULL, NULL, 'Bronzini St.', 'Singapore', 'Singapore', NULL, NULL, NULL, NULL, 103800.00);
 UNLOCK TABLES;
 
 
 -- ============================================================================
 -- 3. CREATE SUPPLIERS TABLE
 -- ============================================================================
-DROP TABLE IF EXISTS `suppliers`;
-
 CREATE TABLE `suppliers` (
   `supplierID` int(11) NOT NULL AUTO_INCREMENT,
   `supplierName` varchar(100) NOT NULL,
@@ -116,31 +105,33 @@ INSERT INTO `suppliers` (`supplierName`, `contactName`, `phone`, `address`) VALU
 ('Hardware Fasteners Corp.', 'Peter Parker', '+852 5678 9012', 'Shatin Enterprise Hub, HK'),
 ('Eco-Plastics & Veneers', 'Lisa Wong', '+852 6789 0123', 'Fanling Plastics Zone, HK');
 
-
 -- ============================================================================
--- 4. SYSTEM SECURITY & CONTROL (User Credentials matched to Staff)
+-- 4. SYSTEM SECURITY & CONTROL (User Credentials) - 🌟已修复反引号与外键类型错误
 -- ============================================================================
-
 CREATE TABLE IF NOT EXISTS `user_accounts` (
   `username` varchar(50) NOT NULL,
-  `passwordHash` varchar(255) NOT NULL, -- Plaintext/hash for prototype representation
-  `staffID` varchar(10) NOT NULL,
+  `passwordHash` varchar(255) NOT NULL,
+  `staffID` varchar(10) DEFAULT NULL,
+  `customerID` int(11) DEFAULT NULL, -- 🌟 修复：补全反引号并将类型改成 int(11) 以对齐客户表主键
   `accessLevel` varchar(20) NOT NULL,
   PRIMARY KEY (`username`),
-  FOREIGN KEY (`staffID`) REFERENCES `staff` (`staffID`) ON DELETE CASCADE
+  CONSTRAINT `fk_user_staff` FOREIGN KEY (`staffID`) REFERENCES `staff` (`staffID`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_customer` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerNumber`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `user_accounts` (`username`, `passwordHash`, `staffID`, `accessLevel`) VALUES
-('admin', 'admin123', 'STF001', 'Admin'),
-('sales01', 'sales123', 'STF002', 'Sales'),
-('warehouse01', 'wh123', 'STF003', 'Warehouse'),
-('buyer01', 'buy123', 'STF004', 'Procurement'),
-('logistics01', 'log123', 'STF005', 'Logistics'),
-('prod01', 'prod123', 'STF006', 'Production'),
-('service01', 'svc123', 'STF007', 'After-Service');
+INSERT INTO `user_accounts` (`username`, `passwordHash`, `staffID`, `customerID`, `accessLevel`) VALUES
+('admin', 'admin123', 'STF001', NULL, 'Admin'),
+('sales01', 'sales123', 'STF002', NULL, 'Sales'),
+('warehouse01', 'wh123', 'STF003', NULL, 'Warehouse'),
+('buyer01', 'buy123', 'STF004', NULL, 'Procurement'),
+('logistics01', 'log123', 'STF005', NULL, 'Logistics'),
+('prod01', 'prod123', 'STF006', NULL, 'Production'),
+('service01', 'svc123', 'STF007', NULL, 'After-Service'),
+('sales02', 'sales456', 'STF008', NULL, 'Sales'),        -- 🌟 新增员工行
+('customer103', 'cust123', NULL, 103, 'Customer');       -- 🌟 新增客户行
 
 -- ============================================================================
--- 5. INVENTORY CONTROL & RAW MATERIAL MANAGEMENT (Items & Stocks)
+-- 5. INVENTORY CONTROL & RAW MATERIAL MANAGEMENT
 -- ============================================================================
 CREATE TABLE `inventory` (
   `itemID` varchar(10) NOT NULL,
@@ -164,9 +155,8 @@ INSERT INTO `inventory` (`itemID`, `itemName`, `itemType`, `quantityInStock`, `u
 ('FG004', 'Minimalist Study Desk', 'Finished Goods', 30, 'units', 'Zone Alpha'),
 ('FG005', 'Modular Bookcase Rack', 'Finished Goods', 15, 'units', 'Zone Beta');
 
-
 -- ============================================================================
--- 6. ORDER PROCESSING MANAGEMENT (Orders linked to customer table)
+-- 6. ORDER PROCESSING MANAGEMENT
 -- ============================================================================
 CREATE TABLE `orders` (
   `orderNumber` int(11) NOT NULL AUTO_INCREMENT,
@@ -176,9 +166,7 @@ CREATE TABLE `orders` (
   `orderStatus` enum('Pending','Processing','Shipped','Cancelled') NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`orderNumber`),
   KEY `idx_customerNumber` (`customerNumber`),
-  -- FIXED: Changed 'customers' to singular 'customer' to match database structure
   CONSTRAINT `fk_orders_customer` FOREIGN KEY (`customerNumber`) REFERENCES `customer` (`customerNumber`) ON DELETE CASCADE
--- FIXED: Set explicit start counter to 1001 for automated layout engine tracking
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=latin1;
 
 LOCK TABLES `orders` WRITE;
@@ -193,7 +181,7 @@ INSERT INTO `orders` (`orderNumber`, `orderDate`, `customerNumber`, `totalAmount
 (1008, '2026-06-16', 103, 3100.00, 'Pending');
 UNLOCK TABLES;
 
--- Order Details (Line Items linking Orders to Finished Goods)
+-- Order Details
 CREATE TABLE `order_details` (
   `orderNumber` int(11) NOT NULL,
   `itemID` varchar(10) NOT NULL,
@@ -218,10 +206,8 @@ INSERT INTO `order_details` (`orderNumber`, `itemID`, `quantity`, `unitPrice`) V
 (1008, 'FG005', 2, 1550.00);
 UNLOCK TABLES;
 
-
-
 -- ============================================================================
--- 7. PRODUCTION PROCESSING MANAGEMENT (Raw Material Work Requests)
+-- 7. PRODUCTION PROCESSING MANAGEMENT
 -- ============================================================================
 CREATE TABLE `production_requests` (
   `requestID` int(11) NOT NULL AUTO_INCREMENT,
@@ -245,9 +231,8 @@ INSERT INTO `production_requests` (`requestID`, `requestDate`, `targetItemID`, `
 (5, '2026-06-16', 'FG004', 'RM001', 100, 'Shortage'),
 (6, '2026-06-16', 'FG005', 'RM001', 30, 'Allocated');
 
-
 -- ============================================================================
--- 8. RAW MATERIAL PROCUREMENT MANAGEMENT (Purchasing Orders)
+-- 8. RAW MATERIAL PROCUREMENT MANAGEMENT
 -- ============================================================================
 CREATE TABLE `procurements` (
   `procurementID` int(11) NOT NULL AUTO_INCREMENT,
@@ -271,9 +256,8 @@ INSERT INTO `procurements` (`procurementID`, `orderDate`, `supplierID`, `rawMate
 (4, '2026-06-15', 4, 'RM005', 2000, '2026-06-19', 'Ordered'),
 (5, '2026-06-16', 1, 'RM001', 500, '2026-06-25', 'Ordered');
 
-
 -- ============================================================================
--- 9. LOGISTICS PROCESSING (Delivery Notes, Inward Goods, Reply Slips)
+-- 9. LOGISTICS PROCESSING
 -- ============================================================================
 CREATE TABLE `logistics_shipments` (
   `deliveryNoteID` int(11) NOT NULL AUTO_INCREMENT,
@@ -293,9 +277,8 @@ INSERT INTO `logistics_shipments` (`deliveryNoteID`, `orderNumber`, `dispatchDat
 (2, 1002, '2026-06-08', '8489 Strong St., Tokyo', 'David Lau', 'Yes', 'Signed - Box damaged but item intact'),
 (3, 1004, '2026-06-15', '67, rue des Cinquante, Paris', 'Michael Chang', 'No', 'Pending Delivery Tracking');
 
-
 -- ============================================================================
--- 10. AFTER-SERVICE MANAGEMENT (FIXED: Single quotes converted to standard backticks)
+-- 10. AFTER-SERVICE MANAGEMENT
 -- ============================================================================
 CREATE TABLE `after_service_records` (
   `caseID` int(11) NOT NULL AUTO_INCREMENT,

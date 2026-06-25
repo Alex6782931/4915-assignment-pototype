@@ -119,8 +119,14 @@ namespace _4915_assignment_pototype
 
         private void Login_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // 当且仅当用户在登录页点 [X] 按钮，或者登录模块被销毁时彻底结束运行
             Application.Exit();
+        }
+
+        private void btnregister_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Register newForm = new Register();
+            newForm.Show();
         }
     }
 }

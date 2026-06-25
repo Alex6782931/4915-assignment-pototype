@@ -40,45 +40,45 @@
             // lbluserName
             // 
             lbluserName.AutoSize = true;
-            lbluserName.Location = new Point(281, 137);
-            lbluserName.Margin = new Padding(4, 0, 4, 0);
+            lbluserName.Location = new Point(386, 158);
+            lbluserName.Margin = new Padding(6, 0, 6, 0);
             lbluserName.Name = "lbluserName";
-            lbluserName.Size = new Size(80, 20);
+            lbluserName.Size = new Size(103, 23);
             lbluserName.TabIndex = 1;
             lbluserName.Text = "user Name";
             // 
             // lblpassword
             // 
             lblpassword.AutoSize = true;
-            lblpassword.Location = new Point(281, 223);
-            lblpassword.Margin = new Padding(4, 0, 4, 0);
+            lblpassword.Location = new Point(386, 256);
+            lblpassword.Margin = new Padding(6, 0, 6, 0);
             lblpassword.Name = "lblpassword";
-            lblpassword.Size = new Size(70, 20);
+            lblpassword.Size = new Size(90, 23);
             lblpassword.TabIndex = 2;
             lblpassword.Text = "Password";
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(383, 133);
-            txtUsername.Margin = new Padding(4);
+            txtUsername.Location = new Point(527, 153);
+            txtUsername.Margin = new Padding(6, 5, 6, 5);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(141, 27);
+            txtUsername.Size = new Size(192, 30);
             txtUsername.TabIndex = 3;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(383, 218);
-            txtPassword.Margin = new Padding(4);
+            txtPassword.Location = new Point(527, 251);
+            txtPassword.Margin = new Padding(6, 5, 6, 5);
             txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(141, 27);
+            txtPassword.Size = new Size(192, 30);
             txtPassword.TabIndex = 4;
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(314, 296);
-            btnLogin.Margin = new Padding(4);
+            btnLogin.Location = new Point(432, 340);
+            btnLogin.Margin = new Padding(6, 5, 6, 5);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(86, 30);
+            btnLogin.Size = new Size(118, 34);
             btnLogin.TabIndex = 5;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
@@ -86,29 +86,28 @@
             // 
             // btnregister
             // 
-            btnregister.Location = new Point(428, 292);
-            btnregister.Margin = new Padding(2, 3, 2, 3);
+            btnregister.Location = new Point(588, 336);
             btnregister.Name = "btnregister";
-            btnregister.Size = new Size(91, 34);
+            btnregister.Size = new Size(125, 39);
             btnregister.TabIndex = 6;
             btnregister.Text = "Register";
             btnregister.UseVisualStyleBackColor = true;
+            btnregister.Click += btnregister_Click;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(281, 70);
-            label1.Margin = new Padding(2, 0, 2, 0);
+            label1.Location = new Point(386, 80);
             label1.Name = "label1";
-            label1.Size = new Size(50, 20);
+            label1.Size = new Size(62, 23);
             label1.TabIndex = 7;
             label1.Text = "Login ";
             // 
             // Login
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(834, 436);
+            ClientSize = new Size(1147, 501);
             Controls.Add(label1);
             Controls.Add(btnregister);
             Controls.Add(btnLogin);
@@ -116,7 +115,7 @@
             Controls.Add(txtUsername);
             Controls.Add(lblpassword);
             Controls.Add(lbluserName);
-            Margin = new Padding(4);
+            Margin = new Padding(6, 5, 6, 5);
             Name = "Login";
             Text = "Login";
             ResumeLayout(false);

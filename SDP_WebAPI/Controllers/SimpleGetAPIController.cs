@@ -61,6 +61,99 @@ namespace SDP_WebAPI.Controllers
             return "FAILED_WRONG_PASSWORD";
         }
 
+
+        //REGISTER
+        [HttpPost("VerifyRegister")]
+        public string VerifyRegister([FromQuery] string username,
+                             [FromQuery] string password,
+                             [FromQuery] string firstname,
+                             [FromQuery] string lastname,
+                             [FromQuery] string phone,
+                             [FromQuery] string city = "Unknown",
+                             [FromQuery] string country = "Unknown")
+        {
+            string connString = _configuration["ConnectionStrings"];
+
+            using (MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connString))
+            {
+                conn.Open();
+
+                // 1. 验证用户名是否已被 user_accounts 表占用
+                string sqlCheck = "SELECT COUNT(*) FROM user_accounts WHERE username = @username;";
+                using (MySql.Data.MySqlClient.MySqlCommand cmdCheck = new MySql.Data.MySqlClient.MySqlCommand(sqlCheck, conn))
+                {
+                    cmdCheck.Parameters.AddWithValue("@username", username);
+                    long userCount = Convert.ToInt64(cmdCheck.ExecuteScalar());
+                    if (userCount > 0)
+                    {
+                        return "FAILED_USER_EXISTS";
+                    }
+                }
+
+                // 使用数据库事务保证两张表写入完整性
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 2. 因为主键 customerNumber 不是 AUTO_INCREMENT，手动计算当前的最新编号
+                        int newCustomerNumber = 1;
+                        string sqlMaxId = "SELECT MAX(customerNumber) FROM customer;";
+                        using (MySql.Data.MySqlClient.MySqlCommand cmdMaxId = new MySql.Data.MySqlClient.MySqlCommand(sqlMaxId, conn, transaction))
+                        {
+                            object maxResult = cmdMaxId.ExecuteScalar();
+                            if (maxResult != null && maxResult != DBNull.Value)
+                            {
+                                newCustomerNumber = Convert.ToInt32(maxResult) + 1;
+                            }
+                        }
+
+                        // 3. 第一步：先创建 Customer 记录
+                        string sqlInsertCustomer = @"INSERT INTO customer 
+                    (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, staffID, creditLimit) 
+                    VALUES 
+                    (@customerNumber, @customerName, @contactLastName, @contactFirstName, @phone, NULL, NULL, @city, NULL, NULL, @country, NULL, NULL);";
+
+                        using (MySql.Data.MySqlClient.MySqlCommand cmdCust = new MySql.Data.MySqlClient.MySqlCommand(sqlInsertCustomer, conn, transaction))
+                        {
+                            cmdCust.Parameters.AddWithValue("@customerNumber", newCustomerNumber);
+                            cmdCust.Parameters.AddWithValue("@customerName", firstname + " " + lastname);
+                            cmdCust.Parameters.AddWithValue("@contactLastName", lastname);
+                            cmdCust.Parameters.AddWithValue("@contactFirstName", firstname);
+                            cmdCust.Parameters.AddWithValue("@phone", phone);
+                            cmdCust.Parameters.AddWithValue("@city", city);
+                            cmdCust.Parameters.AddWithValue("@country", country);
+
+                            cmdCust.ExecuteNonQuery();
+                        }
+
+                        // 4. 第二步：使用刚才生成的 newCustomerNumber 创建 user_accounts 记录
+                        string sqlInsertAccount = @"INSERT INTO user_accounts (username, passwordHash, staffID, customerID, accessLevel) 
+                                            VALUES (@username, @passwordHash, NULL, @customerID, 'Customer');";
+
+                        using (MySql.Data.MySqlClient.MySqlCommand cmdAcc = new MySql.Data.MySqlClient.MySqlCommand(sqlInsertAccount, conn, transaction))
+                        {
+                            cmdAcc.Parameters.AddWithValue("@username", username);
+                            cmdAcc.Parameters.AddWithValue("@passwordHash", password);
+                            cmdAcc.Parameters.AddWithValue("@customerID", newCustomerNumber); // 与客户表完美关联
+
+                            cmdAcc.ExecuteNonQuery();
+                        }
+
+                        // 提交事务，让数据落库
+                        transaction.Commit();
+
+                        return $"SUCCESS_REGISTERED:{firstname},{newCustomerNumber}";
+                    }
+                    catch (Exception ex)
+                    {
+                        // 如果任何一个环节报错（比如某项约束冲突），全面回滚，确保不会在表里留下脏数据
+                        transaction.Rollback();
+                        return $"FAILED_SERVER_ERROR:{ex.Message}";
+                    }
+                }
+            }
+        }
+
         //CUSTOMER TABLE
 
         [HttpGet("GetCustomerData")]

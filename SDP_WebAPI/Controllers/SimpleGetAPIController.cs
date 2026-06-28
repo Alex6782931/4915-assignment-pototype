@@ -61,12 +61,10 @@ namespace SDP_WebAPI.Controllers
 
             return "FAILED_WRONG_PASSWORD";
         }
-        // --- NEW ENDPOINT: 獲取單一商品的單價 ---
         // URL: GET https://localhost:7146/api/SimpleGetAPI/GetItemPrice?itemID=FG001
         [HttpGet("GetItemPrice")]
         public string GetItemPrice([FromQuery] string itemID)
         {
-            // 由於你的 inventory 沒有價格，我們直接依據你提供的 order_details 預設單價進行比對回傳
             double price = 0.0;
             switch (itemID)
             {
@@ -80,7 +78,6 @@ namespace SDP_WebAPI.Controllers
             return price.ToString();
         }
 
-        // --- NEW ENDPOINT: 執行提交訂單事務 (建立 Orders + 建立 Order Details + 扣減庫存) ---
         // URL: POST https://localhost:7146/api/SimpleGetAPI/SubmitOrder
         [HttpPost("SubmitOrder")]
         public string SubmitOrder([FromBody] Dictionary<string, string> payload)
@@ -97,7 +94,6 @@ namespace SDP_WebAPI.Controllers
             string itemID = payload["itemID"];
             int quantity = int.Parse(payload["quantity"]);
 
-            // 再次獲取單價並計算總金額
             double unitPrice = 0.0;
             switch (itemID)
             {
@@ -115,12 +111,10 @@ namespace SDP_WebAPI.Controllers
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
                 conn.Open();
-                // 啟動資料庫交易（Transaction），確保所有表格同時成功或失敗，防止庫存被扣除但訂單沒建立
                 using (MySqlTransaction trans = conn.BeginTransaction())
                 {
                     try
                     {
-                        // 1. 檢查並驗證目前庫存量是否足夠
                         string sqlCheckStock = "SELECT quantityInStock FROM inventory WHERE itemID = @itemID FOR UPDATE;";
                         int currentStock = 0;
                         using (MySqlCommand cmdCheck = new MySqlCommand(sqlCheckStock, conn, trans))
@@ -136,7 +130,6 @@ namespace SDP_WebAPI.Controllers
                             return $"FAILED_INSUFFICIENT_STOCK:Available={currentStock}";
                         }
 
-                        // 2. 插入資料至主單 `orders`
                         string sqlOrder = "INSERT INTO `orders` (`orderDate`, `customerNumber`, `totalAmount`, `orderStatus`) " +
                                           "VALUES (@orderDate, @custNum, @totalAmount, 'Pending'); SELECT LAST_INSERT_ID();";
                         long newOrderNumber = 0;
@@ -148,7 +141,6 @@ namespace SDP_WebAPI.Controllers
                             newOrderNumber = Convert.ToInt64(cmdOrder.ExecuteScalar());
                         }
 
-                        // 3. 插入資料至明細單 `order_details`
                         string sqlDetails = "INSERT INTO `order_details` (`orderNumber`, `itemID`, `quantity`, `unitPrice`) " +
                                             "VALUES (@orderNum, @itemID, @quantity, @unitPrice);";
                         using (MySqlCommand cmdDetails = new MySqlCommand(sqlDetails, conn, trans))
@@ -161,7 +153,6 @@ namespace SDP_WebAPI.Controllers
                             cmdDetails.ExecuteNonQuery();
                         }
 
-                        // 4. 扣減 `inventory` 的成品庫存量
                         string sqlUpdateStock = "UPDATE inventory SET quantityInStock = quantityInStock - @quantity WHERE itemID = @itemID;";
                         using (MySqlCommand cmdUpdate = new MySqlCommand(sqlUpdateStock, conn, trans))
                         {
@@ -170,13 +161,12 @@ namespace SDP_WebAPI.Controllers
                             cmdUpdate.ExecuteNonQuery();
                         }
 
-                        // 認可並提交以上所有操作
                         trans.Commit();
                         return $"SUCCESS:{newOrderNumber}";
                     }
                     catch (Exception ex)
                     {
-                        trans.Rollback(); // 發生異常時全面撤銷回滾
+                        trans.Rollback();  
                         return $"ERROR:{ex.Message}";
                     }
                 }
@@ -200,7 +190,6 @@ namespace SDP_WebAPI.Controllers
             {
                 conn.Open();
 
-                // 1. 验证用户名是否已被 user_accounts 表占用
                 string sqlCheck = "SELECT COUNT(*) FROM user_accounts WHERE username = @username;";
                 using (MySql.Data.MySqlClient.MySqlCommand cmdCheck = new MySql.Data.MySqlClient.MySqlCommand(sqlCheck, conn))
                 {
@@ -212,12 +201,10 @@ namespace SDP_WebAPI.Controllers
                     }
                 }
 
-                // 使用数据库事务保证两张表写入完整性
                 using (var transaction = conn.BeginTransaction())
                 {
                     try
                     {
-                        // 2. 因为主键 customerNumber 不是 AUTO_INCREMENT，手动计算当前的最新编号
                         int newCustomerNumber = 1;
                         string sqlMaxId = "SELECT MAX(customerNumber) FROM customer;";
                         using (MySql.Data.MySqlClient.MySqlCommand cmdMaxId = new MySql.Data.MySqlClient.MySqlCommand(sqlMaxId, conn, transaction))
@@ -229,7 +216,6 @@ namespace SDP_WebAPI.Controllers
                             }
                         }
 
-                        // 3. 第一步：先创建 Customer 记录
                         string sqlInsertCustomer = @"INSERT INTO customer 
                     (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, staffID, creditLimit) 
                     VALUES 
@@ -248,7 +234,6 @@ namespace SDP_WebAPI.Controllers
                             cmdCust.ExecuteNonQuery();
                         }
 
-                        // 4. 第二步：使用刚才生成的 newCustomerNumber 创建 user_accounts 记录
                         string sqlInsertAccount = @"INSERT INTO user_accounts (username, passwordHash, staffID, customerID, accessLevel) 
                                             VALUES (@username, @passwordHash, NULL, @customerID, 'Customer');";
 
@@ -256,19 +241,17 @@ namespace SDP_WebAPI.Controllers
                         {
                             cmdAcc.Parameters.AddWithValue("@username", username);
                             cmdAcc.Parameters.AddWithValue("@passwordHash", password);
-                            cmdAcc.Parameters.AddWithValue("@customerID", newCustomerNumber); // 与客户表完美关联
+                            cmdAcc.Parameters.AddWithValue("@customerID", newCustomerNumber);  
 
                             cmdAcc.ExecuteNonQuery();
                         }
 
-                        // 提交事务，让数据落库
                         transaction.Commit();
 
                         return $"SUCCESS_REGISTERED:{firstname},{newCustomerNumber}";
                     }
                     catch (Exception ex)
                     {
-                        // 如果任何一个环节报错（比如某项约束冲突），全面回滚，确保不会在表里留下脏数据
                         transaction.Rollback();
                         return $"FAILED_SERVER_ERROR:{ex.Message}";
                     }
@@ -377,14 +360,12 @@ namespace SDP_WebAPI.Controllers
                 return 0;
             }
         }
-        // --- FIXED ENDPOINT: 獲取指定客戶的歷史訂單 ---
         // URL: GET https://localhost:7146/api/SimpleGetAPI/GetOrderHistory?customerNumber=103
         [HttpGet("GetOrderHistory")]
         public string GetOrderHistory([FromQuery] int customerNumber)
         {
             string connString = _configuration["ConnectionStrings"];
 
-            // 使用 AS 別名對接前端：orderStatus 對應 status，totalAmount 對應 comments (用作顯示總金額)
             string query = "SELECT orderNumber, orderDate, orderStatus AS status, totalAmount AS comments " +
                            "FROM orders WHERE customerNumber = @custNum ORDER BY orderDate DESC";
 
@@ -423,14 +404,12 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
-        // --- FIXED ENDPOINT: 搜尋指定客戶的特定訂單號碼或狀態 ---
         // URL: GET https://localhost:7146/api/SimpleGetAPI/SearchOrderHistory?customerNumber=103&keyword=Shipped
         [HttpGet("SearchOrderHistory")]
         public string SearchOrderHistory([FromQuery] int customerNumber, [FromQuery] string keyword)
         {
             string connString = _configuration["ConnectionStrings"];
 
-            // 使用 AS 別名對接前端，並調整搜尋欄位為 orderStatus
             string query = "SELECT orderNumber, orderDate, orderStatus AS status, totalAmount AS comments " +
                            "FROM orders " +
                            "WHERE customerNumber = @custNum AND (orderNumber LIKE @keyword OR orderStatus LIKE @keyword) " +

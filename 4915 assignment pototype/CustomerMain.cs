@@ -24,8 +24,6 @@ namespace _4915_assignment_pototype
         {
             _loggedInCustomerId = customerId;
 
-            // 选填：你可以在这里或者 Load 事件里测试是否成功拿到 ID
-            // MessageBox.Show($"当前登录的客户 ID 是: {_loggedInCustomerId}");
         }
 
         /// <summary>
@@ -97,7 +95,6 @@ namespace _4915_assignment_pototype
         // 6. Logout
         private void Btnlogout_Click(object sender, EventArgs e)
         {
-            // 1. 先弹窗询问，不要先急着建新窗体
             DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
@@ -148,7 +145,7 @@ namespace _4915_assignment_pototype
         {
             if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
             {
-                MakeOrder orderForm = new MakeOrder(customerIdInt); // 👈 傳入轉型後的 ID
+                MakeOrder orderForm = new MakeOrder(customerIdInt);  
                 NavigateTo(orderForm);
             }
             else

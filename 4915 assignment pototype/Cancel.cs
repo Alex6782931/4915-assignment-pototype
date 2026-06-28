@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Net.Http; // 確保引用了 HttpClient
+using System.Net.Http; 
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,29 +15,27 @@ namespace _4915_assignment_pototype
 {
     public partial class Cancel : Form
     {
-        // 🌟 關鍵修改 1：宣告變數用來儲存目前登入的客戶編號
         private string _currentCustomerNumber;
 
-        // 🌟 關鍵修改 2：修改建構子，讓它必須接收一個 customerNumber
         public Cancel(string customerNumber)
         {
             InitializeComponent();
-            _currentCustomerNumber = customerNumber; // 儲存傳入的客戶編號 (例如 "103")
+            _currentCustomerNumber = customerNumber; 
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
             Form mainForm = Application.OpenForms["CustomerMain"];
-            if (mainForm != null) mainForm.Show(); // 加上 null 檢查更安全
+            if (mainForm != null) mainForm.Show(); 
             this.Close();
         }
 
         private async void Cancel_Load(object sender, EventArgs e)
         {
-            await RefreshOrderGrid(); // 將重新整理邏輯獨立出來
+            await RefreshOrderGrid();  
         }
 
-        // 🌟 關鍵修改 3：將載入與篩選邏輯獨立成一個方法，方便重複呼叫
+       
         private async Task RefreshOrderGrid()
         {
             DataTable dt = await GetOrderRecordsDataFromApiResponse();
@@ -46,12 +44,10 @@ namespace _4915_assignment_pototype
             {
                 dt.AcceptChanges();
 
-                // 🌟 關鍵修改 4：使用 DataView 進行前端資料篩選
-                // 假設 API 回傳的欄位名稱叫作 "customerNumber"
                 DataView dv = new DataView(dt);
                 dv.RowFilter = $"customerNumber = '{_currentCustomerNumber}'";
 
-                dataOrder.DataSource = dv; // 將篩選後的視圖綁定到 DataGridView
+                dataOrder.DataSource = dv; 
             }
             else
             {

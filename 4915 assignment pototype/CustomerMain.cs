@@ -146,8 +146,15 @@ namespace _4915_assignment_pototype
 
         private void btnmakeorder_Click(object sender, EventArgs e)
         {
-            MakeOrder orderForm = new MakeOrder();
-            NavigateTo(orderForm);
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                MakeOrder orderForm = new MakeOrder(customerIdInt); // 👈 傳入轉型後的 ID
+                NavigateTo(orderForm);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Customer ID format. Cannot proceed to order.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

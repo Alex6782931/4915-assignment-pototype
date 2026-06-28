@@ -69,7 +69,6 @@
             btnviewhistory.TabIndex = 2;
             btnviewhistory.Text = "View order history";
             btnviewhistory.UseVisualStyleBackColor = true;
-
             // 
             // btncancelorder
             // 

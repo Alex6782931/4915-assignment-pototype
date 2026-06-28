@@ -61,6 +61,127 @@ namespace SDP_WebAPI.Controllers
 
             return "FAILED_WRONG_PASSWORD";
         }
+        // --- NEW ENDPOINT: 獲取單一商品的單價 ---
+        // URL: GET https://localhost:7146/api/SimpleGetAPI/GetItemPrice?itemID=FG001
+        [HttpGet("GetItemPrice")]
+        public string GetItemPrice([FromQuery] string itemID)
+        {
+            // 由於你的 inventory 沒有價格，我們直接依據你提供的 order_details 預設單價進行比對回傳
+            double price = 0.0;
+            switch (itemID)
+            {
+                case "FG001": price = 1500.00; break; // Ergonomic Office Chair
+                case "FG002": price = 5000.00; break; // Mahogany Dining Table
+                case "FG003": price = 4450.00; break; // 3-Seater Velvet Sofa
+                case "FG004": price = 1250.00; break; // Minimalist Study Desk
+                case "FG005": price = 1550.00; break; // Modular Bookcase Rack
+                default: price = 0.0; break;
+            }
+            return price.ToString();
+        }
+
+        // --- NEW ENDPOINT: 執行提交訂單事務 (建立 Orders + 建立 Order Details + 扣減庫存) ---
+        // URL: POST https://localhost:7146/api/SimpleGetAPI/SubmitOrder
+        [HttpPost("SubmitOrder")]
+        public string SubmitOrder([FromBody] Dictionary<string, string> payload)
+        {
+            if (payload == null ||
+                !payload.ContainsKey("customerNumber") ||
+                !payload.ContainsKey("itemID") ||
+                !payload.ContainsKey("quantity"))
+            {
+                return "FAILED_INVALID_PAYLOAD";
+            }
+
+            int customerNumber = int.Parse(payload["customerNumber"]);
+            string itemID = payload["itemID"];
+            int quantity = int.Parse(payload["quantity"]);
+
+            // 再次獲取單價並計算總金額
+            double unitPrice = 0.0;
+            switch (itemID)
+            {
+                case "FG001": unitPrice = 1500.00; break;
+                case "FG002": unitPrice = 5000.00; break;
+                case "FG003": unitPrice = 4450.00; break;
+                case "FG004": unitPrice = 1250.00; break;
+                case "FG005": unitPrice = 1550.00; break;
+            }
+            double totalAmount = unitPrice * quantity;
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            string connString = _configuration["ConnectionStrings"];
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                conn.Open();
+                // 啟動資料庫交易（Transaction），確保所有表格同時成功或失敗，防止庫存被扣除但訂單沒建立
+                using (MySqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. 檢查並驗證目前庫存量是否足夠
+                        string sqlCheckStock = "SELECT quantityInStock FROM inventory WHERE itemID = @itemID FOR UPDATE;";
+                        int currentStock = 0;
+                        using (MySqlCommand cmdCheck = new MySqlCommand(sqlCheckStock, conn, trans))
+                        {
+                            cmdCheck.Parameters.AddWithValue("@itemID", itemID);
+                            object stockObj = cmdCheck.ExecuteScalar();
+                            if (stockObj == null) return "FAILED_ITEM_NOT_FOUND";
+                            currentStock = Convert.ToInt32(stockObj);
+                        }
+
+                        if (currentStock < quantity)
+                        {
+                            return $"FAILED_INSUFFICIENT_STOCK:Available={currentStock}";
+                        }
+
+                        // 2. 插入資料至主單 `orders`
+                        string sqlOrder = "INSERT INTO `orders` (`orderDate`, `customerNumber`, `totalAmount`, `orderStatus`) " +
+                                          "VALUES (@orderDate, @custNum, @totalAmount, 'Pending'); SELECT LAST_INSERT_ID();";
+                        long newOrderNumber = 0;
+                        using (MySqlCommand cmdOrder = new MySqlCommand(sqlOrder, conn, trans))
+                        {
+                            cmdOrder.Parameters.AddWithValue("@orderDate", currentDate);
+                            cmdOrder.Parameters.AddWithValue("@custNum", customerNumber);
+                            cmdOrder.Parameters.AddWithValue("@totalAmount", totalAmount);
+                            newOrderNumber = Convert.ToInt64(cmdOrder.ExecuteScalar());
+                        }
+
+                        // 3. 插入資料至明細單 `order_details`
+                        string sqlDetails = "INSERT INTO `order_details` (`orderNumber`, `itemID`, `quantity`, `unitPrice`) " +
+                                            "VALUES (@orderNum, @itemID, @quantity, @unitPrice);";
+                        using (MySqlCommand cmdDetails = new MySqlCommand(sqlDetails, conn, trans))
+                        {
+                            cmdDetails.Parameters.AddWithValue("@orderNum", newOrderNumber);
+                            cmdDetails.Parameters.AddWithValue("@itemID", itemID);
+                            cmdDetails.Parameters.AddWithValue("@quantity", quantity);
+                            cmdDetails.Parameters.AddWithValue("@unitPrice", unitPrice);
+                            cmdDetails.Parameters.AddWithValue("@totalAmount", totalAmount);
+                            cmdDetails.ExecuteNonQuery();
+                        }
+
+                        // 4. 扣減 `inventory` 的成品庫存量
+                        string sqlUpdateStock = "UPDATE inventory SET quantityInStock = quantityInStock - @quantity WHERE itemID = @itemID;";
+                        using (MySqlCommand cmdUpdate = new MySqlCommand(sqlUpdateStock, conn, trans))
+                        {
+                            cmdUpdate.Parameters.AddWithValue("@quantity", quantity);
+                            cmdUpdate.Parameters.AddWithValue("@itemID", itemID);
+                            cmdUpdate.ExecuteNonQuery();
+                        }
+
+                        // 認可並提交以上所有操作
+                        trans.Commit();
+                        return $"SUCCESS:{newOrderNumber}";
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback(); // 發生異常時全面撤銷回滾
+                        return $"ERROR:{ex.Message}";
+                    }
+                }
+            }
+        }
 
 
         //REGISTER

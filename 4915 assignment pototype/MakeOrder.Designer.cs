@@ -33,7 +33,7 @@
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(62, 46);
+            btnBack.Location = new Point(33, 40);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(75, 23);
             btnBack.TabIndex = 0;
@@ -45,10 +45,11 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 429);
             Controls.Add(btnBack);
             Name = "MakeOrder";
             Text = "MakeOrder";
+            Load += MakeOrder_Load;
             ResumeLayout(false);
         }
 

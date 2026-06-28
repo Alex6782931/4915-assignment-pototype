@@ -256,6 +256,101 @@ namespace SDP_WebAPI.Controllers
                 return 0;
             }
         }
+        // --- FIXED ENDPOINT: 獲取指定客戶的歷史訂單 ---
+        // URL: GET https://localhost:7146/api/SimpleGetAPI/GetOrderHistory?customerNumber=103
+        [HttpGet("GetOrderHistory")]
+        public string GetOrderHistory([FromQuery] int customerNumber)
+        {
+            string connString = _configuration["ConnectionStrings"];
+
+            // 使用 AS 別名對接前端：orderStatus 對應 status，totalAmount 對應 comments (用作顯示總金額)
+            string query = "SELECT orderNumber, orderDate, orderStatus AS status, totalAmount AS comments " +
+                           "FROM orders WHERE customerNumber = @custNum ORDER BY orderDate DESC";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt);
+
+                            var list = new List<Dictionary<string, string>>();
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                var dict = new Dictionary<string, string>();
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                                }
+                                list.Add(dict);
+                            }
+                            return JsonSerializer.Serialize(list);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
+        // --- FIXED ENDPOINT: 搜尋指定客戶的特定訂單號碼或狀態 ---
+        // URL: GET https://localhost:7146/api/SimpleGetAPI/SearchOrderHistory?customerNumber=103&keyword=Shipped
+        [HttpGet("SearchOrderHistory")]
+        public string SearchOrderHistory([FromQuery] int customerNumber, [FromQuery] string keyword)
+        {
+            string connString = _configuration["ConnectionStrings"];
+
+            // 使用 AS 別名對接前端，並調整搜尋欄位為 orderStatus
+            string query = "SELECT orderNumber, orderDate, orderStatus AS status, totalAmount AS comments " +
+                           "FROM orders " +
+                           "WHERE customerNumber = @custNum AND (orderNumber LIKE @keyword OR orderStatus LIKE @keyword) " +
+                           "ORDER BY orderDate DESC";
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@custNum", customerNumber);
+                        cmd.Parameters.AddWithValue("@keyword", $"%{keyword}%");
+
+                        using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt);
+
+                            var list = new List<Dictionary<string, string>>();
+                            foreach (DataRow row in dt.Rows)
+                            {
+                                var dict = new Dictionary<string, string>();
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                                }
+                                list.Add(dict);
+                            }
+                            return JsonSerializer.Serialize(list);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
 
 
         //AFTER SERVICE RECORDS TABLE

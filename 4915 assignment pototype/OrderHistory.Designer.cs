@@ -50,7 +50,7 @@
             // btnOHback
             // 
             btnOHback.Location = new Point(12, 12);
-            btnOHback.Margin = new Padding(2, 2, 2, 2);
+            btnOHback.Margin = new Padding(2);
             btnOHback.Name = "btnOHback";
             btnOHback.Size = new Size(55, 27);
             btnOHback.TabIndex = 1;
@@ -71,7 +71,7 @@
             // txtbOHsearch
             // 
             txtbOHsearch.Location = new Point(78, 68);
-            txtbOHsearch.Margin = new Padding(2, 2, 2, 2);
+            txtbOHsearch.Margin = new Padding(2);
             txtbOHsearch.Name = "txtbOHsearch";
             txtbOHsearch.Size = new Size(186, 23);
             txtbOHsearch.TabIndex = 3;
@@ -79,18 +79,19 @@
             // btnOHsearch
             // 
             btnOHsearch.Location = new Point(273, 68);
-            btnOHsearch.Margin = new Padding(2, 2, 2, 2);
+            btnOHsearch.Margin = new Padding(2);
             btnOHsearch.Name = "btnOHsearch";
             btnOHsearch.Size = new Size(84, 20);
             btnOHsearch.TabIndex = 4;
             btnOHsearch.Text = "Search";
             btnOHsearch.UseVisualStyleBackColor = true;
+            btnOHsearch.Click += btnOHsearch_Click;
             // 
             // dataOH
             // 
             dataOH.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataOH.Location = new Point(11, 104);
-            dataOH.Margin = new Padding(2, 2, 2, 2);
+            dataOH.Margin = new Padding(2);
             dataOH.Name = "dataOH";
             dataOH.RowHeadersWidth = 62;
             dataOH.Size = new Size(477, 114);
@@ -107,9 +108,10 @@
             Controls.Add(label2);
             Controls.Add(btnOHback);
             Controls.Add(label1);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "OrderHistory";
             Text = "OrderHistory";
+            Load += OrderHistory_Load;
             ((System.ComponentModel.ISupportInitialize)dataOH).EndInit();
             ResumeLayout(false);
             PerformLayout();

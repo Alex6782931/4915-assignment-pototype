@@ -51,9 +51,16 @@ namespace _4915_assignment_pototype
         // 2. View Order History
         private void Btnviewhistory_Click(object sender, EventArgs e)
         {
-            OrderHistory orderForm = new OrderHistory();
-            NavigateTo(orderForm);
 
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                OrderHistory orderForm = new OrderHistory(customerIdInt); // 👈 傳入轉換後的整數 ID
+                NavigateTo(orderForm);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Customer ID format. Cannot load order history.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 

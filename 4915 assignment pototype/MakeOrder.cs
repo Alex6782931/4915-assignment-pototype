@@ -23,5 +23,10 @@ namespace _4915_assignment_pototype
             mainForm.Show();
             this.Close();
         }
+
+        private void MakeOrder_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

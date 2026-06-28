@@ -49,18 +49,18 @@
             // lblwel
             // 
             lblwel.AutoSize = true;
-            lblwel.Location = new Point(401, 95);
+            lblwel.Location = new Point(351, 71);
             lblwel.Margin = new Padding(4, 0, 4, 0);
             lblwel.Name = "lblwel";
-            lblwel.Size = new Size(0, 20);
+            lblwel.Size = new Size(0, 15);
             lblwel.TabIndex = 0;
             // 
             // btnGoOrders
             // 
-            btnGoOrders.Location = new Point(65, 190);
-            btnGoOrders.Margin = new Padding(4);
+            btnGoOrders.Location = new Point(57, 142);
+            btnGoOrders.Margin = new Padding(4, 3, 4, 3);
             btnGoOrders.Name = "btnGoOrders";
-            btnGoOrders.Size = new Size(103, 30);
+            btnGoOrders.Size = new Size(90, 22);
             btnGoOrders.TabIndex = 1;
             btnGoOrders.Text = "Order";
             btnGoOrders.UseVisualStyleBackColor = true;
@@ -68,10 +68,10 @@
             // 
             // btnGoInventory
             // 
-            btnGoInventory.Location = new Point(336, 250);
-            btnGoInventory.Margin = new Padding(4);
+            btnGoInventory.Location = new Point(294, 188);
+            btnGoInventory.Margin = new Padding(4, 3, 4, 3);
             btnGoInventory.Name = "btnGoInventory";
-            btnGoInventory.Size = new Size(103, 30);
+            btnGoInventory.Size = new Size(90, 22);
             btnGoInventory.TabIndex = 2;
             btnGoInventory.Text = "Inventory";
             btnGoInventory.UseVisualStyleBackColor = true;
@@ -79,10 +79,10 @@
             // 
             // btnGoLogistics
             // 
-            btnGoLogistics.Location = new Point(65, 250);
-            btnGoLogistics.Margin = new Padding(4);
+            btnGoLogistics.Location = new Point(57, 188);
+            btnGoLogistics.Margin = new Padding(4, 3, 4, 3);
             btnGoLogistics.Name = "btnGoLogistics";
-            btnGoLogistics.Size = new Size(103, 30);
+            btnGoLogistics.Size = new Size(90, 22);
             btnGoLogistics.TabIndex = 4;
             btnGoLogistics.Text = "Logistics";
             btnGoLogistics.UseVisualStyleBackColor = true;
@@ -90,10 +90,10 @@
             // 
             // btnGoUser_account
             // 
-            btnGoUser_account.Location = new Point(620, 190);
-            btnGoUser_account.Margin = new Padding(4);
+            btnGoUser_account.Location = new Point(542, 142);
+            btnGoUser_account.Margin = new Padding(4, 3, 4, 3);
             btnGoUser_account.Name = "btnGoUser_account";
-            btnGoUser_account.Size = new Size(112, 33);
+            btnGoUser_account.Size = new Size(98, 25);
             btnGoUser_account.TabIndex = 5;
             btnGoUser_account.Text = "User Accounts";
             btnGoUser_account.UseVisualStyleBackColor = true;
@@ -101,10 +101,10 @@
             // 
             // btnGoStaff
             // 
-            btnGoStaff.Location = new Point(620, 250);
-            btnGoStaff.Margin = new Padding(4);
+            btnGoStaff.Location = new Point(542, 188);
+            btnGoStaff.Margin = new Padding(4, 3, 4, 3);
             btnGoStaff.Name = "btnGoStaff";
-            btnGoStaff.Size = new Size(112, 30);
+            btnGoStaff.Size = new Size(98, 22);
             btnGoStaff.TabIndex = 6;
             btnGoStaff.Text = "Staff";
             btnGoStaff.UseVisualStyleBackColor = true;
@@ -113,29 +113,29 @@
             // lblstaffname
             // 
             lblstaffname.AutoSize = true;
-            lblstaffname.Location = new Point(54, 35);
+            lblstaffname.Location = new Point(47, 26);
             lblstaffname.Margin = new Padding(4, 0, 4, 0);
             lblstaffname.Name = "lblstaffname";
-            lblstaffname.Size = new Size(69, 20);
+            lblstaffname.Size = new Size(58, 15);
             lblstaffname.TabIndex = 7;
             lblstaffname.Text = "welcome";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(54, 95);
+            label2.Location = new Point(47, 71);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(197, 20);
+            label2.Size = new Size(168, 15);
             label2.TabIndex = 8;
             label2.Text = "please choose youe function";
             // 
             // btnGoProcurement
             // 
-            btnGoProcurement.Location = new Point(336, 188);
-            btnGoProcurement.Margin = new Padding(4);
+            btnGoProcurement.Location = new Point(294, 141);
+            btnGoProcurement.Margin = new Padding(4, 3, 4, 3);
             btnGoProcurement.Name = "btnGoProcurement";
-            btnGoProcurement.Size = new Size(103, 30);
+            btnGoProcurement.Size = new Size(90, 22);
             btnGoProcurement.TabIndex = 9;
             btnGoProcurement.Text = "Procurement";
             btnGoProcurement.UseVisualStyleBackColor = true;
@@ -143,10 +143,10 @@
             // 
             // btnGoAfterService
             // 
-            btnGoAfterService.Location = new Point(65, 310);
-            btnGoAfterService.Margin = new Padding(4);
+            btnGoAfterService.Location = new Point(57, 232);
+            btnGoAfterService.Margin = new Padding(4, 3, 4, 3);
             btnGoAfterService.Name = "btnGoAfterService";
-            btnGoAfterService.Size = new Size(103, 36);
+            btnGoAfterService.Size = new Size(90, 27);
             btnGoAfterService.TabIndex = 10;
             btnGoAfterService.Text = "After service";
             btnGoAfterService.UseVisualStyleBackColor = true;
@@ -154,10 +154,10 @@
             // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(793, 35);
-            btnLogout.Margin = new Padding(4);
+            btnLogout.Location = new Point(694, 26);
+            btnLogout.Margin = new Padding(4, 3, 4, 3);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(86, 30);
+            btnLogout.Size = new Size(75, 22);
             btnLogout.TabIndex = 11;
             btnLogout.Text = "Logout";
             btnLogout.UseVisualStyleBackColor = true;
@@ -165,10 +165,10 @@
             // 
             // btnGoCustomer
             // 
-            btnGoCustomer.Location = new Point(620, 310);
-            btnGoCustomer.Margin = new Padding(4);
+            btnGoCustomer.Location = new Point(542, 232);
+            btnGoCustomer.Margin = new Padding(4, 3, 4, 3);
             btnGoCustomer.Name = "btnGoCustomer";
-            btnGoCustomer.Size = new Size(112, 30);
+            btnGoCustomer.Size = new Size(98, 22);
             btnGoCustomer.TabIndex = 12;
             btnGoCustomer.Text = "Customer";
             btnGoCustomer.UseVisualStyleBackColor = true;
@@ -177,38 +177,39 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(65, 164);
+            label1.Location = new Point(57, 123);
             label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(108, 20);
+            label1.Size = new Size(94, 15);
             label1.TabIndex = 13;
             label1.Text = "Order Manage:";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(336, 164);
+            label3.Location = new Point(294, 123);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new Size(125, 20);
+            label3.Size = new Size(108, 15);
             label3.TabIndex = 14;
             label3.Text = "Material Manage:";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(620, 164);
+            label4.Location = new Point(542, 123);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-            label4.Size = new Size(159, 20);
+            label4.Size = new Size(137, 15);
             label4.TabIndex = 15;
             label4.Text = "Personal Info Manage: ";
             // 
             // btnGoSupplier
             // 
-            btnGoSupplier.Location = new Point(620, 376);
+            btnGoSupplier.Location = new Point(542, 282);
+            btnGoSupplier.Margin = new Padding(3, 2, 3, 2);
             btnGoSupplier.Name = "btnGoSupplier";
-            btnGoSupplier.Size = new Size(112, 29);
+            btnGoSupplier.Size = new Size(98, 22);
             btnGoSupplier.TabIndex = 16;
             btnGoSupplier.Text = "Supplier";
             btnGoSupplier.UseVisualStyleBackColor = true;
@@ -216,9 +217,9 @@
             // 
             // staffMain
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(914, 600);
+            ClientSize = new Size(800, 450);
             Controls.Add(btnGoSupplier);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -235,7 +236,7 @@
             Controls.Add(btnGoInventory);
             Controls.Add(btnGoOrders);
             Controls.Add(lblwel);
-            Margin = new Padding(4);
+            Margin = new Padding(4, 3, 4, 3);
             Name = "staffMain";
             Text = "staffMain";
             ResumeLayout(false);

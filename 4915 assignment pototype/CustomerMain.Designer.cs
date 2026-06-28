@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomerMain));
             lblwelcome = new Label();
             btnmakeorder = new Button();
             btnviewhistory = new Button();
@@ -37,6 +38,10 @@
             btnpayment = new Button();
             label1 = new Label();
             label2 = new Label();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
             // 
             // lblwelcome
@@ -51,7 +56,7 @@
             // 
             // btnmakeorder
             // 
-            btnmakeorder.Location = new Point(60, 115);
+            btnmakeorder.Location = new Point(49, 140);
             btnmakeorder.Margin = new Padding(2);
             btnmakeorder.Name = "btnmakeorder";
             btnmakeorder.Size = new Size(112, 27);
@@ -62,7 +67,7 @@
             // 
             // btnviewhistory
             // 
-            btnviewhistory.Location = new Point(60, 169);
+            btnviewhistory.Location = new Point(49, 194);
             btnviewhistory.Margin = new Padding(2);
             btnviewhistory.Name = "btnviewhistory";
             btnviewhistory.Size = new Size(112, 23);
@@ -72,7 +77,7 @@
             // 
             // btncancelorder
             // 
-            btncancelorder.Location = new Point(60, 218);
+            btncancelorder.Location = new Point(49, 243);
             btncancelorder.Margin = new Padding(2);
             btncancelorder.Name = "btncancelorder";
             btncancelorder.Size = new Size(101, 28);
@@ -83,7 +88,7 @@
             // 
             // btnaddress
             // 
-            btnaddress.Location = new Point(284, 115);
+            btnaddress.Location = new Point(267, 170);
             btnaddress.Margin = new Padding(2);
             btnaddress.Name = "btnaddress";
             btnaddress.Size = new Size(162, 27);
@@ -93,7 +98,7 @@
             // 
             // btnlogout
             // 
-            btnlogout.Location = new Point(395, 20);
+            btnlogout.Location = new Point(422, 11);
             btnlogout.Margin = new Padding(2);
             btnlogout.Name = "btnlogout";
             btnlogout.Size = new Size(76, 31);
@@ -103,7 +108,7 @@
             // 
             // btnpayment
             // 
-            btnpayment.Location = new Point(283, 169);
+            btnpayment.Location = new Point(266, 224);
             btnpayment.Margin = new Padding(2);
             btnpayment.Name = "btnpayment";
             btnpayment.Size = new Size(188, 23);
@@ -115,7 +120,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(60, 80);
+            label1.Location = new Point(60, 54);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
             label1.Size = new Size(86, 15);
@@ -125,18 +130,40 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(283, 80);
+            label2.Location = new Point(283, 54);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
             label2.Size = new Size(125, 15);
             label2.TabIndex = 8;
             label2.Text = "personal information";
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(69, 78);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(63, 59);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
+            pictureBox2.Location = new Point(299, 78);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(87, 79);
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox2.TabIndex = 10;
+            pictureBox2.TabStop = false;
+            // 
             // CustomerMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(509, 293);
+            Controls.Add(pictureBox2);
+            Controls.Add(pictureBox1);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnpayment);
@@ -150,6 +177,8 @@
             Name = "CustomerMain";
             Text = "CustomerMian";
             Load += CustomerMain_Load;
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -165,5 +194,7 @@
         private Button btnpayment;
         private Label label1;
         private Label label2;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
     }
 }

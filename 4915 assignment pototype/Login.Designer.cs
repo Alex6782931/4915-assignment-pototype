@@ -43,45 +43,45 @@
             // lbluserName
             // 
             lbluserName.AutoSize = true;
-            lbluserName.Location = new Point(15, 102);
-            lbluserName.Margin = new Padding(4, 0, 4, 0);
+            lbluserName.Location = new Point(24, 156);
+            lbluserName.Margin = new Padding(6, 0, 6, 0);
             lbluserName.Name = "lbluserName";
-            lbluserName.Size = new Size(68, 15);
+            lbluserName.Size = new Size(103, 23);
             lbluserName.TabIndex = 1;
             lbluserName.Text = "user Name";
             // 
             // lblpassword
             // 
             lblpassword.AutoSize = true;
-            lblpassword.Location = new Point(15, 166);
-            lblpassword.Margin = new Padding(4, 0, 4, 0);
+            lblpassword.Location = new Point(24, 255);
+            lblpassword.Margin = new Padding(6, 0, 6, 0);
             lblpassword.Name = "lblpassword";
-            lblpassword.Size = new Size(60, 15);
+            lblpassword.Size = new Size(90, 23);
             lblpassword.TabIndex = 2;
             lblpassword.Text = "Password";
             // 
             // txtUsername
             // 
-            txtUsername.Location = new Point(104, 99);
-            txtUsername.Margin = new Padding(4, 3, 4, 3);
+            txtUsername.Location = new Point(163, 152);
+            txtUsername.Margin = new Padding(6, 5, 6, 5);
             txtUsername.Name = "txtUsername";
-            txtUsername.Size = new Size(124, 23);
+            txtUsername.Size = new Size(193, 30);
             txtUsername.TabIndex = 3;
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(104, 163);
-            txtPassword.Margin = new Padding(4, 3, 4, 3);
+            txtPassword.Location = new Point(163, 250);
+            txtPassword.Margin = new Padding(6, 5, 6, 5);
             txtPassword.Name = "txtPassword";
-            txtPassword.Size = new Size(124, 23);
+            txtPassword.Size = new Size(193, 30);
             txtPassword.TabIndex = 4;
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(44, 221);
-            btnLogin.Margin = new Padding(4, 3, 4, 3);
+            btnLogin.Location = new Point(69, 339);
+            btnLogin.Margin = new Padding(6, 5, 6, 5);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(75, 22);
+            btnLogin.Size = new Size(118, 34);
             btnLogin.TabIndex = 5;
             btnLogin.Text = "Login";
             btnLogin.UseVisualStyleBackColor = true;
@@ -89,10 +89,9 @@
             // 
             // btnregister
             // 
-            btnregister.Location = new Point(143, 218);
-            btnregister.Margin = new Padding(2, 2, 2, 2);
+            btnregister.Location = new Point(225, 334);
             btnregister.Name = "btnregister";
-            btnregister.Size = new Size(80, 25);
+            btnregister.Size = new Size(126, 38);
             btnregister.TabIndex = 6;
             btnregister.Text = "Register";
             btnregister.UseVisualStyleBackColor = true;
@@ -101,28 +100,28 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(30, 40);
-            label1.Margin = new Padding(2, 0, 2, 0);
+            label1.Location = new Point(47, 61);
             label1.Name = "label1";
-            label1.Size = new Size(42, 15);
+            label1.Size = new Size(62, 23);
             label1.TabIndex = 7;
             label1.Text = "Login ";
             // 
             // pictureBox1
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(266, -1);
+            pictureBox1.Location = new Point(418, -2);
+            pictureBox1.Margin = new Padding(5, 5, 5, 5);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(283, 389);
+            pictureBox1.Size = new Size(445, 596);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 8;
             pictureBox1.TabStop = false;
             // 
             // Login
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(543, 383);
+            ClientSize = new Size(853, 587);
             Controls.Add(pictureBox1);
             Controls.Add(label1);
             Controls.Add(btnregister);
@@ -131,9 +130,10 @@
             Controls.Add(txtUsername);
             Controls.Add(lblpassword);
             Controls.Add(lbluserName);
-            Margin = new Padding(4, 3, 4, 3);
+            Margin = new Padding(6, 5, 6, 5);
             Name = "Login";
             Text = "Login";
+            Load += Login_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

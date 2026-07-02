@@ -15,6 +15,8 @@ namespace _4915_assignment_pototype
             InitializeComponent();
         }
 
+
+
         private async void btnLogin_Click(object sender, EventArgs e)
         {
             string user = txtUsername.Text.Trim();
@@ -71,7 +73,7 @@ namespace _4915_assignment_pototype
 
                             string customerId = dataParts.Length > 1 ? dataParts[1] : string.Empty;
 
-                            MessageBox.Show($"Access Granted! Welcome back Customer.\nAuthorized Role: {actualRole}\nCustomer ID: {customerId}");
+                            MessageBox.Show($"Access Granted! Welcome back Customer");
 
                             this.FormClosed -= Login_FormClosed;
 
@@ -114,6 +116,11 @@ namespace _4915_assignment_pototype
             this.Hide();
             Register newForm = new Register();
             newForm.Show();
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+            txtPassword.PasswordChar = '*';
         }
     }
 }

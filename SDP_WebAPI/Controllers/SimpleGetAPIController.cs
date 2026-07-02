@@ -177,12 +177,12 @@ namespace SDP_WebAPI.Controllers
         //REGISTER
         [HttpPost("VerifyRegister")]
         public string VerifyRegister([FromQuery] string username,
-                             [FromQuery] string password,
-                             [FromQuery] string firstname,
-                             [FromQuery] string lastname,
-                             [FromQuery] string phone,
-                             [FromQuery] string city = "Unknown",
-                             [FromQuery] string country = "Unknown")
+                                     [FromQuery] string password,
+                                     [FromQuery] string firstname,
+                                     [FromQuery] string lastname,
+                                     [FromQuery] string phone,
+                                     [FromQuery] string city = "Unknown",
+                                     [FromQuery] string country = "Unknown")
         {
             string connString = _configuration["ConnectionStrings"];
 
@@ -216,10 +216,11 @@ namespace SDP_WebAPI.Controllers
                             }
                         }
 
+                        // Removed state and postalCode to match the schema from samplecompany (1) (2).sql
                         string sqlInsertCustomer = @"INSERT INTO customer 
-                    (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, staffID, creditLimit) 
-                    VALUES 
-                    (@customerNumber, @customerName, @contactLastName, @contactFirstName, @phone, NULL, NULL, @city, NULL, NULL, @country, NULL, NULL);";
+            (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, country, staffID, creditLimit) 
+            VALUES 
+            (@customerNumber, @customerName, @contactLastName, @contactFirstName, @phone, 'Unknown', NULL, @city, @country, NULL, NULL);";
 
                         using (MySql.Data.MySqlClient.MySqlCommand cmdCust = new MySql.Data.MySqlClient.MySqlCommand(sqlInsertCustomer, conn, transaction))
                         {
@@ -235,7 +236,7 @@ namespace SDP_WebAPI.Controllers
                         }
 
                         string sqlInsertAccount = @"INSERT INTO user_accounts (username, passwordHash, staffID, customerID, accessLevel) 
-                                            VALUES (@username, @passwordHash, NULL, @customerID, 'Customer');";
+                                    VALUES (@username, @passwordHash, NULL, @customerID, 'Customer');";
 
                         using (MySql.Data.MySqlClient.MySqlCommand cmdAcc = new MySql.Data.MySqlClient.MySqlCommand(sqlInsertAccount, conn, transaction))
                         {
@@ -1435,13 +1436,27 @@ namespace SDP_WebAPI.Controllers
         }
 
 
+        [HttpGet("GetCustomerName/{customerId}")]
+        public IActionResult GetCustomerName(int customerId)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            GetCompanyData dboGetCompanyData = new GetCompanyData(connString);
 
+            string sqlCmd = $"SELECT customerName FROM customer WHERE customerNumber = {customerId}";
+            DataTable dt = dboGetCompanyData.GetData(sqlCmd);
+
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                string name = dt.Rows[0]["customerName"]?.ToString() ?? "Customer";
+                return Ok(new { customerName = name });
+            }
+
+            return NotFound("Customer not found");
+        }
 
 
         [HttpPost("ChangePassword")]
-        public string ChangePassword([FromQuery] string username,
-                                 [FromQuery] string oldPassword,
-                                 [FromQuery] string newPassword)
+        public string ChangePassword([FromQuery] string customerId, [FromQuery] string oldPassword, [FromQuery] string newPassword)
         {
             string connString = _configuration["ConnectionStrings"];
 
@@ -1449,10 +1464,10 @@ namespace SDP_WebAPI.Controllers
             {
                 conn.Open();
 
-                string sqlCheck = "SELECT passwordHash FROM useraccounts WHERE username = @username;";
+                string sqlCheck = "SELECT passwordHash FROM user_accounts WHERE customerID = @customerID;";
                 using (MySql.Data.MySqlClient.MySqlCommand cmdCheck = new MySql.Data.MySqlClient.MySqlCommand(sqlCheck, conn))
                 {
-                    cmdCheck.Parameters.AddWithValue("@username", username);
+                    cmdCheck.Parameters.AddWithValue("@customerID", customerId);
                     object result = cmdCheck.ExecuteScalar();
 
                     if (result == null)
@@ -1467,11 +1482,11 @@ namespace SDP_WebAPI.Controllers
                     }
                 }
 
-                string sqlUpdate = "UPDATE useraccounts SET passwordHash = @newPassword WHERE username = @username;";
+                string sqlUpdate = "UPDATE user_accounts SET passwordHash = @newPassword WHERE customerID = @customerID;";
                 using (MySql.Data.MySqlClient.MySqlCommand cmdUpdate = new MySql.Data.MySqlClient.MySqlCommand(sqlUpdate, conn))
                 {
                     cmdUpdate.Parameters.AddWithValue("@newPassword", newPassword);
-                    cmdUpdate.Parameters.AddWithValue("@username", username);
+                    cmdUpdate.Parameters.AddWithValue("@customerID", customerId);
 
                     int rows = cmdUpdate.ExecuteNonQuery();
                     if (rows > 0)

@@ -9,22 +9,22 @@ namespace _4915_assignment_pototype
     {
         private int currentCustomerNumber;
 
-        // Constructor accepting the targeted user reference key ID
         public changepassword(int customerNumber)
         {
             InitializeComponent();
             this.currentCustomerNumber = customerNumber;
+            oldpass.PasswordChar = '*';
+            newpass.PasswordChar = '*';
+            confirmpass.PasswordChar = '*';
         }
 
         private async void btnsubmit_Click(object sender, EventArgs e)
         {
-            string username = oldpass.Text.Trim();
             string oldPassword = oldpass.Text.Trim();
             string newPassword = newpass.Text.Trim();
             string confirmPassword = confirmpass.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(username) ||
-                string.IsNullOrWhiteSpace(oldPassword) ||
+            if (string.IsNullOrWhiteSpace(oldPassword) ||
                 string.IsNullOrWhiteSpace(newPassword) ||
                 string.IsNullOrWhiteSpace(confirmPassword))
             {
@@ -42,7 +42,7 @@ namespace _4915_assignment_pototype
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string apiUrl = $"https://your-api-url/api/account/changepassword?username={Uri.EscapeDataString(username)}&oldPassword={Uri.EscapeDataString(oldPassword)}&newPassword={Uri.EscapeDataString(newPassword)}";
+                    string apiUrl = $"https://localhost:7146/api/SimpleGetAPI/ChangePassword?customerId={Uri.EscapeDataString(currentCustomerNumber.ToString())}&oldPassword={Uri.EscapeDataString(oldPassword)}&newPassword={Uri.EscapeDataString(newPassword)}";
                     HttpResponseMessage response = await client.PostAsync(apiUrl, null);
                     string result = await response.Content.ReadAsStringAsync();
 

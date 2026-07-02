@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -23,12 +25,8 @@ namespace _4915_assignment_pototype
         public CustomerMain(string customerId) : this()
         {
             _loggedInCustomerId = customerId;
-
         }
 
-        /// <summary>
-        /// Binds the click events of the designer buttons to their respective logic methods.
-        /// </summary>
         private void AttachEventHandlers()
         {
             btnviewhistory.Click += Btnviewhistory_Click;
@@ -37,22 +35,11 @@ namespace _4915_assignment_pototype
             btnlogout.Click += Btnlogout_Click;
         }
 
-        // 1. Order Product
-        /*private void Btnmakeorder_Click(object sender, EventArgs e)
-        {
-            MakeOrder orderForm = new MakeOrder();
-            NavigateTo(orderForm);
-
-            MessageBox.Show("Navigating to Order Product Screen...", "Prototype Action");
-        }*/
-
-        // 2. View Order History
         private void Btnviewhistory_Click(object sender, EventArgs e)
         {
-
             if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
             {
-                OrderHistory orderForm = new OrderHistory(customerIdInt); // 👈 傳入轉換後的整數 ID
+                OrderHistory orderForm = new OrderHistory(customerIdInt);
                 NavigateTo(orderForm);
             }
             else
@@ -60,7 +47,6 @@ namespace _4915_assignment_pototype
                 MessageBox.Show("Invalid Customer ID format. Cannot load order history.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         private void Btnaddress_Click(object sender, EventArgs e)
         {
@@ -73,11 +59,8 @@ namespace _4915_assignment_pototype
             {
                 MessageBox.Show("Invalid Customer ID format. Cannot load profile details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
-        // 5. Modify Payment Information
-        // 5. Modify Payment Information
         private void Btnpayment_Click(object sender, EventArgs e)
         {
             if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
@@ -91,8 +74,6 @@ namespace _4915_assignment_pototype
             }
         }
 
-
-        // 6. Logout
         private void Btnlogout_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Are you sure you want to log out?", "Logout", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -100,22 +81,17 @@ namespace _4915_assignment_pototype
             if (result == DialogResult.Yes)
             {
                 this.FormClosed -= CustomerMain_FormClosed;
-
                 Login loginForm = new Login();
                 loginForm.Show();
-
                 this.Close();
             }
         }
 
-        /// <summary>
-        /// Helper method to streamline form transition mechanics
-        /// </summary>
         private void NavigateTo(Form nextForm)
         {
-            this.Hide();            // Hides the current dashboard
-            nextForm.ShowDialog();  // Opens the next screen as a modal window
-            this.Show();            // Brings the dashboard back once the sub-screen is closed
+            this.Hide();
+            nextForm.ShowDialog();
+            this.Show();
         }
 
         private void CustomerMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -123,16 +99,52 @@ namespace _4915_assignment_pototype
             Application.Exit();
         }
 
-        private void CustomerMain_Load(object sender, EventArgs e)
+        private async void CustomerMain_Load(object sender, EventArgs e)
         {
-            lblwelcome.Text = $"Welcome back,: {_loggedInCustomerId}";
+            lblwelcome.Text = "Loading details...";
+
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                string customerName = await FetchCustomerNameFromApi(customerIdInt);
+                lblwelcome.Text = $"Welcome back, {customerName} ";
+            }
+            else
+            {
+                lblwelcome.Text = $"Welcome back, Customer ({_loggedInCustomerId})";
+            }
+        }
+
+        private async Task<string> FetchCustomerNameFromApi(int customerId)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/GetCustomerName/{customerId}";
+                    HttpResponseMessage response = await client.GetAsync(url);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonString = await response.Content.ReadAsStringAsync();
+                        using (JsonDocument doc = JsonDocument.Parse(jsonString))
+                        {
+                            if (doc.RootElement.TryGetProperty("customerName", out JsonElement nameElement))
+                            {
+                                return nameElement.GetString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return "Customer";
         }
 
         private void btnpayment_Click_1(object sender, EventArgs e)
         {
-
         }
-
 
         private void btncancelorder_Click(object sender, EventArgs e)
         {

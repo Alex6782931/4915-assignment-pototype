@@ -166,7 +166,7 @@ namespace SDP_WebAPI.Controllers
                     }
                     catch (Exception ex)
                     {
-                        trans.Rollback();  
+                        trans.Rollback();
                         return $"ERROR:{ex.Message}";
                     }
                 }
@@ -241,7 +241,7 @@ namespace SDP_WebAPI.Controllers
                         {
                             cmdAcc.Parameters.AddWithValue("@username", username);
                             cmdAcc.Parameters.AddWithValue("@passwordHash", password);
-                            cmdAcc.Parameters.AddWithValue("@customerID", newCustomerNumber);  
+                            cmdAcc.Parameters.AddWithValue("@customerID", newCustomerNumber);
 
                             cmdAcc.ExecuteNonQuery();
                         }
@@ -1423,7 +1423,7 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
-       
+
         /// <summary>
         /// Data Transfer Object (DTO) matching the anonymous payload serialized by the frontend.
         /// </summary>
@@ -1434,14 +1434,14 @@ namespace SDP_WebAPI.Controllers
             public int OrderNumber { get; set; }
         }
 
-    }
 
 
 
-    [HttpPost("ChangePassword")]
+
+        [HttpPost("ChangePassword")]
         public string ChangePassword([FromQuery] string username,
-                             [FromQuery] string oldPassword,
-                             [FromQuery] string newPassword)
+                                 [FromQuery] string oldPassword,
+                                 [FromQuery] string newPassword)
         {
             string connString = _configuration["ConnectionStrings"];
 
@@ -1487,5 +1487,6 @@ namespace SDP_WebAPI.Controllers
 
 
     }
+}
 
 

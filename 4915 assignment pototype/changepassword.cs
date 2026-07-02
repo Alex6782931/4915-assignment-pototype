@@ -7,17 +7,21 @@ namespace _4915_assignment_pototype
 {
     public partial class changepassword : Form
     {
-        public changepassword()
+        private int currentCustomerNumber;
+
+        // Constructor accepting the targeted user reference key ID
+        public changepassword(int customerNumber)
         {
             InitializeComponent();
+            this.currentCustomerNumber = customerNumber;
         }
 
         private async void btnsubmit_Click(object sender, EventArgs e)
         {
             string username = oldpass.Text.Trim();
-            string oldPassword = .Text.Trim();
-            string newPassword = txtnewpassword.Text.Trim();
-            string confirmPassword = txtconfirmpassword.Text.Trim();
+            string oldPassword = oldpass.Text.Trim();
+            string newPassword = newpass.Text.Trim();
+            string confirmPassword = confirmpass.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(username) ||
                 string.IsNullOrWhiteSpace(oldPassword) ||

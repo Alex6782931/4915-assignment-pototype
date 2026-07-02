@@ -259,6 +259,8 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
+
+
         //CUSTOMER TABLE
 
         [HttpGet("GetCustomerData")]
@@ -1420,18 +1422,70 @@ namespace SDP_WebAPI.Controllers
                 return StatusCode(500, $"An error occurred during mutation: {ex.Message}");
             }
         }
+
+       
+        /// <summary>
+        /// Data Transfer Object (DTO) matching the anonymous payload serialized by the frontend.
+        /// </summary>
+        public class CancelOrderRequest
+        {
+            // System.Text.Json uses case-insensitive matching by default, 
+            // mapping 'orderNumber' from frontend to this property.
+            public int OrderNumber { get; set; }
+        }
+
     }
 
-    /// <summary>
-    /// Data Transfer Object (DTO) matching the anonymous payload serialized by the frontend.
-    /// </summary>
-    public class CancelOrderRequest
-    {
-        // System.Text.Json uses case-insensitive matching by default, 
-        // mapping 'orderNumber' from frontend to this property.
-        public int OrderNumber { get; set; }
-    }
 
-}
+
+    [HttpPost("ChangePassword")]
+        public string ChangePassword([FromQuery] string username,
+                             [FromQuery] string oldPassword,
+                             [FromQuery] string newPassword)
+        {
+            string connString = _configuration["ConnectionStrings"];
+
+            using (MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(connString))
+            {
+                conn.Open();
+
+                string sqlCheck = "SELECT passwordHash FROM useraccounts WHERE username = @username;";
+                using (MySql.Data.MySqlClient.MySqlCommand cmdCheck = new MySql.Data.MySqlClient.MySqlCommand(sqlCheck, conn))
+                {
+                    cmdCheck.Parameters.AddWithValue("@username", username);
+                    object result = cmdCheck.ExecuteScalar();
+
+                    if (result == null)
+                    {
+                        return "FAILED_USER_NOT_FOUND";
+                    }
+
+                    string storedPassword = result.ToString();
+                    if (storedPassword != oldPassword)
+                    {
+                        return "FAILED_OLD_PASSWORD_INVALID";
+                    }
+                }
+
+                string sqlUpdate = "UPDATE useraccounts SET passwordHash = @newPassword WHERE username = @username;";
+                using (MySql.Data.MySqlClient.MySqlCommand cmdUpdate = new MySql.Data.MySqlClient.MySqlCommand(sqlUpdate, conn))
+                {
+                    cmdUpdate.Parameters.AddWithValue("@newPassword", newPassword);
+                    cmdUpdate.Parameters.AddWithValue("@username", username);
+
+                    int rows = cmdUpdate.ExecuteNonQuery();
+                    if (rows > 0)
+                    {
+                        return "SUCCESS_PASSWORD_UPDATED";
+                    }
+
+                    return "FAILED_UPDATE";
+                }
+            }
+        }
+
+
+
+    }
 
 

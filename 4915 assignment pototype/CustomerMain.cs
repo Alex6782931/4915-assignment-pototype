@@ -82,7 +82,7 @@ namespace _4915_assignment_pototype
         {
             if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
             {
-                payment paymentForm = new payment(customerIdInt); 
+                payment paymentForm = new payment(customerIdInt);
                 NavigateTo(paymentForm);
             }
             else
@@ -133,7 +133,7 @@ namespace _4915_assignment_pototype
 
         }
 
-        
+
         private void btncancelorder_Click(object sender, EventArgs e)
         {
             Cancel cancelForm = new Cancel(_loggedInCustomerId);
@@ -145,8 +145,21 @@ namespace _4915_assignment_pototype
         {
             if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
             {
-                MakeOrder orderForm = new MakeOrder(customerIdInt);  
+                MakeOrder orderForm = new MakeOrder(customerIdInt);
                 NavigateTo(orderForm);
+            }
+            else
+            {
+                MessageBox.Show("Invalid Customer ID format. Cannot proceed to order.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnchange_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(_loggedInCustomerId, out int customerIdInt))
+            {
+                changepassword changeForm = new changepassword(customerIdInt);
+                NavigateTo(changeForm);
             }
             else
             {

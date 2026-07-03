@@ -12,16 +12,91 @@ namespace _4915_assignment_pototype.staff
 {
     public partial class staffMain : Form
     {
-        public staffMain()
+        private string currentUserRole;
+
+        // Constructor accepting the role string passed from Login.cs
+        public staffMain(string role)
         {
             InitializeComponent();
+            this.currentUserRole = role;
+            ConfigureAccess();
+        }
+
+        private void ConfigureAccess()
+        {
+            // 1. Hide EVERYTHING by default to keep the UI clean and secure
+            btnGoOrders.Visible = false;
+            btnGoLogistics.Visible = false;
+            btnGoAfterService.Visible = false;
+            btncustomize.Visible = false;
+
+            btnGoProcurement.Visible = false;
+            btnGoInventory.Visible = false;
+
+            btnGoUser_account.Visible = false;
+            btnGoStaff.Visible = false;
+            btnGoCustomer.Visible = false;
+            btnGoSupplier.Visible = false;
+
+            // 2. Enable buttons based on database accessLevel. 
+            // The FlowLayoutPanels automatically shift lower buttons up to close any blank gaps.
+            switch (currentUserRole)
+            {
+                case "Admin":
+                    // Admin can see and click every function
+                    btnGoOrders.Visible = true;
+                    btnGoLogistics.Visible = true;
+                    btnGoAfterService.Visible = true;
+                    btncustomize.Visible = true;
+                    btnGoProcurement.Visible = true;
+                    btnGoInventory.Visible = true;
+                    btnGoUser_account.Visible = true;
+                    btnGoStaff.Visible = true;
+                    btnGoCustomer.Visible = true;
+                    btnGoSupplier.Visible = true;
+                    break;
+
+                case "Sales":
+                    btnGoOrders.Visible = true;
+                    btnGoCustomer.Visible = true;
+                    btnGoAfterService.Visible = true;
+                    break;
+
+                case "Warehouse":
+                    btnGoInventory.Visible = true;
+                    btnGoLogistics.Visible = true;
+                    break;
+
+                case "Procurement":
+                    btnGoProcurement.Visible = true;
+                    btnGoSupplier.Visible = true;
+                    break;
+
+                case "Logistics":
+                    btnGoLogistics.Visible = true;
+                    break;
+
+                case "Production":
+                    btnGoInventory.Visible = true;
+                    break;
+
+                case "After-Service":
+                    btnGoAfterService.Visible = true;
+                    btnGoCustomer.Visible = true;
+                    break;
+
+                default:
+                    // Fallback configuration if an unexpected role logs in
+                    MessageBox.Show("Warning: Limited menu permissions applied for this account session.");
+                    break;
+            }
         }
 
         private void btnGoCustomer_Click(object sender, EventArgs e)
         {
             Customer customerForm = new Customer();
             customerForm.Show();
-            this.Hide(); // Hides the main menu so it stays cleanly in the background
+            this.Hide();
         }
 
         private void btnGoAfterService_Click(object sender, EventArgs e)
@@ -33,7 +108,7 @@ namespace _4915_assignment_pototype.staff
 
         private void btnGoOrders_Click(object sender, EventArgs e)
         {
-            Order orderForm = new Order(); // Ensure lowercase 'o' matches your file name!
+            Order orderForm = new Order();
             orderForm.Show();
             this.Hide();
         }
@@ -82,16 +157,13 @@ namespace _4915_assignment_pototype.staff
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            // 1. Create and show a fresh instance of the login window
             Login loginForm = new Login();
             loginForm.Show();
-
-            // 2. Permanently close and dispose of the main menu form
             this.Close();
         }
+
         private void StaffMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-
             Application.Exit();
         }
     }

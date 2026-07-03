@@ -52,14 +52,15 @@ namespace _4915_assignment_pototype
                             string routeData = result.Replace("STAFF_ROUTE:", "");
 
                             string[] dataParts = routeData.Split(',');
-                            string actualRole = dataParts[0];
+                            string actualRole = dataParts[0]; // This holds 'Admin', 'Sales', etc.
                             string staffId = dataParts.Length > 1 ? dataParts[1] : string.Empty;
 
                             MessageBox.Show($"Access Granted! Welcome back Internal Staff.\nAuthorized Role: {actualRole}\nStaff ID: {staffId}");
 
                             this.FormClosed -= Login_FormClosed;
 
-                            staffMain mainMenu = new staffMain();
+                            // PASS THE ROLE INTO THE CONSTRUCTOR HERE
+                            staffMain mainMenu = new staffMain(actualRole);
                             mainMenu.Show();
 
                             this.Hide();
@@ -88,7 +89,15 @@ namespace _4915_assignment_pototype
 
                             this.FormClosed -= Login_FormClosed;
 
-                            staffMain mainMenu = new staffMain();
+                            string fallbackRole = "Unknown";
+                            if (result.StartsWith("UNKNOWN_ROUTE:"))
+                            {
+                                string routeData = result.Replace("UNKNOWN_ROUTE:", "");
+                                string[] dataParts = routeData.Split(',');
+                                fallbackRole = dataParts[0];
+                            }
+
+                            staffMain mainMenu = new staffMain(fallbackRole);
                             mainMenu.Show();
 
                             this.Hide();

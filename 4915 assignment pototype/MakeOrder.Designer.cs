@@ -43,6 +43,7 @@
             lblcount = new Label();
             btnorder = new Button();
             txtcount = new TextBox();
+            btncustomize = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox7).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox8).BeginInit();
@@ -52,9 +53,10 @@
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(12, 12);
+            btnBack.Location = new Point(19, 18);
+            btnBack.Margin = new Padding(5, 5, 5, 5);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(75, 23);
+            btnBack.Size = new Size(118, 35);
             btnBack.TabIndex = 0;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
@@ -63,9 +65,10 @@
             // rbtn6
             // 
             rbtn6.AutoSize = true;
-            rbtn6.Location = new Point(77, 81);
+            rbtn6.Location = new Point(121, 124);
+            rbtn6.Margin = new Padding(5, 5, 5, 5);
             rbtn6.Name = "rbtn6";
-            rbtn6.Size = new Size(156, 19);
+            rbtn6.Size = new Size(233, 27);
             rbtn6.TabIndex = 16;
             rbtn6.TabStop = true;
             rbtn6.Text = "Ergonomic Office Chair";
@@ -74,9 +77,10 @@
             // rbtn7
             // 
             rbtn7.AutoSize = true;
-            rbtn7.Location = new Point(286, 81);
+            rbtn7.Location = new Point(449, 124);
+            rbtn7.Margin = new Padding(5, 5, 5, 5);
             rbtn7.Name = "rbtn7";
-            rbtn7.Size = new Size(162, 19);
+            rbtn7.Size = new Size(238, 27);
             rbtn7.TabIndex = 17;
             rbtn7.TabStop = true;
             rbtn7.Text = "Mahogany Dining Table";
@@ -85,9 +89,10 @@
             // rbtn8
             // 
             rbtn8.AutoSize = true;
-            rbtn8.Location = new Point(511, 81);
+            rbtn8.Location = new Point(803, 124);
+            rbtn8.Margin = new Padding(5, 5, 5, 5);
             rbtn8.Name = "rbtn8";
-            rbtn8.Size = new Size(140, 19);
+            rbtn8.Size = new Size(207, 27);
             rbtn8.TabIndex = 18;
             rbtn8.TabStop = true;
             rbtn8.Text = "3-Seater Velvet Sofa";
@@ -96,9 +101,10 @@
             // rbtn9
             // 
             rbtn9.AutoSize = true;
-            rbtn9.Location = new Point(726, 81);
+            rbtn9.Location = new Point(1141, 124);
+            rbtn9.Margin = new Padding(5, 5, 5, 5);
             rbtn9.Name = "rbtn9";
-            rbtn9.Size = new Size(148, 19);
+            rbtn9.Size = new Size(225, 27);
             rbtn9.TabIndex = 19;
             rbtn9.TabStop = true;
             rbtn9.Text = "Minimalist Study Desk";
@@ -107,9 +113,10 @@
             // rbtn10
             // 
             rbtn10.AutoSize = true;
-            rbtn10.Location = new Point(957, 83);
+            rbtn10.Location = new Point(1504, 127);
+            rbtn10.Margin = new Padding(5, 5, 5, 5);
             rbtn10.Name = "rbtn10";
-            rbtn10.Size = new Size(161, 19);
+            rbtn10.Size = new Size(238, 27);
             rbtn10.TabIndex = 20;
             rbtn10.TabStop = true;
             rbtn10.Text = "Modular Bookcase Rack";
@@ -118,9 +125,10 @@
             // pictureBox6
             // 
             pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
-            pictureBox6.Location = new Point(76, 106);
+            pictureBox6.Location = new Point(119, 163);
+            pictureBox6.Margin = new Padding(5, 5, 5, 5);
             pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(152, 191);
+            pictureBox6.Size = new Size(239, 293);
             pictureBox6.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox6.TabIndex = 21;
             pictureBox6.TabStop = false;
@@ -128,9 +136,10 @@
             // pictureBox7
             // 
             pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
-            pictureBox7.Location = new Point(284, 106);
+            pictureBox7.Location = new Point(446, 163);
+            pictureBox7.Margin = new Padding(5, 5, 5, 5);
             pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(158, 191);
+            pictureBox7.Size = new Size(248, 293);
             pictureBox7.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox7.TabIndex = 22;
             pictureBox7.TabStop = false;
@@ -138,9 +147,10 @@
             // pictureBox8
             // 
             pictureBox8.Image = (Image)resources.GetObject("pictureBox8.Image");
-            pictureBox8.Location = new Point(511, 106);
+            pictureBox8.Location = new Point(803, 163);
+            pictureBox8.Margin = new Padding(5, 5, 5, 5);
             pictureBox8.Name = "pictureBox8";
-            pictureBox8.Size = new Size(147, 191);
+            pictureBox8.Size = new Size(231, 293);
             pictureBox8.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox8.TabIndex = 23;
             pictureBox8.TabStop = false;
@@ -148,9 +158,10 @@
             // pictureBox9
             // 
             pictureBox9.Image = (Image)resources.GetObject("pictureBox9.Image");
-            pictureBox9.Location = new Point(726, 106);
+            pictureBox9.Location = new Point(1141, 163);
+            pictureBox9.Margin = new Padding(5, 5, 5, 5);
             pictureBox9.Name = "pictureBox9";
-            pictureBox9.Size = new Size(158, 191);
+            pictureBox9.Size = new Size(248, 293);
             pictureBox9.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox9.TabIndex = 24;
             pictureBox9.TabStop = false;
@@ -158,9 +169,10 @@
             // pictureBox10
             // 
             pictureBox10.Image = (Image)resources.GetObject("pictureBox10.Image");
-            pictureBox10.Location = new Point(948, 108);
+            pictureBox10.Location = new Point(1490, 166);
+            pictureBox10.Margin = new Padding(5, 5, 5, 5);
             pictureBox10.Name = "pictureBox10";
-            pictureBox10.Size = new Size(156, 187);
+            pictureBox10.Size = new Size(245, 287);
             pictureBox10.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox10.TabIndex = 25;
             pictureBox10.TabStop = false;
@@ -168,17 +180,19 @@
             // lblcount
             // 
             lblcount.AutoSize = true;
-            lblcount.Location = new Point(77, 368);
+            lblcount.Location = new Point(121, 564);
+            lblcount.Margin = new Padding(5, 0, 5, 0);
             lblcount.Name = "lblcount";
-            lblcount.Size = new Size(305, 15);
+            lblcount.Size = new Size(465, 23);
             lblcount.TabIndex = 26;
             lblcount.Text = "Please enter the count of  products you want to order";
             // 
             // btnorder
             // 
-            btnorder.Location = new Point(567, 368);
+            btnorder.Location = new Point(891, 564);
+            btnorder.Margin = new Padding(5, 5, 5, 5);
             btnorder.Name = "btnorder";
-            btnorder.Size = new Size(75, 23);
+            btnorder.Size = new Size(118, 35);
             btnorder.TabIndex = 27;
             btnorder.Text = "Order";
             btnorder.UseVisualStyleBackColor = true;
@@ -186,16 +200,27 @@
             // 
             // txtcount
             // 
-            txtcount.Location = new Point(408, 368);
+            txtcount.Location = new Point(641, 564);
+            txtcount.Margin = new Padding(5, 5, 5, 5);
             txtcount.Name = "txtcount";
-            txtcount.Size = new Size(100, 23);
+            txtcount.Size = new Size(155, 30);
             txtcount.TabIndex = 28;
+            // 
+            // btncustomize
+            // 
+            btncustomize.Location = new Point(1070, 565);
+            btncustomize.Name = "btncustomize";
+            btncustomize.Size = new Size(112, 34);
+            btncustomize.TabIndex = 29;
+            btncustomize.Text = "customize";
+            btncustomize.UseVisualStyleBackColor = true;
             // 
             // MakeOrder
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1293, 523);
+            ClientSize = new Size(2032, 802);
+            Controls.Add(btncustomize);
             Controls.Add(txtcount);
             Controls.Add(btnorder);
             Controls.Add(lblcount);
@@ -210,6 +235,7 @@
             Controls.Add(rbtn7);
             Controls.Add(rbtn6);
             Controls.Add(btnBack);
+            Margin = new Padding(5, 5, 5, 5);
             Name = "MakeOrder";
             Text = "MakeOrder";
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
@@ -237,5 +263,6 @@
         private Label lblcount;
         private Button btnorder;
         private TextBox txtcount;
+        private Button btncustomize;
     }
 }

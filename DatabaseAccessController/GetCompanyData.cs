@@ -11,6 +11,39 @@ namespace DatabaseAccessController
     {
         public GetCompanyData(string connectionString) : base(connectionString) { }
 
+        //CUSTOMIZE
+        // CUSTOMIZE TABLE
+        public DataTable GetCustomizeRecordsData()
+        {
+            String sqlCmd = "SELECT * FROM Customize";
+            return base.GetData(sqlCmd);
+        }
+        public int UpdateCustomizeStatus(int customizeID, string newStatus)
+        {
+            // Sanitizing input to prevent SQL injection
+            string sqlCmd = $"UPDATE Customize SET status = '{newStatus.Replace("'", "''")}' WHERE customizeID = {customizeID}";
+            return base.BatchUpdate(sqlCmd);
+        }
+        public int InsertCustomizeRequiredData(int dID, int dQty, int lID, int lQty, string color, string size, string desc)
+        {
+            string sqlCmd = $@"INSERT INTO CustomizeRequired 
+    (desktopMaterialID, desktopQty, legMaterialID, legQty, color, size, description) 
+    VALUES ({dID}, {dQty}, {lID}, {lQty}, '{color.Replace("'", "''")}', 
+    '{size.Replace("'", "''")}', '{desc.Replace("'", "''")}')";
+
+            return base.BatchUpdate(sqlCmd); // Uses ExecuteNonQuery internally
+        }
+
+        // UPDATE INVENTORY
+        public int UpdateInventoryQty(int materialID, int quantityToReduce)
+        {
+            string sqlCmd = $@"UPDATE inventory 
+                       SET materialQty = materialQty - {quantityToReduce} 
+                       WHERE materialID = {materialID}";
+
+            return base.BatchUpdate(sqlCmd); // Uses ExecuteNonQuery internally
+        }
+
         //LOGIN
         public DataTable GetUserAccountData(string username)
         {
@@ -56,6 +89,7 @@ namespace DatabaseAccessController
             String sqlCmd = "SELECT * FROM after_service_records";
             return base.GetData(sqlCmd);
         }
+
 
         public int UpdateAfterServiceRecordsData(DataTable dtUpdated)
         {

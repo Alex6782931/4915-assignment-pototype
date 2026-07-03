@@ -103,7 +103,7 @@
             // 
             // btnpayment
             // 
-            btnpayment.Location = new Point(418, 343);
+            btnpayment.Location = new Point(410, 327);
             btnpayment.Name = "btnpayment";
             btnpayment.Size = new Size(295, 35);
             btnpayment.TabIndex = 6;
@@ -133,7 +133,7 @@
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(108, 120);
-            pictureBox1.Margin = new Padding(5, 5, 5, 5);
+            pictureBox1.Margin = new Padding(5);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(99, 90);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -144,7 +144,7 @@
             // 
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
             pictureBox2.Location = new Point(470, 120);
-            pictureBox2.Margin = new Padding(5, 5, 5, 5);
+            pictureBox2.Margin = new Padding(5);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(137, 121);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -153,7 +153,7 @@
             // 
             // btnchange
             // 
-            btnchange.Location = new Point(425, 403);
+            btnchange.Location = new Point(425, 393);
             btnchange.Name = "btnchange";
             btnchange.Size = new Size(250, 34);
             btnchange.TabIndex = 11;

@@ -1498,9 +1498,112 @@ namespace SDP_WebAPI.Controllers
                 }
             }
         }
+        //CUSTOMIZE
+        [HttpGet("GetCustomizeRecordsData")]
+        public string GetCustomizeRecordsData()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
 
+            // Fetching all columns from the Customize table
+            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price ,statusFROM Customize");
 
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtResult.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtResult.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
 
+        [HttpGet("FindCustomizeRecordsData")]
+        public string FindCustomizeRecordsData([FromQuery] string customizeID)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
+
+            // Using customizeID for filtering
+            DataTable dtResult = db.GetData($"SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price,status FROM Customize WHERE customizeID = '{customizeID.Replace("'", "''")}'");
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dtResult.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dtResult.Columns) dict[col.ColumnName] = row[col].ToString();
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+        [HttpPost("RejectCustomizeOrder")]
+        public int RejectCustomizeOrder([FromBody] Dictionary<string, string> payload)
+        {
+            if (payload.ContainsKey("customizeID") && int.TryParse(payload["customizeID"], out int id))
+            {
+                string connString = _configuration["ConnectionStrings"];
+                GetCompanyData dbo = new GetCompanyData(connString);
+                return dbo.UpdateCustomizeStatus(id, "rejected");
+            }
+            return 0;
+        }
+
+        [HttpPost("ConfirmCustomizeOrder")]
+        public int ConfirmCustomizeOrder([FromBody] Dictionary<string, string> payload)
+        {
+            try
+            {
+                string custID = payload["customizeID"];
+                string dID = payload["desktopMaterialID"]; // Matches 'RM001', etc.
+                int dQty = int.Parse(payload["desktopQty"]);
+                string lID = payload["legMaterialID"];    // Matches 'RM002', etc.
+                int lQty = int.Parse(payload["legQty"]);
+
+                string connString = _configuration["ConnectionStrings"];
+
+                using (MySqlConnection conn = new MySqlConnection(connString))
+                {
+                    conn.Open();
+                    using (var transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            // 1. Reduce Desktop Material from inventory
+                            string sqlUpdateDesktop = "UPDATE inventory SET quantityInStock = quantityInStock - @dQty WHERE itemID = @dID";
+                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateDesktop, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@dQty", dQty);
+                                cmd.Parameters.AddWithValue("@dID", dID);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            // 2. Reduce Leg Material from inventory
+                            string sqlUpdateLeg = "UPDATE inventory SET quantityInStock = quantityInStock - @lQty WHERE itemID = @lID";
+                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateLeg, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@lQty", lQty);
+                                cmd.Parameters.AddWithValue("@lID", lID);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            // 3. Update Customize status
+                            string sqlUpdateStatus = "UPDATE Customize SET status = 'determined' WHERE customizeID = @custID";
+                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateStatus, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@custID", custID);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            transaction.Commit();
+                            return 1;
+                        }
+                        catch { transaction.Rollback(); return 0; }
+                    }
+                }
+            }
+            catch { return 0; }
+        }
     }
 }
 

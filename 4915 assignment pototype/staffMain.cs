@@ -166,5 +166,12 @@ namespace _4915_assignment_pototype.staff
         {
             Application.Exit();
         }
+
+        private void btncustomize_Click(object sender, EventArgs e)
+        {
+            customizeOrder customizeForm = new customizeOrder();
+            customizeForm.Show();
+            this.Hide();
+        }
     }
 }

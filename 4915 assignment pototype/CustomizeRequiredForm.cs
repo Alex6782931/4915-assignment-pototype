@@ -1,46 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data;
 
 namespace _4915_assignment_pototype
 {
     public partial class CustomizeRequiredForm : Form
     {
-
         private DataRow _selectedData;
 
         public CustomizeRequiredForm(DataRow row)
         {
             InitializeComponent();
             _selectedData = row;
-
-            // Now you can access all data, e.g., 
-            // txtPrice.Text = _selectedData["price"].ToString();
+        }
+        private void btnback_Click(object sender, EventArgs e) {
+            this.Hide();
         }
         private void CustomizeRequiredForm_Load(object sender, EventArgs e)
         {
-
         }
 
         private async void btndetermine_Click(object sender, EventArgs e)
         {
-            var payload = new
+            var payload = new Dictionary<string, string>
             {
-                customizeID = _selectedData["customizeID"].ToString(),
-                dID = _selectedData["desktopMaterialID"].ToString(),
-                dQty = txtdtqty.Text, // Map your input
-                lID = _selectedData["legMaterialID"].ToString(),
-                lQty = txtlqty.Text,     // Map your input
-                color = _selectedData["color"].ToString(),
-                size = _selectedData["size"].ToString(),
-                desc = _selectedData["description"].ToString()
+                { "customizeID", _selectedData["customizeID"].ToString() },
+                { "desktopMaterialID", _selectedData["desktopMaterialID"].ToString() },
+                { "desktopQty", txtdtqty.Text },
+                { "legMaterialID", _selectedData["legMaterialID"].ToString() },
+                { "legQty", txtlqty.Text },
+                { "color", _selectedData["color"].ToString() },
+                { "size", _selectedData["size"].ToString() },
+                { "description", _selectedData["description"].ToString() }
+                /* 
+                // FUTURE IMAGE FEATURE:
+                { "fileBase64", base64String } 
+                */
             };
 
             using (HttpClient client = new HttpClient())
@@ -54,12 +53,11 @@ namespace _4915_assignment_pototype
                     MessageBox.Show("Order determined successfully.");
                     this.Close();
                 }
+                else
+                {
+                    MessageBox.Show("Failed to process order.");
+                }
             }
-        }
-
-        private void btnback_Click(object sender, EventArgs e)
-        {
-            this.Hide();
         }
     }
 }

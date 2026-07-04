@@ -97,6 +97,7 @@
             btncustomizesearch.TabIndex = 7;
             btncustomizesearch.Text = "Search";
             btncustomizesearch.UseVisualStyleBackColor = true;
+            btncustomizesearch.Click += btncustomizesearch_Click;
             // 
             // btncustomixeclear
             // 
@@ -107,6 +108,7 @@
             btncustomixeclear.TabIndex = 8;
             btncustomixeclear.Text = "Clear";
             btncustomixeclear.UseVisualStyleBackColor = true;
+            btncustomixeclear.Click += btncustomixeclear_Click;
             // 
             // btncustomizedeter
             // 

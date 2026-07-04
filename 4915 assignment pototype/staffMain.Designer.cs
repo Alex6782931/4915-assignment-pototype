@@ -98,6 +98,7 @@
             btncustomize.Size = new Size(150, 35);
             btncustomize.TabIndex = 3;
             btncustomize.Text = "Customize order";
+            btncustomize.Click += btncustomize_Click;
             // 
             // flowMaterial
             // 

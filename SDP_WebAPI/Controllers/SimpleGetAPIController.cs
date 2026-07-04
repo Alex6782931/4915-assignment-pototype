@@ -1506,7 +1506,7 @@ namespace SDP_WebAPI.Controllers
             DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
 
             // Fetching all columns from the Customize table
-            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price ,statusFROM Customize");
+            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price, status FROM Customize");
 
             var list = new List<Dictionary<string, object>>();
             foreach (DataRow row in dtResult.Rows)
@@ -1517,6 +1517,8 @@ namespace SDP_WebAPI.Controllers
             }
             return System.Text.Json.JsonSerializer.Serialize(list);
         }
+
+
 
         [HttpGet("FindCustomizeRecordsData")]
         public string FindCustomizeRecordsData([FromQuery] string customizeID)
@@ -1555,13 +1557,15 @@ namespace SDP_WebAPI.Controllers
             try
             {
                 string custID = payload["customizeID"];
-                string dID = payload["desktopMaterialID"]; // Matches 'RM001', etc.
+                string dID = payload["desktopMaterialID"];
                 int dQty = int.Parse(payload["desktopQty"]);
-                string lID = payload["legMaterialID"];    // Matches 'RM002', etc.
+                string lID = payload["legMaterialID"];
                 int lQty = int.Parse(payload["legQty"]);
+                string color = payload["color"];
+                string size = payload["size"];
+                string desc = payload["description"];
 
                 string connString = _configuration["ConnectionStrings"];
-
                 using (MySqlConnection conn = new MySqlConnection(connString))
                 {
                     conn.Open();
@@ -1569,25 +1573,40 @@ namespace SDP_WebAPI.Controllers
                     {
                         try
                         {
-                            // 1. Reduce Desktop Material from inventory
-                            string sqlUpdateDesktop = "UPDATE inventory SET quantityInStock = quantityInStock - @dQty WHERE itemID = @dID";
-                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateDesktop, conn, transaction))
+                            // 1. Update Inventory for Desktop and Leg
+                            string sqlUpdateInv = "UPDATE inventory SET quantityInStock = quantityInStock - @qty WHERE itemID = @id";
+                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateInv, conn, transaction))
                             {
-                                cmd.Parameters.AddWithValue("@dQty", dQty);
+                                cmd.Parameters.AddWithValue("@qty", dQty);
+                                cmd.Parameters.AddWithValue("@id", dID);
+                                cmd.ExecuteNonQuery();
+                                cmd.Parameters["@qty"].Value = lQty;
+                                cmd.Parameters["@id"].Value = lID;
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            // 2. Insert into CustomizeRequired
+                            string sqlInsert = @"INSERT INTO CustomizeRequired 
+                        (desktopMaterialID, desktopQty, legMaterialID, legQty, color, size, description) 
+                        VALUES (@dID, @dQty, @lID, @lQty, @color, @size, @desc)";
+                            /* 
+                            // FUTURE IMAGE FEATURE:
+                            // Add ", file" to INSERT INTO and ", @file" to VALUES
+                            // cmd.Parameters.Add("@file", MySqlDbType.LongBlob).Value = (object)fileData ?? DBNull.Value;
+                            */
+                            using (MySqlCommand cmd = new MySqlCommand(sqlInsert, conn, transaction))
+                            {
                                 cmd.Parameters.AddWithValue("@dID", dID);
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            // 2. Reduce Leg Material from inventory
-                            string sqlUpdateLeg = "UPDATE inventory SET quantityInStock = quantityInStock - @lQty WHERE itemID = @lID";
-                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateLeg, conn, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@lQty", lQty);
+                                cmd.Parameters.AddWithValue("@dQty", dQty);
                                 cmd.Parameters.AddWithValue("@lID", lID);
+                                cmd.Parameters.AddWithValue("@lQty", lQty);
+                                cmd.Parameters.AddWithValue("@color", color);
+                                cmd.Parameters.AddWithValue("@size", size);
+                                cmd.Parameters.AddWithValue("@desc", desc);
                                 cmd.ExecuteNonQuery();
                             }
 
-                            // 3. Update Customize status
+                            // 3. Update status
                             string sqlUpdateStatus = "UPDATE Customize SET status = 'determined' WHERE customizeID = @custID";
                             using (MySqlCommand cmd = new MySqlCommand(sqlUpdateStatus, conn, transaction))
                             {

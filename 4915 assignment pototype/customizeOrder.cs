@@ -20,7 +20,9 @@ namespace _4915_assignment_pototype
 
         private async void customizeOrder_Load(object sender, EventArgs e)
         {
-
+            DataTable dt = await GetCustomizeOrderFromApi();
+            dt.DefaultView.RowFilter = "status IN ('processing', 'determined', 'edited')";
+            datacustomize.DataSource = dt.DefaultView;
         }
 
         private async Task<DataTable> GetCustomizeOrderFromApi()

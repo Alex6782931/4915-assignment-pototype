@@ -37,6 +37,7 @@ namespace _4915_assignment_pototype.staff
             btnGoStaff.Visible = false;
             btnGoCustomer.Visible = false;
             btnGoSupplier.Visible = false;
+            btncustomize.Visible = false ;
 
             // 2. Enable buttons based on database accessLevel. 
             // The FlowLayoutPanels automatically shift lower buttons up to close any blank gaps.
@@ -54,12 +55,14 @@ namespace _4915_assignment_pototype.staff
                     btnGoStaff.Visible = true;
                     btnGoCustomer.Visible = true;
                     btnGoSupplier.Visible = true;
+                    btncustomize.Visible = true;
                     break;
 
                 case "Sales":
                     btnGoOrders.Visible = true;
                     btnGoCustomer.Visible = true;
                     btnGoAfterService.Visible = true;
+                    btncustomize.Visible = true;
                     break;
 
                 case "Warehouse":
@@ -78,6 +81,7 @@ namespace _4915_assignment_pototype.staff
 
                 case "Production":
                     btnGoInventory.Visible = true;
+                    btncustomize.Visible = true;
                     break;
 
                 case "After-Service":

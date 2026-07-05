@@ -591,6 +591,7 @@ namespace SDP_WebAPI.Controllers
             return System.Text.Json.JsonSerializer.Serialize(list);
         }
 
+
         [HttpPost("UpdateOrderRecordsData")]
         public int UpdateOrderRecordsData([FromBody] SDP_EntityModels.JsonDataTable json)
         {
@@ -610,9 +611,14 @@ namespace SDP_WebAPI.Controllers
                             conn.Open();
                             foreach (var row in modifiedRows)
                             {
+                                // Handle potential NULL or empty values for the new foreign key
+                                string customID = (string.IsNullOrEmpty(row["customizeRequiredID"]) || row["customizeRequiredID"] == "NULL")
+                                                  ? "NULL" : row["customizeRequiredID"];
+
                                 string sqlUpdate = $@"UPDATE orders SET 
                             orderStatus = '{row["orderStatus"]}',
-                            totalAmount = {row["totalAmount"]}
+                            totalAmount = {row["totalAmount"]},
+                            customizeRequiredID = {customID}
                             WHERE orderNumber = {row["orderNumber"]};";
 
                                 using (MySql.Data.MySqlClient.MySqlCommand cmd = new MySql.Data.MySqlClient.MySqlCommand(sqlUpdate, conn))
@@ -626,7 +632,7 @@ namespace SDP_WebAPI.Controllers
                 }
                 return totalProcessedRows;
             }
-            catch (Exception) { return 0; }
+            catch (Exception ex) { return 0; }
         }
 
         //INVENTORY TABLE
@@ -1518,6 +1524,23 @@ namespace SDP_WebAPI.Controllers
             return System.Text.Json.JsonSerializer.Serialize(list);
         }
 
+        [HttpGet("CheckCustomizeRequired")]
+        public bool CheckCustomizeRequired(int customizeID)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                conn.Open();
+                // Check if the record exists for the provided ID
+                string query = "SELECT COUNT(*) FROM CustomizeRequired WHERE customizeID = @cID";
+                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@cID", customizeID);
+                    long count = (long)cmd.ExecuteScalar();
+                    return count > 0;
+                }
+            }
+        }
 
 
         [HttpGet("FindCustomizeRecordsData")]
@@ -1552,77 +1575,147 @@ namespace SDP_WebAPI.Controllers
         }
 
         [HttpPost("ConfirmCustomizeOrder")]
-        public int ConfirmCustomizeOrder([FromBody] Dictionary<string, string> payload)
+        public string ConfirmCustomizeOrder([FromBody] Dictionary<string, string> payload)
         {
-            try
+            string connString = _configuration["ConnectionStrings"];
+            bool isExisting = bool.Parse(payload["isExisting"]);
+            string priceCol = isExisting ? "newPrice" : "price";
+            string status = isExisting ? "edited" : "determined";
+
+            int cID = int.Parse(payload["customizeID"]);
+            int dQty = int.Parse(payload["desktopQty"]);
+            int lQty = int.Parse(payload["legQty"]);
+            string dMat = payload["desktopMaterialID"];
+            string lMat = payload["legMaterialID"];
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
             {
-                string custID = payload["customizeID"];
-                string dID = payload["desktopMaterialID"];
-                int dQty = int.Parse(payload["desktopQty"]);
-                string lID = payload["legMaterialID"];
-                int lQty = int.Parse(payload["legQty"]);
-                string color = payload["color"];
-                string size = payload["size"];
-                string desc = payload["description"];
+                conn.Open();
 
-                string connString = _configuration["ConnectionStrings"];
-                using (MySqlConnection conn = new MySqlConnection(connString))
+                // Inventory Check Function
+                bool IsStockAvailable(string itemId, int requestedQty, out string errorMsg)
                 {
-                    conn.Open();
-                    using (var transaction = conn.BeginTransaction())
+                    errorMsg = "";
+                    string checkSql = "SELECT quantityInStock FROM inventory WHERE itemID = @id";
+                    int currentStock = 0;
+
+                    using (MySqlCommand cmd = new MySqlCommand(checkSql, conn))
                     {
-                        try
+                        cmd.Parameters.AddWithValue("@id", itemId);
+                        var result = cmd.ExecuteScalar();
+                        currentStock = result != null ? Convert.ToInt32(result) : 0;
+                    }
+
+                    if (isExisting)
+                    {
+                        string getOldQtySql = @"SELECT IF(desktopMaterialID = @id, desktopQty, legQty) 
+                                        FROM CustomizeRequired WHERE customizeID = @cID 
+                                        AND (desktopMaterialID = @id OR legMaterialID = @id)";
+                        using (MySqlCommand cmd = new MySqlCommand(getOldQtySql, conn))
                         {
-                            // 1. Update Inventory for Desktop and Leg
-                            string sqlUpdateInv = "UPDATE inventory SET quantityInStock = quantityInStock - @qty WHERE itemID = @id";
-                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateInv, conn, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@qty", dQty);
-                                cmd.Parameters.AddWithValue("@id", dID);
-                                cmd.ExecuteNonQuery();
-                                cmd.Parameters["@qty"].Value = lQty;
-                                cmd.Parameters["@id"].Value = lID;
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            // 2. Insert into CustomizeRequired
-                            string sqlInsert = @"INSERT INTO CustomizeRequired 
-                        (desktopMaterialID, desktopQty, legMaterialID, legQty, color, size, description) 
-                        VALUES (@dID, @dQty, @lID, @lQty, @color, @size, @desc)";
-                            /* 
-                            // FUTURE IMAGE FEATURE:
-                            // Add ", file" to INSERT INTO and ", @file" to VALUES
-                            // cmd.Parameters.Add("@file", MySqlDbType.LongBlob).Value = (object)fileData ?? DBNull.Value;
-                            */
-                            using (MySqlCommand cmd = new MySqlCommand(sqlInsert, conn, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@dID", dID);
-                                cmd.Parameters.AddWithValue("@dQty", dQty);
-                                cmd.Parameters.AddWithValue("@lID", lID);
-                                cmd.Parameters.AddWithValue("@lQty", lQty);
-                                cmd.Parameters.AddWithValue("@color", color);
-                                cmd.Parameters.AddWithValue("@size", size);
-                                cmd.Parameters.AddWithValue("@desc", desc);
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            // 3. Update status
-                            string sqlUpdateStatus = "UPDATE Customize SET status = 'determined' WHERE customizeID = @custID";
-                            using (MySqlCommand cmd = new MySqlCommand(sqlUpdateStatus, conn, transaction))
-                            {
-                                cmd.Parameters.AddWithValue("@custID", custID);
-                                cmd.ExecuteNonQuery();
-                            }
-
-                            transaction.Commit();
-                            return 1;
+                            cmd.Parameters.AddWithValue("@id", itemId);
+                            cmd.Parameters.AddWithValue("@cID", cID);
+                            var oldQty = cmd.ExecuteScalar();
+                            if (oldQty != null) currentStock += Convert.ToInt32(oldQty);
                         }
-                        catch { transaction.Rollback(); return 0; }
+                    }
+
+                    if (currentStock < requestedQty)
+                    {
+                        errorMsg = $"Insufficient stock for material ID: {itemId}. Available: {currentStock}, Requested: {requestedQty}.";
+                        return false;
+                    }
+                    return true;
+                }
+
+                // Validate both
+                if (!IsStockAvailable(dMat, dQty, out string dErr)) return dErr;
+                if (!IsStockAvailable(lMat, lQty, out string lErr)) return lErr;
+
+                // Transaction
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        if (isExisting)
+                        {
+                            string revertSql = @"UPDATE inventory i JOIN CustomizeRequired cr ON i.itemID = cr.desktopMaterialID OR i.itemID = cr.legMaterialID 
+                                         SET i.quantityInStock = i.quantityInStock + IF(i.itemID = cr.desktopMaterialID, cr.desktopQty, cr.legQty) 
+                                         WHERE cr.customizeID = @cID";
+                            using (MySqlCommand cmd = new MySqlCommand(revertSql, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@cID", cID);
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            string updateReqSql = @"UPDATE CustomizeRequired SET desktopMaterialID = @dMat, desktopQty = @dQty, legMaterialID = @lMat, legQty = @lQty, type = @type, size = @size, color = @color WHERE customizeID = @cID";
+                            using (MySqlCommand cmd = new MySqlCommand(updateReqSql, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@dMat", dMat);
+                                cmd.Parameters.AddWithValue("@dQty", dQty);
+                                cmd.Parameters.AddWithValue("@lMat", lMat);
+                                cmd.Parameters.AddWithValue("@lQty", lQty);
+                                cmd.Parameters.AddWithValue("@type", payload["type"]);
+                                cmd.Parameters.AddWithValue("@size", payload["size"]);
+                                cmd.Parameters.AddWithValue("@color", payload["color"]);
+                                cmd.Parameters.AddWithValue("@cID", cID);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        else
+                        {
+                            string insertSql = @"INSERT INTO CustomizeRequired (customizeID, desktopMaterialID, desktopQty, legMaterialID, legQty, type, size, color) 
+                                         VALUES (@cID, @dMat, @dQty, @lMat, @lQty, @type, @size, @color)";
+                            using (MySqlCommand cmd = new MySqlCommand(insertSql, conn, transaction))
+                            {
+                                cmd.Parameters.AddWithValue("@cID", cID);
+                                cmd.Parameters.AddWithValue("@dMat", dMat);
+                                cmd.Parameters.AddWithValue("@dQty", dQty);
+                                cmd.Parameters.AddWithValue("@lMat", lMat);
+                                cmd.Parameters.AddWithValue("@lQty", lQty);
+                                cmd.Parameters.AddWithValue("@type", payload["type"]);
+                                cmd.Parameters.AddWithValue("@size", payload["size"]);
+                                cmd.Parameters.AddWithValue("@color", payload["color"]);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        string deductSql = "UPDATE inventory SET quantityInStock = quantityInStock - @qty WHERE itemID = @id";
+                        using (MySqlCommand cmd = new MySqlCommand(deductSql, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@qty", dQty);
+                            cmd.Parameters.AddWithValue("@id", dMat);
+                            cmd.ExecuteNonQuery();
+                            cmd.Parameters["@qty"].Value = lQty;
+                            cmd.Parameters["@id"].Value = lMat;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        string updateCustSql = $"UPDATE Customize SET status = @status, {priceCol} = @price WHERE customizeID = @cID";
+                        using (MySqlCommand cmd = new MySqlCommand(updateCustSql, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@status", status);
+                            cmd.Parameters.AddWithValue("@price", double.Parse(payload["price"]));
+                            cmd.Parameters.AddWithValue("@cID", cID);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                        return "SUCCESS";
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return "ERROR: " + ex.Message;
                     }
                 }
             }
-            catch { return 0; }
         }
+
+
+
+
+
     }
 }
 

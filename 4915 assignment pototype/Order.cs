@@ -167,6 +167,8 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("customerNumber", typeof(string));
             dataTable.Columns.Add("totalAmount", typeof(string));
             dataTable.Columns.Add("orderStatus", typeof(string));
+            // New column added to match database schema
+            dataTable.Columns.Add("customizeRequiredID", typeof(string));
             return dataTable;
         }
 

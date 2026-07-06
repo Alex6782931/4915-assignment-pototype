@@ -34,6 +34,12 @@ namespace DatabaseAccessController
             return base.BatchUpdate(sqlCmd); // Uses ExecuteNonQuery internally
         }
 
+        public DataTable GetAllCustomizeRequiredData()
+        {
+            String sqlCmd = "SELECT * FROM CustomizeRequired";
+            return base.GetData(sqlCmd);
+        }
+
         // UPDATE INVENTORY
         public int UpdateInventoryQty(int materialID, int quantityToReduce)
         {

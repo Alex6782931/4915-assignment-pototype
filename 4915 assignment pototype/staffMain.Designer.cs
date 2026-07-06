@@ -33,6 +33,7 @@
             btnGoLogistics = new Button();
             btnGoAfterService = new Button();
             btncustomize = new Button();
+            btncr = new Button();
             flowMaterial = new FlowLayoutPanel();
             btnGoProcurement = new Button();
             btnGoInventory = new Button();
@@ -58,6 +59,7 @@
             flowOrder.Controls.Add(btnGoLogistics);
             flowOrder.Controls.Add(btnGoAfterService);
             flowOrder.Controls.Add(btncustomize);
+            flowOrder.Controls.Add(btncr);
             flowOrder.FlowDirection = FlowDirection.TopDown;
             flowOrder.Location = new Point(40, 150);
             flowOrder.Name = "flowOrder";
@@ -99,6 +101,16 @@
             btncustomize.TabIndex = 3;
             btncustomize.Text = "Customize order";
             btncustomize.Click += btncustomize_Click;
+            // 
+            // btncr
+            // 
+            btncr.Location = new Point(3, 167);
+            btncr.Name = "btncr";
+            btncr.Size = new Size(150, 34);
+            btncr.TabIndex = 4;
+            btncr.Text = "customRequire";
+            btncr.UseVisualStyleBackColor = true;
+            btncr.Click += btncr_Click;
             // 
             // flowMaterial
             // 
@@ -264,5 +276,6 @@
         private FlowLayoutPanel flowOrder;
         private FlowLayoutPanel flowMaterial;
         private FlowLayoutPanel flowPersonal;
+        private Button btncr;
     }
 }

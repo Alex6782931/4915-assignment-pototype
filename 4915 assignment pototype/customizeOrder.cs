@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _4915_assignment_pototype.staff;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -109,6 +110,14 @@ namespace _4915_assignment_pototype
 
         private void btnBack_Click(object sender, EventArgs e)
         {
+
+            Form mainForm = Application.OpenForms["staffMain"];
+            if (mainForm != null)
+            {
+                mainForm.Show();
+            }
+
+            // Close the current table form cleanly
             this.Close();
         }
 

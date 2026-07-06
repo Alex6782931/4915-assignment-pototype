@@ -1712,7 +1712,59 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
+        [HttpGet("FindCustomizeRequiredData")]
+        public IActionResult FindCustomizeRequiredData([FromQuery] string searchTerm)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                GetCompanyData dbo = new GetCompanyData(connString);
+                DataTable dt = dbo.GetAllCustomizeRequiredData();
 
+                // Convert DataTable rows into a list of dictionaries
+                var rows = dt.AsEnumerable().Where(row =>
+                    row["customizeID"].ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    row["description"]?.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true
+                ).Select(row => {
+                    var dict = new Dictionary<string, object>();
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        dict[col.ColumnName] = row[col];
+                    }
+                    return dict;
+                }).ToList();
+
+                return Ok(rows); // Now returning a list of dictionaries, which is serializable
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("GetCustomizeRequiredData")]
+        public string GetCustomizeRequiredData()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            GetCompanyData dbo = new GetCompanyData(connString);
+            DataTable dt = dbo.GetAllCustomizeRequiredData();
+
+            // Convert DataTable to a clean List of Dictionaries
+            var list = new List<Dictionary<string, string>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var dict = new Dictionary<string, string>();
+                foreach (DataColumn col in dt.Columns)
+                {
+                    // Use .ToString() to ensure only values are serialized, not the Type
+                    dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                }
+                list.Add(dict);
+            }
+
+            // Serialize the list of dictionaries instead of the DataTable
+            return JsonSerializer.Serialize(list);
+        }
 
 
 

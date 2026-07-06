@@ -60,7 +60,7 @@ namespace _4915_assignment_pototype
                         {
                             newRow[property.Name] = property.Value.ToString();
                         }
-                    }
+                    }    
                     dataTable.Rows.Add(newRow);
                 }
             }

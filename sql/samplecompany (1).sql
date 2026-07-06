@@ -436,22 +436,23 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 INSERT INTO `customer` VALUES 
-(103, 'Atelier graphique', 'Schmtt', 'Carine', '40.32.2555', NULL, NULL, '54, rue Royale', 'Paris', 'France', '4532 7153 9024 1485', '2028-11-15', '382', NULL, 21000.00),
-(112, 'Signal Gift Stores', 'King', 'Jean', '7025551838', NULL, NULL, '8489 Strong St.', 'Las Vegas', 'USA', '5412 8831 0047 6291', '2027-04-02', '915', NULL, 71800.00),
-(114, 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', 'Level 3', NULL, '636 St Kilda Road', 'Melbourne', 'Australia', '3782 4916 2503 774', '2029-08-22', '4421', NULL, 117300.00),
-(119, 'La Rochelle Gifts', 'Labrune', 'Janine', '40.67.8555', NULL, NULL, '67, rue des Cinquante Otages', 'Nantes', 'France', '6011 0284 5591 3306', '2026-12-09', '073', NULL, 118200.00),
-(121, 'Baane Mini Imports', 'Bergulfsen', 'Jonas', '07-98 9555', NULL, NULL, 'Erling Skakkes gate 78', 'Stavern', 'Norway', '4916 9312 0054 8819', '2030-05-18', '516', NULL, 81700.00),
-(124, 'Mini Gifts Distributions Ltd.', 'Nelson', 'Susan', '4155551450', NULL, NULL, '5677 Strong St.', 'San Rafael', 'USA', NULL, NULL, NULL, NULL, 210500.00),
-(125, 'Havel & Zbyszek Co.', 'Piestrzeniewicz', 'Zbyszek', '(26) 642-7555', NULL, NULL, 'ul. Filtrowa 68', 'Warszawa', 'Poland', NULL, NULL, NULL, NULL, 0.00),
-(128, 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', NULL, NULL, 'Lyonerstr. 34', 'Frankfurt', 'Germany', NULL, NULL, NULL, NULL, 59700.00),
-(129, 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', NULL, NULL, '5557 North Line Rd.', 'South San Francisco', 'USA', NULL, NULL, NULL, NULL, 64600.00),
-(131, 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', NULL, NULL, '897 Long Airport Avenue', 'NYC', 'USA', NULL, NULL, NULL, NULL, 114900.00),
-(141, 'Euro+ Shopping Channel', 'Freyre', 'Diego', '(91) 555 94 44', NULL, NULL, 'C/ Moralzarzal, 86', 'Madrid', 'Spain', NULL, NULL, NULL, NULL, 227600.00),
-(144, 'Volvo Model Replicas, Co.', 'Berglund', 'Christina', '0921-12 3555', NULL, NULL, 'Berguvsvägen 8', 'Luleå', 'Sweden', NULL, NULL, NULL, NULL, 53100.00),
-(145, 'Danish Wholesale Imports', 'Petersen', 'Jytte', '31 12 3555', NULL, NULL, 'Vinbæltet 34', 'København', 'Denmark', NULL, NULL, NULL, NULL, 83400.00),
-(146, 'Saveley & Henriot Co.', 'Saveley', 'Mary', '78.32.5555', NULL, NULL, '2, rue du Commerce', 'Lyon', 'France', NULL, NULL, NULL, NULL, 123900.00),
-(148, 'Dragon Souvenirs, Ltd.', 'Natividad', 'Eric', '+65 221 7555', NULL, NULL, 'Bronzini St.', 'Singapore', 'Singapore', NULL, NULL, NULL, NULL, 103800.00);
+(103, 'Atelier graphique', 'Schmtt', 'Carine', '40.32.2555', '54, rue Royale', NULL, 'Paris', 'France', '4532 7153 9024 1485', '2028-11-15', '382', NULL, 21000.00),
+(112, 'Signal Gift Stores', 'King', 'Jean', '7025551838', '8489 Strong St.', NULL, 'Las Vegas', 'USA', '5412 8831 0047 6291', '2027-04-02', '915', NULL, 71800.00),
+(114, 'Australian Collectors, Co.', 'Ferguson', 'Peter', '03 9520 4555', 'Level 3', '636 St Kilda Road', 'Melbourne', 'Australia', '3782 4916 2503 774', '2029-08-22', '4421', NULL, 117300.00),
+(119, 'La Rochelle Gifts', 'Labrune', 'Janine', '40.67.8555', '67, rue des Cinquante Otages', NULL, 'Nantes', 'France', '6011 0284 5591 3306', '2026-12-09', '073', NULL, 118200.00),
+(121, 'Baane Mini Imports', 'Bergulfsen', 'Jonas', '07-98 9555', 'Erling Skakkes gate 78', NULL, 'Stavern', 'Norway', '4916 9312 0054 8819', '2030-05-18', '516', NULL, 81700.00),
+(124, 'Mini Gifts Distributions Ltd.', 'Nelson', 'Susan', '4155551450', '5677 Strong St.', NULL, 'San Rafael', 'USA', NULL, NULL, NULL, NULL, 210500.00),
+(125, 'Havel & Zbyszek Co.', 'Piestrzeniewicz', 'Zbyszek', '(26) 642-7555', 'ul. Filtrowa 68', NULL, 'Warszawa', 'Poland', NULL, NULL, NULL, NULL, 0.00),
+(128, 'Blauer See Auto, Co.', 'Keitel', 'Roland', '+49 69 66 90 2555', 'Lyonerstr. 34', NULL, 'Frankfurt', 'Germany', NULL, NULL, NULL, NULL, 59700.00),
+(129, 'Mini Wheels Co.', 'Murphy', 'Julie', '6505555787', '5557 North Line Rd.', NULL, 'South San Francisco', 'USA', NULL, NULL, NULL, NULL, 64600.00),
+(131, 'Land of Toys Inc.', 'Lee', 'Kwai', '2125557818', '897 Long Airport Avenue', NULL, 'NYC', 'USA', NULL, NULL, NULL, NULL, 114900.00),
+(141, 'Euro+ Shopping Channel', 'Freyre', 'Diego', '(91) 555 94 44', 'C/ Moralzarzal, 86', NULL, 'Madrid', 'Spain', NULL, NULL, NULL, NULL, 227600.00),
+(144, 'Volvo Model Replicas, Co.', 'Berglund', 'Christina', '0921-12 3555', 'Berguvsvägen 8', NULL, 'Luleå', 'Sweden', NULL, NULL, NULL, NULL, 53100.00),
+(145, 'Danish Wholesale Imports', 'Petersen', 'Jytte', '31 12 3555', 'Vinbæltet 34', NULL, 'København', 'Denmark', NULL, NULL, NULL, NULL, 83400.00),
+(146, 'Saveley & Henriot Co.', 'Saveley', 'Mary', '78.32.5555', '2, rue du Commerce', NULL, 'Lyon', 'France', NULL, NULL, NULL, NULL, 123900.00),
+(148, 'Dragon Souvenirs, Ltd.', 'Natividad', 'Eric', '+65 221 7555', 'Bronzini St.', NULL, 'Singapore', 'Singapore', NULL, NULL, NULL, NULL, 103800.00);
 UNLOCK TABLES;
+
 
 
 -- ============================================================================

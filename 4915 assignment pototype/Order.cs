@@ -26,6 +26,8 @@ namespace _4915_assignment_pototype
             DataTable dt = await GetOrderRecordsDataFromApiResponse();
             dataOrders.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
+
+            CheckForPendingOrders();
         }
 
         private async Task<DataTable> GetOrderRecordsDataFromApiResponse()
@@ -82,6 +84,8 @@ namespace _4915_assignment_pototype
             DataTable dt = await GetOrderRecordsDataFromApiResponse();
             dataOrders.DataSource = dt;
             if (dt != null) dt.AcceptChanges();
+
+
         }
 
         private async void btnOrderUpdate_Click(object sender, EventArgs e)
@@ -100,6 +104,8 @@ namespace _4915_assignment_pototype
             {
                 mainTable.AcceptChanges();
                 MessageBox.Show($"{rowsUpdated} orders updated successfully.");
+
+                CheckForPendingOrders();
             }
         }
 
@@ -167,8 +173,6 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("customerNumber", typeof(string));
             dataTable.Columns.Add("totalAmount", typeof(string));
             dataTable.Columns.Add("orderStatus", typeof(string));
-            // New column added to match database schema
-            dataTable.Columns.Add("customizeRequiredID", typeof(string));
             return dataTable;
         }
 
@@ -184,6 +188,22 @@ namespace _4915_assignment_pototype
             // Close the current table form cleanly
             this.Close();
         }
+        private void CheckForPendingOrders()
+        {
+            DataTable mainTable = dataOrders.DataSource as DataTable;
+            if (mainTable == null || mainTable.Rows.Count == 0) return;
 
+            // Count how many orders have a "Pending" status
+            int pendingCount = mainTable.AsEnumerable()
+                .Count(row => string.Equals(row.Field<string>("orderStatus"), "Pending", StringComparison.OrdinalIgnoreCase));
+
+            if (pendingCount > 0)
+            {
+                MessageBox.Show($"There are {pendingCount} pending order(s) requiring attention.",
+                                "Pending Orders Reminder",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+            }
+        }
     }
 }

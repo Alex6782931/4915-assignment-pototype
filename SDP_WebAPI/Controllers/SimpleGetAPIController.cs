@@ -1766,7 +1766,73 @@ namespace SDP_WebAPI.Controllers
             return JsonSerializer.Serialize(list);
         }
 
+        [HttpGet("GetMessagesForStaff")]
+        public string GetMessagesForStaff(int staffId)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            GetCompanyData dbo = new GetCompanyData(connString);
+            DataTable dt = dbo.GetMessagesForStaff(staffId);
 
+            var list = new List<Dictionary<string, string>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var dict = new Dictionary<string, string>();
+                foreach (DataColumn col in dt.Columns)
+                    dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                list.Add(dict);
+            }
+            return JsonSerializer.Serialize(list);
+        }
+
+        // GET: api/SimpleGetAPI/GetAllStaffData
+        [HttpGet("GetAllStaffData")]
+        public string GetAllStaffData()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            GetCompanyData dbo = new GetCompanyData(connString);
+            DataTable dt = dbo.GetAllStaffData();
+
+            var list = new List<Dictionary<string, string>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var dict = new Dictionary<string, string>();
+                foreach (DataColumn col in dt.Columns)
+                    dict[col.ColumnName] = row[col]?.ToString() ?? "";
+                list.Add(dict);
+            }
+            return JsonSerializer.Serialize(list);
+        }
+
+        // POST: api/SimpleGetAPI/SendMessage
+        [HttpPost("SendMessage")]
+        public IActionResult SendMessage([FromBody] MessageRequest message)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings:DefaultConnection"];
+                GetCompanyData dbo = new GetCompanyData(connString);
+
+                int rowsAffected = dbo.SendMessage(message.SenderID, message.ReceiverID, message.Content);
+
+                if (rowsAffected > 0) return Ok("Message sent!");
+                return BadRequest("Could not save message.");
+            }
+            catch (MySqlException mysqlEx) // Catch specific MySQL errors
+            {
+                // This will give you the exact reason (e.g., Access Denied, Unknown Database, etc.)
+                return StatusCode(500, "MySQL Error: " + mysqlEx.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "General Error: " + ex.Message);
+            }
+        }
+        public class MessageRequest
+        {
+            public string SenderID { get; set; }
+            public string ReceiverID { get; set; }
+            public string Content { get; set; }
+        }
 
     }
 }

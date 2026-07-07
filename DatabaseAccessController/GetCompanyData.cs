@@ -185,5 +185,21 @@ namespace DatabaseAccessController
             String sqlCmd = "SELECT * FROM user_accounts";
             return base.GetData(sqlCmd);
         }
+
+        // MESSAGING
+        public DataTable GetMessagesForStaff(int staffId)
+        {
+            // Fetches messages where the current staff is the receiver
+            string sqlCmd = $"SELECT * FROM StaffMessages WHERE ReceiverID = {staffId} ORDER BY Timestamp DESC";
+            return base.GetData(sqlCmd);
+        }
+
+        public int SendMessage(string senderId, string receiverId, string content)
+        {
+            // The single quotes '' are essential for string IDs in SQL
+            string sqlCmd = $"INSERT INTO StaffMessages (SenderID, ReceiverID, MessageContent) " +
+                            $"VALUES ('{senderId}', '{receiverId}', '{content.Replace("'", "''")}')";
+            return base.BatchUpdate(sqlCmd);
+        }
     }
 }

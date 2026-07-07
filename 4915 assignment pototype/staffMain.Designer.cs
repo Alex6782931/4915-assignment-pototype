@@ -48,6 +48,8 @@
             label1 = new Label();
             label3 = new Label();
             label4 = new Label();
+            label2 = new Label();
+            btnGoMessages = new Button();
             flowOrder.SuspendLayout();
             flowMaterial.SuspendLayout();
             flowPersonal.SuspendLayout();
@@ -236,9 +238,30 @@
             label4.TabIndex = 5;
             label4.Text = "Personal Info Manage:";
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(43, 416);
+            label2.Name = "label2";
+            label2.Size = new Size(160, 20);
+            label2.TabIndex = 9;
+            label2.Text = "Massage to other staff:";
+            // 
+            // btnGoMessages
+            // 
+            btnGoMessages.Location = new Point(43, 449);
+            btnGoMessages.Name = "btnGoMessages";
+            btnGoMessages.Size = new Size(150, 29);
+            btnGoMessages.TabIndex = 10;
+            btnGoMessages.Text = "Send a message";
+            btnGoMessages.UseVisualStyleBackColor = true;
+            btnGoMessages.Click += btnGoMessages_Click;
+            // 
             // staffMain
             // 
-            ClientSize = new Size(730, 420);
+            ClientSize = new Size(730, 500);
+            Controls.Add(btnGoMessages);
+            Controls.Add(label2);
             Controls.Add(flowOrder);
             Controls.Add(flowMaterial);
             Controls.Add(flowPersonal);
@@ -253,6 +276,7 @@
             flowMaterial.ResumeLayout(false);
             flowPersonal.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -277,5 +301,7 @@
         private FlowLayoutPanel flowMaterial;
         private FlowLayoutPanel flowPersonal;
         private Button btncr;
+        private Label label2;
+        private Button btnGoMessages;
     }
 }

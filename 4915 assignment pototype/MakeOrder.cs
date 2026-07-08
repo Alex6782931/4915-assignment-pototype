@@ -21,10 +21,12 @@ namespace _4915_assignment_pototype
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            this.Close();  
+            Form mainForm = Application.OpenForms["CustomerMain"];
+            if (mainForm != null) mainForm.Show();
+            this.Close();
         }
 
-        
+
         private async void btnorder_Click_1(object sender, EventArgs e)
         {
             string selectedItemID = GetSelectedItemID();
@@ -47,7 +49,7 @@ namespace _4915_assignment_pototype
                 { "quantity", quantity.ToString() }
             };
 
-            btnorder.Enabled = false;  
+            btnorder.Enabled = false;
             string result = await SubmitOrderToApi(orderPayload);
             btnorder.Enabled = true;
 
@@ -70,11 +72,11 @@ namespace _4915_assignment_pototype
 
         private string GetSelectedItemID()
         {
-            if (rbtn6.Checked) return "FG001"; 
-            if (rbtn7.Checked) return "FG002";  
-            if (rbtn8.Checked) return "FG003"; 
-            if (rbtn9.Checked) return "FG004"; 
-            if (rbtn10.Checked) return "FG005"; 
+            if (rbtn6.Checked) return "FG001";
+            if (rbtn7.Checked) return "FG002";
+            if (rbtn8.Checked) return "FG003";
+            if (rbtn9.Checked) return "FG004";
+            if (rbtn10.Checked) return "FG005";
             return null;
         }
 
@@ -103,6 +105,10 @@ namespace _4915_assignment_pototype
             }
         }
 
-        
+        private void btncustomize_Click(object sender, EventArgs e)
+        {
+            Customize customizeForm = new Customize();
+            customizeForm.ShowDialog(); 
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace _4915_assignment_pototype
             }
         }
         private void btncustomizedeter_Click(object sender, EventArgs e)
-        {
+        {       
             if (datacustomize.SelectedRows.Count > 0)
             {
                 DataGridViewRow selectedRow = datacustomize.SelectedRows[0];

@@ -139,22 +139,37 @@ namespace _4915_assignment_pototype
 
         private DataTable ParseJsonToDataTable(string jsonString)
         {
-            DataTable dataTable = CreateEmptyAccountTable();
-            using (JsonDocument doc = JsonDocument.Parse(jsonString))
+            DataTable dataTable = CreateEmptyAccountTable(); // Keeps your column definitions
+
+            try
             {
-                if (doc.RootElement.ValueKind == JsonValueKind.Array)
+                // 1. Deserialize to a list of dictionaries, which matches what your API sends
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var list = JsonSerializer.Deserialize<List<Dictionary<string, string>>>(jsonString, options);
+
+                if (list != null)
                 {
-                    foreach (JsonElement rowElement in doc.RootElement.EnumerateArray())
+                    foreach (var item in list)
                     {
                         DataRow newRow = dataTable.NewRow();
-                        foreach (JsonProperty property in doc.RootElement.EnumerateObject())
+                        foreach (var kvp in item)
                         {
-                            if (dataTable.Columns.Contains(property.Name)) newRow[property.Name] = property.Value.ToString();
+                            // 2. Map dictionary key to table column name
+                            if (dataTable.Columns.Contains(kvp.Key))
+                            {
+                                newRow[kvp.Key] = kvp.Value;
+                            }
                         }
                         dataTable.Rows.Add(newRow);
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle potential parsing errors
+                MessageBox.Show($"Error parsing JSON: {ex.Message}");
+            }
+
             return dataTable;
         }
 
@@ -181,12 +196,12 @@ namespace _4915_assignment_pototype
             // Close the current table form cleanly
             this.Close();
         }
-    }
 
-    public class JsonDataTable
-    {
-        public string dtAdded { get; set; }
-        public string dtModified { get; set; }
-        public string dtDeleted { get; set; }
+        public class JsonDataTable
+        {
+            public string dtAdded { get; set; }
+            public string dtModified { get; set; }
+            public string dtDeleted { get; set; }
+        }
     }
 }

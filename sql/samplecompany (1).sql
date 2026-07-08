@@ -248,6 +248,27 @@ INSERT INTO `orders` (`orderNumber`, `orderDate`, `customerNumber`, `totalAmount
 (1008, '2026-06-16', 103, 3100.00, 'Pending', NULL);
 UNLOCK TABLES;
 
+DELIMITER //
+
+CREATE TRIGGER after_order_cancel
+AFTER UPDATE ON orders
+FOR EACH ROW
+BEGIN
+    -- Check if the status is changing TO 'Cancelled'
+    IF (OLD.orderStatus != 'Cancelled' AND NEW.orderStatus = 'Cancelled') THEN
+        
+        -- Add the quantity back to inventory based on order items
+        UPDATE inventory i
+        JOIN order_details od ON i.itemID = od.itemID
+        SET i.quantityInStock = i.quantityInStock + od.quantity
+        WHERE od.orderNumber = NEW.orderNumber;
+        
+    END IF;
+END;
+//
+
+DELIMITER ;
+
 -- Order Details
 CREATE TABLE `order_details` (
   `orderNumber` int(11) NOT NULL,
@@ -364,4 +385,17 @@ INSERT INTO `after_service_records` (`caseID`, `orderNumber`, `requestDate`, `re
 (2, 1002, '2026-06-11', 'Replacement', 'Received correct frame layout style but table color tone too dark', 'Approved'),
 (3, 1001, '2026-06-16', 'Refund', 'Accidental duplicate charge encountered during automated billing sync', 'Open');
 
+-- ============================================================================
+-- MESSAGE
+-- ============================================================================
 
+CREATE TABLE `StaffMessages` (
+  `MessageID` int(11) NOT NULL AUTO_INCREMENT,
+  `SenderID` varchar(10) NOT NULL,
+  `ReceiverID` varchar(10) NOT NULL,
+  `MessageContent` text NOT NULL,
+  `Timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`MessageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO StaffMessages (SenderID, ReceiverID, MessageContent) VALUES ('1', '1', 'Test message');

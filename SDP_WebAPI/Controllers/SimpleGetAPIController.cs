@@ -1568,7 +1568,7 @@ namespace SDP_WebAPI.Controllers
             if (payload.ContainsKey("customizeID") && int.TryParse(payload["customizeID"], out int id))
             {
                 string connString = _configuration["ConnectionStrings"];
-                GetCompanyData dbo = new GetCompanyData(connString);
+                GetCompanyData dbo = new GetCompanyData(connString);   
                 return dbo.UpdateCustomizeStatus(id, "rejected");
             }
             return 0;

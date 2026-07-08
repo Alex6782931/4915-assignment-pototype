@@ -181,6 +181,50 @@ namespace _4915_assignment_pototype
             // Close the current table form cleanly
             this.Close();
         }
+        //new 
+        private void btnProcurement_Click(object sender, EventArgs e)
+        {
+            // 1. Validation: Must have a row selected
+            if (dataInv.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a raw material record from the list.");
+                return;
+            }
 
+            // 2. Business Rule: Check for "RM" prefix
+            string selectedID = dataInv.SelectedRows[0].Cells["itemID"].Value.ToString();
+            if (!selectedID.StartsWith("RM", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This selection is not a Raw Material (RM).");
+                return;
+            }
+
+            // 3. Navigate and pass data
+            RawMaterialProcurements procForm = new RawMaterialProcurements(selectedID);
+            procForm.Show();
+        }
+
+        private void btnProduction_Click(object sender, EventArgs e)
+        {
+            // 1. Validation: Must have a row selected
+            if (dataInv.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select a furniture record from the list.");
+                return;
+            }
+
+            // 2. Business Rule: Check for "FG" prefix
+            string selectedID = dataInv.SelectedRows[0].Cells["itemID"].Value.ToString();
+            if (!selectedID.StartsWith("FG", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("This selection is not a Furniture/Finished Good (FG).");
+                return;
+            }
+
+            // 3. Navigate and pass data
+            FurnitureProductionRequired1 prodForm = new FurnitureProductionRequired1(selectedID);
+            prodForm.Show();
+
+        }
     }
 }

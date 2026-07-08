@@ -36,6 +36,7 @@
             btncr = new Button();
             flowMaterial = new FlowLayoutPanel();
             btnGoProcurement = new Button();
+            btnProduction = new Button();
             btnGoInventory = new Button();
             flowPersonal = new FlowLayoutPanel();
             btnGoUser_account = new Button();
@@ -117,6 +118,7 @@
             // flowMaterial
             // 
             flowMaterial.Controls.Add(btnGoProcurement);
+            flowMaterial.Controls.Add(btnProduction);
             flowMaterial.Controls.Add(btnGoInventory);
             flowMaterial.FlowDirection = FlowDirection.TopDown;
             flowMaterial.Location = new Point(280, 150);
@@ -133,9 +135,19 @@
             btnGoProcurement.Text = "Procurement";
             btnGoProcurement.Click += btnGoProcurement_Click;
             // 
+            // btnProduction
+            // 
+            btnProduction.Location = new Point(3, 44);
+            btnProduction.Name = "btnProduction";
+            btnProduction.Size = new Size(150, 34);
+            btnProduction.TabIndex = 2;
+            btnProduction.Text = "Production";
+            btnProduction.UseVisualStyleBackColor = true;
+            btnProduction.Click += btnProduction_Click;
+            // 
             // btnGoInventory
             // 
-            btnGoInventory.Location = new Point(3, 44);
+            btnGoInventory.Location = new Point(3, 84);
             btnGoInventory.Name = "btnGoInventory";
             btnGoInventory.Size = new Size(150, 35);
             btnGoInventory.TabIndex = 1;
@@ -243,7 +255,7 @@
             label2.AutoSize = true;
             label2.Location = new Point(43, 416);
             label2.Name = "label2";
-            label2.Size = new Size(160, 20);
+            label2.Size = new Size(204, 23);
             label2.TabIndex = 9;
             label2.Text = "Massage to other staff:";
             // 
@@ -251,7 +263,7 @@
             // 
             btnGoMessages.Location = new Point(43, 449);
             btnGoMessages.Name = "btnGoMessages";
-            btnGoMessages.Size = new Size(150, 29);
+            btnGoMessages.Size = new Size(204, 39);
             btnGoMessages.TabIndex = 10;
             btnGoMessages.Text = "Send a message";
             btnGoMessages.UseVisualStyleBackColor = true;
@@ -272,6 +284,7 @@
             Controls.Add(btnLogout);
             Name = "staffMain";
             Text = "Staff Main Menu";
+            Load += staffMain_Load;
             flowOrder.ResumeLayout(false);
             flowMaterial.ResumeLayout(false);
             flowPersonal.ResumeLayout(false);
@@ -303,5 +316,6 @@
         private Button btncr;
         private Label label2;
         private Button btnGoMessages;
+        private Button btnProduction;
     }
 }

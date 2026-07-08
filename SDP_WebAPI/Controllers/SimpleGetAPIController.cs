@@ -1512,7 +1512,7 @@ namespace SDP_WebAPI.Controllers
             DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
 
             // Fetching all columns from the Customize table
-            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price, status FROM Customize");
+            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price, newPrice,status FROM Customize");
 
             var list = new List<Dictionary<string, object>>();
             foreach (DataRow row in dtResult.Rows)
@@ -1580,7 +1580,7 @@ namespace SDP_WebAPI.Controllers
             string connString = _configuration["ConnectionStrings"];
             bool isExisting = bool.Parse(payload["isExisting"]);
             string priceCol = isExisting ? "newPrice" : "price";
-            string status = isExisting ? "edited" : "determined";
+            string status =  "determined";
 
             int cID = int.Parse(payload["customizeID"]);
             int dQty = int.Parse(payload["desktopQty"]);
@@ -1766,6 +1766,121 @@ namespace SDP_WebAPI.Controllers
             return JsonSerializer.Serialize(list);
         }
 
+        //Production And purchasing
+
+        [HttpPost("CreateProductionRequest")]
+        public IActionResult CreateProductionRequest(
+    [FromQuery] string targetItemID,
+    [FromQuery] string rawMaterialID,
+    [FromQuery] int quantityRequested)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // Uses your schema: requestDate, targetItemID, rawMaterialID, quantityRequested, status
+                string sql = $@"INSERT INTO production_requests 
+                        (requestDate, targetItemID, rawMaterialID, quantityRequested, status) 
+                        VALUES ('{DateTime.Now:yyyy-MM-dd}', '{targetItemID}', '{rawMaterialID}', {quantityRequested}, 'Allocated')";
+
+                int result = db.BatchUpdate(sql);
+                return result > 0 ? Ok() : BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("CreateProcurement")]
+        public IActionResult CreateProcurement(
+    [FromQuery] int supplierID,
+    [FromQuery] string rawMaterialID,
+    [FromQuery] int quantityOrdered,
+    [FromQuery] DateTime expectedDelivery)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // SQL using current date for orderDate and defaulting status to 'Ordered'
+                string sql = $@"INSERT INTO procurements 
+                        (orderDate, supplierID, rawMaterialID, quantityOrdered, expectedDelivery, status) 
+                        VALUES ('{DateTime.Now:yyyy-MM-dd}', {supplierID}, '{rawMaterialID}', {quantityOrdered}, '{expectedDelivery:yyyy-MM-dd}', 'Ordered')";
+
+                int result = db.BatchUpdate(sql);
+                return result > 0 ? Ok(new { message = "Procurement created successfully." }) : BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("UpdateProductionToFulfilled")]
+        public IActionResult UpdateProductionToFulfilled([FromQuery] int requestID)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // 1. Fetch data
+                string getSql = $"SELECT targetItemID, quantityRequested FROM production_requests WHERE requestID = {requestID}";
+                DataTable dt = db.GetData(getSql);
+
+                if (dt.Rows.Count > 0)
+                {
+                    string itemID = dt.Rows[0]["targetItemID"].ToString();
+                    int qty = Convert.ToInt32(dt.Rows[0]["quantityRequested"]);
+
+                    // 2. Combine updates in one string for the MySQL driver to handle in one execution context
+                    string sql = $@"UPDATE inventory SET quantityInStock = quantityInStock + {qty} WHERE itemID = '{itemID}';
+                            UPDATE production_requests SET status = 'Fulfilled' WHERE requestID = {requestID};";
+
+                    int result = db.BatchUpdate(sql); // Ensure your DatabaseController handles semicolon-separated statements
+                    return result > 0 ? Ok() : StatusCode(500, "Update failed");
+                }
+                return NotFound();
+            }
+            catch (Exception ex) { return BadRequest(ex.Message); }
+        }
+        [HttpPost("UpdateProcurementToDelivered")]
+        public IActionResult UpdateProcurementToDelivered([FromQuery] int procurementID)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // 1. Get rawMaterialID and quantityOrdered for the selected procurement
+                string getSql = $"SELECT rawMaterialID, quantityOrdered FROM procurements WHERE procurementID = {procurementID}";
+                DataTable dt = db.GetData(getSql);
+
+                if (dt.Rows.Count > 0)
+                {
+                    string itemID = dt.Rows[0]["rawMaterialID"].ToString();
+                    int qty = Convert.ToInt32(dt.Rows[0]["quantityOrdered"]);
+
+                    // 2. Perform the update
+                    // Note: Ensure your DatabaseController can handle multiple statements or execute sequentially
+                    string invSql = $"UPDATE inventory SET quantityInStock = quantityInStock + {qty} WHERE itemID = '{itemID}'";
+                    string statusSql = $"UPDATE procurements SET status = 'Delivered' WHERE procurementID = {procurementID}";
+
+                    db.BatchUpdate(invSql);
+                    db.BatchUpdate(statusSql);
+
+                    return Ok(new { message = "Procurement marked as delivered and stock updated." });
+                }
+                return NotFound("Procurement record not found.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

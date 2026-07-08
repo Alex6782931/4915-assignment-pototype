@@ -36,15 +36,16 @@
             btnProcSearch = new Button();
             btnProcUpdate = new Button();
             btnProcClear = new Button();
+            btnprdone = new Button();
             ((System.ComponentModel.ISupportInitialize)dataProc).BeginInit();
             SuspendLayout();
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(10, 10);
-            btnBack.Margin = new Padding(4);
+            btnBack.Location = new Point(14, 12);
+            btnBack.Margin = new Padding(6, 5, 6, 5);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(62, 44);
+            btnBack.Size = new Size(85, 51);
             btnBack.TabIndex = 0;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
@@ -53,47 +54,47 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(40, 67);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Location = new Point(55, 77);
+            label1.Margin = new Padding(6, 0, 6, 0);
             label1.Name = "label1";
-            label1.Size = new Size(158, 20);
+            label1.Size = new Size(203, 23);
             label1.TabIndex = 1;
             label1.Text = "Procurement database";
             // 
             // dataProc
             // 
             dataProc.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataProc.Location = new Point(40, 170);
-            dataProc.Margin = new Padding(4);
+            dataProc.Location = new Point(55, 196);
+            dataProc.Margin = new Padding(6, 5, 6, 5);
             dataProc.Name = "dataProc";
             dataProc.RowHeadersWidth = 62;
-            dataProc.Size = new Size(830, 294);
+            dataProc.Size = new Size(1141, 338);
             dataProc.TabIndex = 2;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(40, 137);
-            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Location = new Point(55, 158);
+            label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
-            label2.Size = new Size(188, 20);
+            label2.Size = new Size(239, 23);
             label2.TabIndex = 3;
             label2.Text = "Search by(raw material ID):";
             // 
             // txtProcSearch
             // 
-            txtProcSearch.Location = new Point(236, 132);
-            txtProcSearch.Margin = new Padding(4);
+            txtProcSearch.Location = new Point(324, 152);
+            txtProcSearch.Margin = new Padding(6, 5, 6, 5);
             txtProcSearch.Name = "txtProcSearch";
-            txtProcSearch.Size = new Size(427, 27);
+            txtProcSearch.Size = new Size(586, 30);
             txtProcSearch.TabIndex = 4;
             // 
             // btnProcSearch
             // 
-            btnProcSearch.Location = new Point(671, 130);
-            btnProcSearch.Margin = new Padding(4);
+            btnProcSearch.Location = new Point(923, 150);
+            btnProcSearch.Margin = new Padding(6, 5, 6, 5);
             btnProcSearch.Name = "btnProcSearch";
-            btnProcSearch.Size = new Size(98, 30);
+            btnProcSearch.Size = new Size(135, 34);
             btnProcSearch.TabIndex = 5;
             btnProcSearch.Text = "Search";
             btnProcSearch.UseVisualStyleBackColor = true;
@@ -101,10 +102,10 @@
             // 
             // btnProcUpdate
             // 
-            btnProcUpdate.Location = new Point(679, 481);
-            btnProcUpdate.Margin = new Padding(4);
+            btnProcUpdate.Location = new Point(934, 553);
+            btnProcUpdate.Margin = new Padding(6, 5, 6, 5);
             btnProcUpdate.Name = "btnProcUpdate";
-            btnProcUpdate.Size = new Size(145, 30);
+            btnProcUpdate.Size = new Size(199, 34);
             btnProcUpdate.TabIndex = 6;
             btnProcUpdate.Text = "Update";
             btnProcUpdate.UseVisualStyleBackColor = true;
@@ -112,19 +113,31 @@
             // 
             // btnProcClear
             // 
-            btnProcClear.Location = new Point(776, 130);
+            btnProcClear.Location = new Point(1067, 150);
+            btnProcClear.Margin = new Padding(4, 3, 4, 3);
             btnProcClear.Name = "btnProcClear";
-            btnProcClear.Size = new Size(94, 29);
+            btnProcClear.Size = new Size(129, 33);
             btnProcClear.TabIndex = 7;
             btnProcClear.Text = "Clear";
             btnProcClear.UseVisualStyleBackColor = true;
             btnProcClear.Click += btnProcClear_Click;
             // 
+            // btnprdone
+            // 
+            btnprdone.Location = new Point(798, 553);
+            btnprdone.Name = "btnprdone";
+            btnprdone.Size = new Size(112, 34);
+            btnprdone.TabIndex = 8;
+            btnprdone.Text = "deliveryed";
+            btnprdone.UseVisualStyleBackColor = true;
+            btnprdone.Click += btnprdone_Click;
+            // 
             // Procurement
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(914, 600);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btnprdone);
             Controls.Add(btnProcClear);
             Controls.Add(btnProcUpdate);
             Controls.Add(btnProcSearch);
@@ -133,7 +146,7 @@
             Controls.Add(dataProc);
             Controls.Add(label1);
             Controls.Add(btnBack);
-            Margin = new Padding(4);
+            Margin = new Padding(6, 5, 6, 5);
             Name = "Procurement";
             Text = "Procurement";
             Load += Procurement_Load;
@@ -152,5 +165,6 @@
         private Button btnProcSearch;
         private Button btnProcUpdate;
         private Button btnProcClear;
+        private Button btnprdone;
     }
 }

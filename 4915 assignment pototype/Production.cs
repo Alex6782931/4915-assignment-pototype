@@ -182,5 +182,31 @@ namespace _4915_assignment_pototype
             this.Close();
         }
 
+        private async void btnpdone_Click(object sender, EventArgs e)
+        {
+            if (dataProd.SelectedRows.Count > 0)
+            {
+                string reqID = dataProd.SelectedRows[0].Cells["requestID"].Value.ToString();
+
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/UpdateProductionToFulfilled?requestID={reqID}";
+                    var response = await client.PostAsync(url, null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Production Completed and Inventory Updated!");
+
+                        // IMPORTANT: Refresh the grid
+                        DataTable dt = await GetProductionRecordsDataFromApiResponse();
+                        dataProd.DataSource = dt;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error: Server could not update records.");
+                    }
+                }
+            }
+        }
     }
 }

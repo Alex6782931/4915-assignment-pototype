@@ -197,7 +197,7 @@
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(638, 2);
-            pictureBox1.Margin = new Padding(5, 5, 5, 5);
+            pictureBox1.Margin = new Padding(5);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(506, 583);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -229,6 +229,7 @@
             Controls.Add(btnRback);
             Name = "Register";
             Text = "Register";
+            Load += Register_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

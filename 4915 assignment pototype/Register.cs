@@ -102,5 +102,11 @@ namespace _4915_assignment_pototype
                 MessageBox.Show($"Failed to connect to authentication server module: {ex.Message}");
             }
         }
+
+        private void Register_Load(object sender, EventArgs e)
+        {
+            txtbRpasswd.PasswordChar = '*';
+            txtbRconfipasswd.PasswordChar = '*';
+        }
     }
 }

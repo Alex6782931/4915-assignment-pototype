@@ -184,5 +184,46 @@ namespace _4915_assignment_pototype
             this.Close();
         }
 
+        private async void btnprdone_Click(object sender, EventArgs e)
+        {
+            if (dataProc.SelectedRows.Count > 0)
+            {
+                string procID = dataProc.SelectedRows[0].Cells["procurementID"].Value.ToString();
+
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/UpdateProcurementToDelivered?procurementID={procID}";
+
+                    try
+                    {
+                        var response = await client.PostAsync(url, null);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("Procurement marked as Delivered and Inventory updated!");
+
+                            // Refresh the grid to show the updated status
+                            DataTable dt = await GetProcurementRecordsDataFromApiResponse();
+                            dataProc.DataSource = dt;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to update status. Please check the connection.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a procurement record first.");
+            }
+        }
+
+
+
     }
 }

@@ -90,6 +90,7 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("legMaterialName");
             dataTable.Columns.Add("description");
             dataTable.Columns.Add("price");
+            dataTable.Columns.Add("newPrice");
             dataTable.Columns.Add("status");
 
             using (JsonDocument doc = JsonDocument.Parse(jsonString))

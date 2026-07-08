@@ -36,15 +36,16 @@
             txtLogSearch = new TextBox();
             btnLogSearch = new Button();
             btnLogClear = new Button();
+            btndelivery = new Button();
             ((System.ComponentModel.ISupportInitialize)dataLog).BeginInit();
             SuspendLayout();
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(20, 16);
-            btnBack.Margin = new Padding(4);
+            btnBack.Location = new Point(28, 18);
+            btnBack.Margin = new Padding(6, 5, 6, 5);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(57, 50);
+            btnBack.Size = new Size(78, 58);
             btnBack.TabIndex = 0;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
@@ -53,29 +54,29 @@
             // dataLog
             // 
             dataLog.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataLog.Location = new Point(45, 162);
-            dataLog.Margin = new Padding(4);
+            dataLog.Location = new Point(62, 186);
+            dataLog.Margin = new Padding(6, 5, 6, 5);
             dataLog.Name = "dataLog";
             dataLog.RowHeadersWidth = 62;
-            dataLog.Size = new Size(814, 341);
+            dataLog.Size = new Size(1119, 392);
             dataLog.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(45, 80);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Location = new Point(62, 92);
+            label1.Margin = new Padding(6, 0, 6, 0);
             label1.Name = "label1";
-            label1.Size = new Size(131, 20);
+            label1.Size = new Size(165, 23);
             label1.TabIndex = 2;
             label1.Text = "Logistics database";
             // 
             // btnLogUpdate
             // 
-            btnLogUpdate.Location = new Point(711, 528);
-            btnLogUpdate.Margin = new Padding(4);
+            btnLogUpdate.Location = new Point(978, 607);
+            btnLogUpdate.Margin = new Padding(6, 5, 6, 5);
             btnLogUpdate.Name = "btnLogUpdate";
-            btnLogUpdate.Size = new Size(86, 30);
+            btnLogUpdate.Size = new Size(118, 34);
             btnLogUpdate.TabIndex = 3;
             btnLogUpdate.Text = "Update";
             btnLogUpdate.UseVisualStyleBackColor = true;
@@ -84,27 +85,27 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(45, 131);
-            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Location = new Point(62, 151);
+            label2.Margin = new Padding(6, 0, 6, 0);
             label2.Name = "label2";
-            label2.Size = new Size(191, 20);
+            label2.Size = new Size(242, 23);
             label2.TabIndex = 5;
             label2.Text = "Search by(delivery note ID):";
             // 
             // txtLogSearch
             // 
-            txtLogSearch.Location = new Point(241, 128);
-            txtLogSearch.Margin = new Padding(4);
+            txtLogSearch.Location = new Point(331, 147);
+            txtLogSearch.Margin = new Padding(6, 5, 6, 5);
             txtLogSearch.Name = "txtLogSearch";
-            txtLogSearch.Size = new Size(410, 27);
+            txtLogSearch.Size = new Size(562, 30);
             txtLogSearch.TabIndex = 6;
             // 
             // btnLogSearch
             // 
-            btnLogSearch.Location = new Point(659, 126);
-            btnLogSearch.Margin = new Padding(4);
+            btnLogSearch.Location = new Point(906, 145);
+            btnLogSearch.Margin = new Padding(6, 5, 6, 5);
             btnLogSearch.Name = "btnLogSearch";
-            btnLogSearch.Size = new Size(86, 30);
+            btnLogSearch.Size = new Size(118, 34);
             btnLogSearch.TabIndex = 7;
             btnLogSearch.Text = "Search";
             btnLogSearch.UseVisualStyleBackColor = true;
@@ -112,19 +113,31 @@
             // 
             // btnLogClear
             // 
-            btnLogClear.Location = new Point(765, 127);
+            btnLogClear.Location = new Point(1052, 146);
+            btnLogClear.Margin = new Padding(4, 3, 4, 3);
             btnLogClear.Name = "btnLogClear";
-            btnLogClear.Size = new Size(94, 29);
+            btnLogClear.Size = new Size(129, 33);
             btnLogClear.TabIndex = 8;
             btnLogClear.Text = "Clear";
             btnLogClear.UseVisualStyleBackColor = true;
             btnLogClear.Click += btnLogClear_Click;
             // 
+            // btndelivery
+            // 
+            btndelivery.Location = new Point(872, 607);
+            btndelivery.Name = "btndelivery";
+            btndelivery.Size = new Size(112, 34);
+            btndelivery.TabIndex = 9;
+            btndelivery.Text = "delivery";
+            btndelivery.UseVisualStyleBackColor = true;
+            btndelivery.Click += btndelivery_Click;
+            // 
             // Logistics
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(914, 600);
+            ClientSize = new Size(1257, 690);
+            Controls.Add(btndelivery);
             Controls.Add(btnLogClear);
             Controls.Add(btnLogSearch);
             Controls.Add(txtLogSearch);
@@ -133,7 +146,7 @@
             Controls.Add(label1);
             Controls.Add(dataLog);
             Controls.Add(btnBack);
-            Margin = new Padding(4);
+            Margin = new Padding(6, 5, 6, 5);
             Name = "Logistics";
             Text = "Logistics";
             Load += Logistics_Load;
@@ -152,5 +165,6 @@
         private TextBox txtLogSearch;
         private Button btnLogSearch;
         private Button btnLogClear;
+        private Button btndelivery;
     }
 }

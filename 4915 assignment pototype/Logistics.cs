@@ -200,5 +200,44 @@ namespace _4915_assignment_pototype
             this.Close();
         }
 
+        private async void btndelivery_Click(object sender, EventArgs e)
+        {
+            if (dataLog.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select an order shipment record to process.");
+                return;
+            }
+
+            string orderNum = dataLog.SelectedRows[0].Cells["orderNumber"].Value.ToString();
+
+            DialogResult confirm = MessageBox.Show($"Are you sure you want to mark order #{orderNum} as shipped?",
+                                                   "Confirm Shipment", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            using (HttpClient client = new HttpClient())
+            {
+                string url = $"https://localhost:7146/api/SimpleGetAPI/ShipOrderAndCompleteCustomization?orderNumber={orderNum}";
+
+                try
+                {
+                    var response = await client.PostAsync(url, null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Order shipped successfully!");
+                        dataLog.DataSource = await GetLogisticsRecordsDataFromApiResponse();
+                    }
+                    else
+                    {
+                        string errorMsg = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Failed to ship order. Error: {errorMsg}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred: {ex.Message}");
+                }
+            }
+        }
     }
 }

@@ -178,5 +178,11 @@ namespace _4915_assignment_pototype
                 MessageBox.Show("Invalid Customer ID format. Cannot proceed to order.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btncustomhis_Click(object sender, EventArgs e)
+        {
+            customizehistort form = new customizehistort(_loggedInCustomerId);
+            NavigateTo(form);
+        }
     }
 }

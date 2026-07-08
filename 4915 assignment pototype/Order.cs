@@ -173,6 +173,7 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("customerNumber", typeof(string));
             dataTable.Columns.Add("totalAmount", typeof(string));
             dataTable.Columns.Add("orderStatus", typeof(string));
+            dataTable.Columns.Add("CustomizeRequiredID", typeof(string));
             return dataTable;
         }
 
@@ -208,40 +209,69 @@ namespace _4915_assignment_pototype
 
         private async void btnCancelOrder_Click(object sender, EventArgs e)
         {
-            // 1. Ensure a row is selected
-            if (dataOrders.CurrentRow == null)
+            // 1. Validate Selection
+            if (dataOrders.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Please select an order from the list first.");
+                MessageBox.Show("Please select an order to cancel.");
                 return;
             }
 
-            // 2. Get the Order Number from the selected row
-            // Ensure "orderNumber" matches the name in your CreateEmptyOrderTable()
-            int orderToCancel = Convert.ToInt32(dataOrders.CurrentRow.Cells["orderNumber"].Value);
+            DataGridViewRow selectedRow = dataOrders.SelectedRows[0];
+            string orderNum = selectedRow.Cells["orderNumber"].Value?.ToString();
+            string status = selectedRow.Cells["orderStatus"].Value?.ToString();
 
-            // 3. Send the cancellation request to your API
-            using (HttpClient client = new HttpClient())
+            // 2. Enforce the "Processing" condition
+            if (!string.Equals(status, "Processing", StringComparison.OrdinalIgnoreCase))
             {
-                var requestBody = new { OrderNumber = orderToCancel };
-                var json = JsonSerializer.Serialize(requestBody);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                MessageBox.Show("Only orders with 'Processing' status can be cancelled.",
+                                "Invalid Action", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-                // The URL must match the endpoint in your SimpleGetAPIController
-                // Change this line:
-                var response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/ProcessOrderCancellation", content);
+            // 3. Extract customizeRequiredID safely
+            // Check if column exists, if not, use string.Empty
+            string customID = "";
+            if (dataOrders.Columns.Contains("customizeRequiredID") && selectedRow.Cells["customizeRequiredID"].Value != null)
+            {
+                customID = selectedRow.Cells["customizeRequiredID"].Value.ToString();
+            }
 
-                if (response.IsSuccessStatusCode)
+            // 4. Confirmation
+            DialogResult result = MessageBox.Show($"Are you sure you want to cancel order #{orderNum}?",
+                                                  "Confirm Cancellation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                using (HttpClient client = new HttpClient())
                 {
-                    MessageBox.Show("Order cancelled and the inventory database has been updated!");
+                    // The API handles null/empty string as a "Standard Order" automatically
+                    string url = $"https://localhost:7146/api/SimpleGetAPI/CancelOrderAndRestoreStock?orderNumber={orderNum}&customizeRequiredID={customID}";
 
-                    // Refresh the grid to show the updated status
-                    order_Load(null, null);
-                }
-                else
-                {
-                    MessageBox.Show("Failed to cancel the order. Please check the database connection.");
+                    try
+                    {
+                        var response = await client.PostAsync(url, null);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("Order has been cancelled and inventory restored.");
+                            dataOrders.DataSource = await GetOrderRecordsDataFromApiResponse();
+                        }
+                        else
+                        {
+                            string error = await response.Content.ReadAsStringAsync();
+                            MessageBox.Show($"Failed to cancel order: {error}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Connection error: {ex.Message}");
+                    }
                 }
             }
         }
+
+
+
+
+
     }
 }

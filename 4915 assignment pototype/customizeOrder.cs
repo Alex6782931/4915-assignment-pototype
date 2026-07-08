@@ -44,7 +44,7 @@ namespace _4915_assignment_pototype
             }
         }
         private void btncustomizedeter_Click(object sender, EventArgs e)
-        {       
+        {
             if (datacustomize.SelectedRows.Count > 0)
             {
                 DataGridViewRow selectedRow = datacustomize.SelectedRows[0];
@@ -92,6 +92,7 @@ namespace _4915_assignment_pototype
             dataTable.Columns.Add("price");
             dataTable.Columns.Add("newPrice");
             dataTable.Columns.Add("status");
+            dataTable.Columns.Add("ispay");
 
             using (JsonDocument doc = JsonDocument.Parse(jsonString))
             {

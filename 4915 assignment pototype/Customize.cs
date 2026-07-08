@@ -1,97 +1,123 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace _4915_assignment_pototype
 {
     public partial class Customize : Form
     {
         private static readonly HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:7146/") };
-        private int currentCustomerID = 103;
+        private string currentCustomerID;
+        private string _customizeID;
+       
 
-        public Customize()
+
+        public Customize(string cusid)
         {
             InitializeComponent();
-            PopulateCustomizationOptions();
+            _ = LoadInventoryData(); // Fire and forget
+            currentCustomerID = cusid;
+        }
+        public Customize(string cusid, string customizeID)
+        {
+            InitializeComponent();
+            _ = LoadInventoryData(); // Fire and forget
+            currentCustomerID = cusid;
+            _customizeID = customizeID;
+
         }
 
-        private void PopulateCustomizationOptions()
+        private async Task LoadInventoryData()
         {
-            txtColor.MaxLength = 30;
+            try
+            {
+                string json = await client.GetStringAsync("api/SimpleGetAPI/GetInventoryRecordsData");
+                DataTable dt = ParseJsonToDataTable(json);
 
-            // Desktop Material options
-            cmbDesktopMaterial.Items.AddRange(new string[] { "Solid Wood", "MDF Veneer", "Tempered Glass", "Marble", "Laminate" });
-            cmbDesktopMaterial.SelectedIndex = 0;
+                // Create a DataView to filter the data
+                DataView dv = dt.DefaultView;
 
-            // Leg Material options
-            cmbLegMaterial.Items.AddRange(new string[] { "Stainless Steel", "Powder Coated Iron", "Solid Oak Legs", "Aluminum" });
-            cmbLegMaterial.SelectedIndex = 0;
+                // Filter: Only show items where itemID starts with 'RM'
+                dv.RowFilter = "itemID LIKE 'RM%'";
+
+                // Bind the filtered view to the ComboBoxes
+                ConfigureComboBox(cmbDesktopMaterial, dv.ToTable());
+                ConfigureComboBox(cmbLegMaterial, dv.ToTable());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading materials: " + ex.Message);
+            }
+        }
+
+        public void btnBack_Click(object sender, EventArgs e) { 
+        this.Close();
+        }
+
+        private void ConfigureComboBox(ComboBox cmb, DataTable dt)
+        {
+            // Bind the filtered table directly
+            cmb.DataSource = dt;
+            cmb.DisplayMember = "itemName";
+            cmb.ValueMember = "itemID";
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtType.Text) ||
-                string.IsNullOrWhiteSpace(txtSize.Text) ||
-                string.IsNullOrWhiteSpace(txtColor.Text))
-            {
-                MessageBox.Show("Please fill out Furniture Type, Size, and Color fields.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            // Get selected IDs and Names from ComboBox
+            string dID = cmbDesktopMaterial.SelectedValue.ToString();
+            string dName = cmbDesktopMaterial.Text;
+            string lID = cmbLegMaterial.SelectedValue.ToString();
+            string lName = cmbLegMaterial.Text;
 
-            var payload = new Dictionary<string, string>
+            var data = new
             {
-                { "customerID", currentCustomerID.ToString() },
-                { "type", txtType.Text },
-                { "color", txtColor.Text },
-                { "size", txtSize.Text },
-                { "desktopMaterialName", cmbDesktopMaterial.SelectedItem.ToString() },
-                { "legMaterialName", cmbLegMaterial.SelectedItem.ToString() },
-                { "description", txtDescription.Text }
+                customizeID = _customizeID, 
+                customerID = currentCustomerID,
+                type = txtType.Text,
+                color = txtColor.Text,
+                size = txtSize.Text,
+                desktopMaterialID = dID,
+                desktopMaterialName = dName,
+                legMaterialID = lID,
+                legMaterialName = lName,
+                description = txtDescription.Text,
+                
             };
 
-            try
-            {
-                string jsonPayload = System.Text.Json.JsonSerializer.Serialize(payload);
-                HttpContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            string json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                HttpResponseMessage response = await client.PostAsync("api/SimpleGetAPI/SubmitCustomizeOrder", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string resultText = await response.Content.ReadAsStringAsync();
-
-                    if (resultText.StartsWith("SUCCESS"))
-                    {
-                        string newOrderId = resultText.Split(':')[1];
-                        MessageBox.Show($"Customization saved successfully!\nYour Customization ID is: {newOrderId}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        Form MakeOrderForm = Application.OpenForms["MakeOrder"];
-                        if (MakeOrderForm != null) MakeOrderForm.Show();
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show($"API Processing Failed: {resultText}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"HTTP Request Failed: {response.StatusCode}", "Network Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to communicate with Server API: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            var response = await client.PostAsync("api/SimpleGetAPI/SaveCustomization", content);
+            if (response.IsSuccessStatusCode) { 
+            MessageBox.Show("Customization saved!");
+            this.Close(); }
+            else{
+                MessageBox.Show("Failed to save.");}
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private DataTable ParseJsonToDataTable(string json)
         {
-            Form MakeOrderForm = Application.OpenForms["MakeOrder"];
-            if (MakeOrderForm != null) MakeOrderForm.Show();
-            this.Close();
+            DataTable dt = new DataTable();
+            using (JsonDocument doc = JsonDocument.Parse(json))
+            {
+                foreach (JsonElement el in doc.RootElement.EnumerateArray())
+                {
+                    DataRow row = dt.NewRow();
+                    foreach (JsonProperty prop in el.EnumerateObject())
+                    {
+                        if (!dt.Columns.Contains(prop.Name)) dt.Columns.Add(prop.Name);
+                        row[prop.Name] = prop.Value.ToString();
+                    }
+                    dt.Rows.Add(row);
+                }
+            }
+            return dt;
         }
     }
 }

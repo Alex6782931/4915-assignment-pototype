@@ -45,7 +45,9 @@ namespace _4915_assignment_pototype
         { "isExisting", _isExistingRecord.ToString().ToLower() },
         { "type", _selectedData["type"].ToString() },
         { "color", _selectedData["color"].ToString() },
-        { "size", _selectedData["size"].ToString() }
+        { "size", _selectedData["size"].ToString() },
+        { "des", _selectedData["description"].ToString() },
+        { "ispay", _selectedData["ispay"].ToString() },
     };
 
             using (HttpClient client = new HttpClient())

@@ -41,6 +41,7 @@
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             btnchange = new Button();
+            btncustomhis = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             SuspendLayout();
@@ -66,7 +67,7 @@
             // 
             // btnviewhistory
             // 
-            btnviewhistory.Location = new Point(77, 297);
+            btnviewhistory.Location = new Point(77, 281);
             btnviewhistory.Name = "btnviewhistory";
             btnviewhistory.Size = new Size(176, 35);
             btnviewhistory.TabIndex = 2;
@@ -75,7 +76,7 @@
             // 
             // btncancelorder
             // 
-            btncancelorder.Location = new Point(77, 373);
+            btncancelorder.Location = new Point(77, 389);
             btncancelorder.Name = "btncancelorder";
             btncancelorder.Size = new Size(159, 43);
             btncancelorder.TabIndex = 3;
@@ -161,11 +162,22 @@
             btnchange.UseVisualStyleBackColor = true;
             btnchange.Click += btnchange_Click;
             // 
+            // btncustomhis
+            // 
+            btncustomhis.Location = new Point(63, 338);
+            btncustomhis.Name = "btncustomhis";
+            btncustomhis.Size = new Size(190, 34);
+            btncustomhis.TabIndex = 12;
+            btncustomhis.Text = "Customize History";
+            btncustomhis.UseVisualStyleBackColor = true;
+            btncustomhis.Click += btncustomhis_Click;
+            // 
             // CustomerMain
             // 
             AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 449);
+            Controls.Add(btncustomhis);
             Controls.Add(btnchange);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
@@ -201,5 +213,6 @@
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private Button btnchange;
+        private Button btncustomhis;
     }
 }

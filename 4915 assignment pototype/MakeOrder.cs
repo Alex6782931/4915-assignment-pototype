@@ -252,7 +252,7 @@ namespace _4915_assignment_pototype
         }
         private void btncustomize_Click(object sender, EventArgs e)
         {
-            Customize customizeForm = new Customize();
+            Customize customizeForm = new Customize(currentCustomerNumber.ToString());
             customizeForm.ShowDialog();
         }
     }

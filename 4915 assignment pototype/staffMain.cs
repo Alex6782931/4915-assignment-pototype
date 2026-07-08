@@ -193,12 +193,7 @@ namespace _4915_assignment_pototype.staff
             this.Hide();
         }
 
-        private void btnGoMessages_Click(object sender, EventArgs e)
-        {
-            MessagesForm msgForm = new MessagesForm();
-            msgForm.Show();
-            this.Hide();
-        }
+
 
         private void btnProduction_Click(object sender, EventArgs e)
         {

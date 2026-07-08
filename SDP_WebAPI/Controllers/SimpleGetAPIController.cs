@@ -7,6 +7,7 @@ using SDP_EntityModels;
 using System;
 using System.Data;
 using System.Text.Json;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace SDP_WebAPI.Controllers
 {
@@ -1512,7 +1513,7 @@ namespace SDP_WebAPI.Controllers
             DatabaseAccessController.DatabaseController db = new DatabaseAccessController.DatabaseController(connString);
 
             // Fetching all columns from the Customize table
-            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price, newPrice,status FROM Customize");
+            DataTable dtResult = db.GetData("SELECT customizeID, customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, file, price, newPrice,status,ispay FROM Customize");
 
             var list = new List<Dictionary<string, object>>();
             foreach (DataRow row in dtResult.Rows)
@@ -1568,7 +1569,7 @@ namespace SDP_WebAPI.Controllers
             if (payload.ContainsKey("customizeID") && int.TryParse(payload["customizeID"], out int id))
             {
                 string connString = _configuration["ConnectionStrings"];
-                GetCompanyData dbo = new GetCompanyData(connString);   
+                GetCompanyData dbo = new GetCompanyData(connString);
                 return dbo.UpdateCustomizeStatus(id, "rejected");
             }
             return 0;
@@ -1577,16 +1578,25 @@ namespace SDP_WebAPI.Controllers
         [HttpPost("ConfirmCustomizeOrder")]
         public string ConfirmCustomizeOrder([FromBody] Dictionary<string, string> payload)
         {
+            string priceCol;
+            string ispay = payload["ispay"];
             string connString = _configuration["ConnectionStrings"];
             bool isExisting = bool.Parse(payload["isExisting"]);
-            string priceCol = isExisting ? "newPrice" : "price";
-            string status =  "determined";
+            if (ispay == "yes")
+            {
+                 priceCol = isExisting ? "newPrice" : "price";
+            }
+            else {
+                 priceCol = "price";
+            }
+                string status = "determined";
 
             int cID = int.Parse(payload["customizeID"]);
             int dQty = int.Parse(payload["desktopQty"]);
             int lQty = int.Parse(payload["legQty"]);
             string dMat = payload["desktopMaterialID"];
             string lMat = payload["legMaterialID"];
+            string description = payload["des"];
 
             using (MySqlConnection conn = new MySqlConnection(connString))
             {
@@ -1648,7 +1658,7 @@ namespace SDP_WebAPI.Controllers
                                 cmd.ExecuteNonQuery();
                             }
 
-                            string updateReqSql = @"UPDATE CustomizeRequired SET desktopMaterialID = @dMat, desktopQty = @dQty, legMaterialID = @lMat, legQty = @lQty, type = @type, size = @size, color = @color WHERE customizeID = @cID";
+                            string updateReqSql = @"UPDATE CustomizeRequired SET desktopMaterialID = @dMat, desktopQty = @dQty, legMaterialID = @lMat, legQty = @lQty, type = @type, size = @size, color = @color ,description = @description WHERE customizeID = @cID";
                             using (MySqlCommand cmd = new MySqlCommand(updateReqSql, conn, transaction))
                             {
                                 cmd.Parameters.AddWithValue("@dMat", dMat);
@@ -1658,6 +1668,7 @@ namespace SDP_WebAPI.Controllers
                                 cmd.Parameters.AddWithValue("@type", payload["type"]);
                                 cmd.Parameters.AddWithValue("@size", payload["size"]);
                                 cmd.Parameters.AddWithValue("@color", payload["color"]);
+                                cmd.Parameters.AddWithValue("@description", description);
                                 cmd.Parameters.AddWithValue("@cID", cID);
                                 cmd.ExecuteNonQuery();
                             }
@@ -1765,6 +1776,153 @@ namespace SDP_WebAPI.Controllers
             // Serialize the list of dictionaries instead of the DataTable
             return JsonSerializer.Serialize(list);
         }
+
+
+        [HttpPost("SaveCustomization")]
+        public IActionResult SaveCustomization([FromBody] JsonElement data)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            var db = new DatabaseController(connString);
+
+            // Safely extract properties
+            string cID = data.TryGetProperty("customizeID", out var cid) ? cid.GetString() : null;
+            string customerID = data.GetProperty("customerID").GetString();
+            string type = data.GetProperty("type").GetString();
+            string color = data.GetProperty("color").GetString();
+            string size = data.GetProperty("size").GetString();
+            string dID = data.GetProperty("desktopMaterialID").ToString();
+            string lID = data.GetProperty("legMaterialID").ToString();
+            string desc = data.GetProperty("description").GetString();
+            string dName = data.GetProperty("desktopMaterialName").GetString();
+            string lName = data.GetProperty("legMaterialName").GetString();
+
+            string sql;
+
+            // Use TryParse to ensure the ID is a valid number for the database INT column
+            if (int.TryParse(cID, out int validCID) && validCID > 0)
+            {
+                // UPDATE Logic
+                sql = $@"UPDATE Customize SET 
+                 type = '{type.Replace("'", "''")}', 
+                 color = '{color.Replace("'", "''")}', 
+                 size = '{size.Replace("'", "''")}', 
+                 desktopMaterialID = '{dID.Replace("'", "''")}', 
+                 desktopMaterialName = '{dName.Replace("'", "''")}', 
+                 legMaterialID = '{lID.Replace("'", "''")}', 
+                 legMaterialName = '{lName.Replace("'", "''")}', 
+                 description = '{desc.Replace("'", "''")}', 
+                 status = 'edited' 
+                 WHERE customizeID = {validCID}";
+            }
+            else
+            {
+                // INSERT Logic (if ID is null or 0)
+                sql = $@"INSERT INTO Customize (customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, status,ispay) 
+                 VALUES ('{customerID}', '{type.Replace("'", "''")}', '{color.Replace("'", "''")}', '{size.Replace("'", "''")}', 
+                         '{dID.Replace("'", "''")}', '{dName.Replace("'", "''")}', '{lID.Replace("'", "''")}', 
+                         '{lName.Replace("'", "''")}', '{desc.Replace("'", "''")}', 'processing','no')";
+            }
+
+            int rowsAffected = db.BatchUpdate(sql);
+
+            if (rowsAffected > 0)
+                return Ok("SUCCESS");
+            else
+                return BadRequest("Database operation failed or no rows affected.");
+        }
+
+
+        [HttpPost("ShipOrderAndCompleteCustomization")]
+        public IActionResult ShipOrderAndCompleteCustomization([FromQuery] int orderNumber)
+        {
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // 1. Fetch current status
+                string checkSql = $"SELECT orderStatus FROM orders WHERE orderNumber = {orderNumber}";
+                DataTable dtStatus = db.GetData(checkSql);
+
+                if (dtStatus.Rows.Count == 0) return NotFound("Order not found.");
+
+                string currentStatus = dtStatus.Rows[0]["orderStatus"].ToString();
+
+                // 2. Validation: Only allow if status is 'Processing' or 'Shipped'
+                // If it is NOT one of these, proceed to next step (or block as needed)
+                if (!string.Equals(currentStatus, "Processing", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(currentStatus, "Shipped", StringComparison.OrdinalIgnoreCase))
+                {
+                    // If you want to stop the process here, uncomment the return below:
+                    return BadRequest($"Cannot process order: current status is {currentStatus}.");
+                }
+
+                // 3. Update the order status to 'Shipped'
+                string shipSql = $"UPDATE orders SET orderStatus = 'Shipped' WHERE orderNumber = {orderNumber}";
+                db.BatchUpdate(shipSql);
+
+                // 4. Proceed with customization update (logic as before)
+                string querySql = $"SELECT customizeRequiredID FROM orders WHERE orderNumber = {orderNumber}";
+                DataTable dtOrder = db.GetData(querySql);
+
+                if (dtOrder.Rows.Count > 0 && dtOrder.Columns.Contains("customizeRequiredID") && dtOrder.Rows[0]["customizeRequiredID"] != DBNull.Value)
+                {
+                    string customizeRequiredID = dtOrder.Rows[0]["customizeRequiredID"].ToString();
+                    string getSql = $"SELECT customizeID FROM CustomizeRequired WHERE customizeRequiredID = '{customizeRequiredID}'";
+                    DataTable dtCustom = db.GetData(getSql);
+
+                    if (dtCustom.Rows.Count > 0)
+                    {
+                        string customizeID = dtCustom.Rows[0]["customizeID"].ToString();
+                        string customUpdateSql = $"UPDATE Customize SET status = 'Done' WHERE customizeID = {customizeID}";
+                        db.BatchUpdate(customUpdateSql);
+                    }
+                }
+
+                return Ok(new { message = "Order processed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetCustomizeHistory")]
+        public string GetCustomizeHistory()
+        {
+            string connString = _configuration["ConnectionStrings"];
+            // Using your existing GetCompanyData class structure
+            GetCompanyData dbo = new GetCompanyData(connString);
+            DataTable dt = dbo.GetCustomizeRecordsData();
+
+            var list = new List<Dictionary<string, object>>();
+            foreach (DataRow row in dt.Rows)
+            {
+                var dict = new Dictionary<string, object>();
+                foreach (DataColumn col in dt.Columns)
+                {
+                    // Specifically mapping the columns from your CREATE TABLE statement
+                    dict[col.ColumnName] = row[col].ToString();
+                }
+                list.Add(dict);
+            }
+            return System.Text.Json.JsonSerializer.Serialize(list);
+        }
+
+
+        [HttpPost("UpdateCustomizeStatus")]
+        public IActionResult UpdateCustomizeStatus([FromQuery] string customizeID, [FromQuery] string newStatus)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            var db = new DatabaseAccessController.DatabaseController(connString);
+            db.BatchUpdate($"UPDATE Customize SET status = '{newStatus}' WHERE customizeID = {customizeID}");
+            return Ok();
+        }
+
+
+
+
+
 
         //Production And purchasing
 
@@ -1882,160 +2040,66 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
-        [HttpPost("ProcessOrderCancellation")]
-        public IActionResult ProcessOrderCancellation([FromBody] CancelOrderRequest request)
+        //cancel order
+        [HttpPost("CancelOrderAndRestoreStock")]
+        public IActionResult CancelOrderAndRestoreStock([FromQuery] int orderNumber, [FromQuery] string? customizeRequiredID)
         {
-            string connString = _configuration["ConnectionStrings"];
-            var dbo = new GetCompanyData(connString);
-
-            int result = dbo.UpdateOrderStatus(request.OrderNumber, "Cancelled");
-
-            if (result > 0)
+            try
             {
-                // Returning 200 OK signals to the frontend that everything went well
-                return Ok(new { message = "Order cancelled and inventory updated successfully." });
-            }
-            else
-            {
-                return BadRequest("Failed to update order status.");
-            }
-        }
-        // URL: POST https://localhost:7146/api/SimpleGetAPI/SubmitCustomizeOrder
-        [HttpPost("SubmitCustomizeOrder")]
-        public string SubmitCustomizeOrder([FromBody] Dictionary<string, string> payload)
-        {
-            // 1. 驗證前端傳入的 Payload 欄位是否齊全
-            if (payload == null ||
-                !payload.ContainsKey("customerID") ||
-                !payload.ContainsKey("type") ||
-                !payload.ContainsKey("color") ||
-                !payload.ContainsKey("size") ||
-                !payload.ContainsKey("desktopMaterialName") ||
-                !payload.ContainsKey("legMaterialName") ||
-                !payload.ContainsKey("description"))
-            {
-                return "FAILED_INVALID_PAYLOAD";
-            }
+                string connString = _configuration["ConnectionStrings"];
+                var db = new DatabaseAccessController.DatabaseController(connString);
 
-            int customerID = int.Parse(payload["customerID"]);
-            string type = payload["type"];
-            string color = payload["color"];
-            string size = payload["size"];
-            string desktopMaterialName = payload["desktopMaterialName"];
-            string legMaterialName = payload["legMaterialName"];
-            string description = payload["description"];
-
-            // 模擬設定與您的資料表對應的預設 ID 與基礎價格
-            string desktopMaterialID = "RM001";
-            string legMaterialID = "RM002";
-            double price = 5500.00;
-
-            string connString = _configuration["ConnectionStrings"];
-
-            // 2. 單純寫入 Customize 資料表
-            using (MySqlConnection conn = new MySqlConnection(connString))
-            {
-                string sqlCustomize = @"INSERT INTO Customize 
-                    (customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, price, status) 
-                    VALUES 
-                    (@customerID, @type, @color, @size, @desktopMaterialID, @desktopMaterialName, @legMaterialID, @legMaterialName, @description, @price, 'processing');
-                    SELECT LAST_INSERT_ID();";
-
-                try
+                if (!string.IsNullOrEmpty(customizeRequiredID))
                 {
-                    conn.Open();
-                    long newCustomizeID = 0;
-                    using (MySqlCommand cmd = new MySqlCommand(sqlCustomize, conn))
+                    // Scenario 1: It is a custom order
+                    string getSql = $"SELECT desktopMaterialID, desktopQty, legMaterialID, legQty FROM CustomizeRequired WHERE requirementID = '{customizeRequiredID}'";
+                    DataTable dt = db.GetData(getSql);
+
+                    if (dt.Rows.Count > 0)
                     {
-                        cmd.Parameters.AddWithValue("@customerID", customerID);
-                        cmd.Parameters.AddWithValue("@type", type);
-                        cmd.Parameters.AddWithValue("@color", color);
-                        cmd.Parameters.AddWithValue("@size", size);
-                        cmd.Parameters.AddWithValue("@desktopMaterialID", desktopMaterialID);
-                        cmd.Parameters.AddWithValue("@desktopMaterialName", desktopMaterialName);
-                        cmd.Parameters.AddWithValue("@legMaterialID", legMaterialID);
-                        cmd.Parameters.AddWithValue("@legMaterialName", legMaterialName);
-                        cmd.Parameters.AddWithValue("@description", description);
-                        cmd.Parameters.AddWithValue("@price", price);
+                        string dID = dt.Rows[0]["desktopMaterialID"].ToString();
+                        int dQty = Convert.ToInt32(dt.Rows[0]["desktopQty"]);
+                        string lID = dt.Rows[0]["legMaterialID"].ToString();
+                        int lQty = Convert.ToInt32(dt.Rows[0]["legQty"]);
 
-                        newCustomizeID = Convert.ToInt64(cmd.ExecuteScalar());
+                        db.BatchUpdate($"UPDATE inventory SET quantityInStock = quantityInStock + {dQty} WHERE itemID = '{dID}'");
+                        db.BatchUpdate($"UPDATE inventory SET quantityInStock = quantityInStock + {lQty} WHERE itemID = '{lID}'");
                     }
-
-                    return $"SUCCESS:{newCustomizeID}";
                 }
-                catch (Exception ex)
+                else
                 {
-                    return $"ERROR:{ex.Message}";
-                }
-            }
-        }
-        // URL: POST https://localhost:7146/api/SimpleGetAPI/ConfirmPayment
-        [HttpPost("ConfirmPayment")]
-        public string ConfirmPayment([FromBody] Dictionary<string, string> payload)
-        {
-            if (payload == null || !payload.ContainsKey("customerNumber"))
-            {
-                return "FAILED_INVALID_PAYLOAD";
-            }
+                    // Scenario 2: Standard order
+                    string getSql = $"SELECT itemID, quantity FROM order_details WHERE orderNumber = {orderNumber}";
+                    DataTable dt = db.GetData(getSql);
 
-            int customerNumber = int.Parse(payload["customerNumber"]);
-            string connString = _configuration["ConnectionStrings"];
-
-            using (MySqlConnection conn = new MySqlConnection(connString))
-            {
-                try
-                {
-                    conn.Open();
-
-                    // 1. 嚴格對應您的 customer 資料表欄位進行查詢
-                    string sqlCheckProfile = @"SELECT addressLine1, city, country, cardNumber, expiredDay, cvv 
-                                               FROM customer 
-                                               WHERE customerNumber = @custNum;";
-
-                    using (MySqlCommand cmdCheck = new MySqlCommand(sqlCheckProfile, conn))
+                    foreach (DataRow row in dt.Rows)
                     {
-                        cmdCheck.Parameters.AddWithValue("@custNum", customerNumber);
-                        using (MySqlDataReader reader = cmdCheck.ExecuteReader())
-                        {
-                            if (!reader.Read())
-                            {
-                                return "FAILED_USER_NOT_FOUND";
-                            }
-
-                            // 2. 讀取並檢查地址相關欄位 (addressLine1, city, country 均不可為空)
-                            string addressLine1 = reader["addressLine1"]?.ToString();
-                            string city = reader["city"]?.ToString();
-                            string country = reader["country"]?.ToString();
-
-                            // 3. 讀取並檢查付款相關欄位 (cardNumber, expiredDay, cvv)
-                            string cardNumber = reader["cardNumber"]?.ToString();
-                            string expiredDay = reader["expiredDay"]?.ToString();
-                            string cvv = reader["cvv"]?.ToString();
-
-                            // 4. 核心商務邏輯判斷：任一欄位為空或空白，即代表資料不齊全
-                            if (string.IsNullOrWhiteSpace(addressLine1) ||
-                                string.IsNullOrWhiteSpace(city) ||
-                                string.IsNullOrWhiteSpace(country) ||
-                                string.IsNullOrWhiteSpace(cardNumber) ||
-                                string.IsNullOrWhiteSpace(expiredDay) ||
-                                string.IsNullOrWhiteSpace(cvv))
-                            {
-                                return "FAILED_MISSING_PROFILE_DETAILS";
-                            }
-                        }
+                        string itemID = row["itemID"].ToString();
+                        int qty = Convert.ToInt32(row["quantity"]);
+                        db.BatchUpdate($"UPDATE inventory SET quantityInStock = quantityInStock + {qty} WHERE itemID = '{itemID}'");
                     }
-
-                    // 5. 通過檢查，在此處可以執行您的實際扣款或更新訂單狀態邏輯
-                    // (例如將該客戶的 Pending 訂單改為 Paid)
-
-                    return "SUCCESS_PAYMENT_COMPLETED";
                 }
-                catch (Exception ex)
-                {
-                    return $"ERROR:{ex.Message}";
-                }
+
+                // Final step: Update status
+                db.BatchUpdate($"UPDATE orders SET orderStatus = 'Cancelled' WHERE orderNumber = {orderNumber}");
+
+                return Ok(new { message = "Order cancelled and inventory restored." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
+
+
+
+
+
+
+
+
+
+
 
 
     }

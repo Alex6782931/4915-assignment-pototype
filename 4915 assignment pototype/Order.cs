@@ -205,5 +205,43 @@ namespace _4915_assignment_pototype
                                 MessageBoxIcon.Warning);
             }
         }
+
+        private async void btnCancelOrder_Click(object sender, EventArgs e)
+        {
+            // 1. Ensure a row is selected
+            if (dataOrders.CurrentRow == null)
+            {
+                MessageBox.Show("Please select an order from the list first.");
+                return;
+            }
+
+            // 2. Get the Order Number from the selected row
+            // Ensure "orderNumber" matches the name in your CreateEmptyOrderTable()
+            int orderToCancel = Convert.ToInt32(dataOrders.CurrentRow.Cells["orderNumber"].Value);
+
+            // 3. Send the cancellation request to your API
+            using (HttpClient client = new HttpClient())
+            {
+                var requestBody = new { OrderNumber = orderToCancel };
+                var json = JsonSerializer.Serialize(requestBody);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // The URL must match the endpoint in your SimpleGetAPIController
+                // Change this line:
+                var response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/ProcessOrderCancellation", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Order cancelled and the inventory database has been updated!");
+
+                    // Refresh the grid to show the updated status
+                    order_Load(null, null);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to cancel the order. Please check the database connection.");
+                }
+            }
+        }
     }
 }

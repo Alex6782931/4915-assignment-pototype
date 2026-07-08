@@ -1882,7 +1882,24 @@ namespace SDP_WebAPI.Controllers
             }
         }
 
+        [HttpPost("ProcessOrderCancellation")]
+        public IActionResult ProcessOrderCancellation([FromBody] CancelOrderRequest request)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            var dbo = new GetCompanyData(connString);
 
+            int result = dbo.UpdateOrderStatus(request.OrderNumber, "Cancelled");
+
+            if (result > 0)
+            {
+                // Returning 200 OK signals to the frontend that everything went well
+                return Ok(new { message = "Order cancelled and inventory updated successfully." });
+            }
+            else
+            {
+                return BadRequest("Failed to update order status.");
+            }
+        }
     }
 }
 

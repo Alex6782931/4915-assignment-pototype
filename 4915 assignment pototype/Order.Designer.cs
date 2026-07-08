@@ -36,6 +36,7 @@
             btnBack = new Button();
             btnOrderClear = new Button();
             btnOrderUpdateClick = new Button();
+            btnCancelOrder = new Button();
             ((System.ComponentModel.ISupportInitialize)dataOrders).BeginInit();
             SuspendLayout();
             // 
@@ -117,11 +118,22 @@
             btnOrderUpdateClick.UseVisualStyleBackColor = true;
             btnOrderUpdateClick.Click += btnOrderUpdate_Click;
             // 
+            // btnCancelOrder
+            // 
+            btnCancelOrder.Location = new Point(56, 481);
+            btnCancelOrder.Name = "btnCancelOrder";
+            btnCancelOrder.Size = new Size(94, 29);
+            btnCancelOrder.TabIndex = 11;
+            btnCancelOrder.Text = "Cancel";
+            btnCancelOrder.UseVisualStyleBackColor = true;
+            btnCancelOrder.Click += btnCancelOrder_Click;
+            // 
             // Order
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(914, 600);
+            Controls.Add(btnCancelOrder);
             Controls.Add(btnOrderUpdateClick);
             Controls.Add(btnOrderClear);
             Controls.Add(btnBack);
@@ -149,5 +161,6 @@
         private Button btnBack;
         private Button btnOrderClear;
         private Button btnOrderUpdateClick;
+        private Button btnCancelOrder;
     }
 }

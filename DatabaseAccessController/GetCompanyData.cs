@@ -130,6 +130,15 @@ namespace DatabaseAccessController
             return base.GetData(sqlCmd);
         }
 
+        public int UpdateOrderStatus(int orderNumber, string newStatus)
+        {
+            // Sanitize the input to prevent SQL injection
+            string status = newStatus.Replace("'", "''");
+            string sqlCmd = $"UPDATE orders SET orderStatus = '{status}' WHERE orderNumber = {orderNumber}";
+
+            return base.BatchUpdate(sqlCmd);
+        }
+
         //INVENTORY TABLE
 
         public DataTable GetAllInventoryData()

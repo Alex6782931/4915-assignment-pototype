@@ -64,56 +64,56 @@
             // rbtn6
             // 
             rbtn6.AutoSize = true;
-            rbtn6.Location = new Point(77, 81);
+            rbtn6.Location = new Point(72, 66);
             rbtn6.Name = "rbtn6";
-            rbtn6.Size = new Size(156, 19);
+            rbtn6.Size = new Size(156, 34);
             rbtn6.TabIndex = 16;
             rbtn6.TabStop = true;
-            rbtn6.Text = "Ergonomic Office Chair";
+            rbtn6.Text = "Ergonomic Office Chair\r\n$1500";
             rbtn6.UseVisualStyleBackColor = true;
             // 
             // rbtn7
             // 
             rbtn7.AutoSize = true;
-            rbtn7.Location = new Point(286, 81);
+            rbtn7.Location = new Point(284, 66);
             rbtn7.Name = "rbtn7";
-            rbtn7.Size = new Size(162, 19);
+            rbtn7.Size = new Size(162, 34);
             rbtn7.TabIndex = 17;
             rbtn7.TabStop = true;
-            rbtn7.Text = "Mahogany Dining Table";
+            rbtn7.Text = "Mahogany Dining Table\r\n$5000";
             rbtn7.UseVisualStyleBackColor = true;
             // 
             // rbtn8
             // 
             rbtn8.AutoSize = true;
-            rbtn8.Location = new Point(511, 81);
+            rbtn8.Location = new Point(511, 68);
             rbtn8.Name = "rbtn8";
-            rbtn8.Size = new Size(140, 19);
+            rbtn8.Size = new Size(140, 34);
             rbtn8.TabIndex = 18;
             rbtn8.TabStop = true;
-            rbtn8.Text = "3-Seater Velvet Sofa";
+            rbtn8.Text = "3-Seater Velvet Sofa\r\n$4450";
             rbtn8.UseVisualStyleBackColor = true;
             // 
             // rbtn9
             // 
             rbtn9.AutoSize = true;
-            rbtn9.Location = new Point(726, 81);
+            rbtn9.Location = new Point(726, 66);
             rbtn9.Name = "rbtn9";
-            rbtn9.Size = new Size(148, 19);
+            rbtn9.Size = new Size(148, 34);
             rbtn9.TabIndex = 19;
             rbtn9.TabStop = true;
-            rbtn9.Text = "Minimalist Study Desk";
+            rbtn9.Text = "Minimalist Study Desk\r\n1250";
             rbtn9.UseVisualStyleBackColor = true;
             // 
             // rbtn10
             // 
             rbtn10.AutoSize = true;
-            rbtn10.Location = new Point(957, 83);
+            rbtn10.Location = new Point(943, 66);
             rbtn10.Name = "rbtn10";
-            rbtn10.Size = new Size(161, 19);
+            rbtn10.Size = new Size(161, 34);
             rbtn10.TabIndex = 20;
             rbtn10.TabStop = true;
-            rbtn10.Text = "Modular Bookcase Rack";
+            rbtn10.Text = "Modular Bookcase Rack\r\n$1550";
             rbtn10.UseVisualStyleBackColor = true;
             // 
             // pictureBox6

@@ -1,22 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
 using System.Windows.Forms;
 
 namespace _4915_assignment_pototype
 {
     public partial class Customize : Form
     {
+        private static readonly HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:7146/") };
+        private int currentCustomerID = 103;
+
         public Customize()
         {
             InitializeComponent();
             PopulateCustomizationOptions();
         }
 
-        // Fills the Dropdowns with options
         private void PopulateCustomizationOptions()
         {
-            // Color options
-            cmbColor.Items.AddRange(new string[] { "Natural Oak", "Walnut", "Matte Black", "Glossy White", "Charcoal Gray" });
-            cmbColor.SelectedIndex = 0;
+            txtColor.MaxLength = 30;
 
             // Desktop Material options
             cmbDesktopMaterial.Items.AddRange(new string[] { "Solid Wood", "MDF Veneer", "Tempered Glass", "Marble", "Laminate" });
@@ -27,36 +30,61 @@ namespace _4915_assignment_pototype
             cmbLegMaterial.SelectedIndex = 0;
         }
 
-        // Logic when user clicks Save
-        private void btnSave_Click(object sender, EventArgs e)
+        private async void btnSave_Click(object sender, EventArgs e)
         {
-            // Simple validation check
-            if (string.IsNullOrWhiteSpace(txtType.Text) || string.IsNullOrWhiteSpace(txtSize.Text))
+            if (string.IsNullOrWhiteSpace(txtType.Text) ||
+                string.IsNullOrWhiteSpace(txtSize.Text) ||
+                string.IsNullOrWhiteSpace(txtColor.Text))
             {
-                MessageBox.Show("Please fill out both the Furniture Type and Size fields.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please fill out Furniture Type, Size, and Color fields.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // Capture data into local variables
-            string furnitureType = txtType.Text;
-            string size = txtSize.Text;
-            string selectedColor = cmbColor.SelectedItem.ToString();
-            string desktopMaterial = cmbDesktopMaterial.SelectedItem.ToString();
-            string legMaterial = cmbLegMaterial.SelectedItem.ToString();
-            string description = txtDescription.Text;
+            var payload = new Dictionary<string, string>
+            {
+                { "customerID", currentCustomerID.ToString() },
+                { "type", txtType.Text },
+                { "color", txtColor.Text },
+                { "size", txtSize.Text },
+                { "desktopMaterialName", cmbDesktopMaterial.SelectedItem.ToString() },
+                { "legMaterialName", cmbLegMaterial.SelectedItem.ToString() },
+                { "description", txtDescription.Text }
+            };
 
-            // Output confirmation window
-            string message = $"Furniture Saved Successfully!\n\n" +
-                             $"Type: {furnitureType}\n" +
-                             $"Size: {size}\n" +
-                             $"Color: {selectedColor}\n" +
-                             $"Desktop Material: {desktopMaterial}\n" +
-                             $"Leg Material: {legMaterial}\n" +
-                             $"Description: {description}";
+            try
+            {
+                string jsonPayload = System.Text.Json.JsonSerializer.Serialize(payload);
+                HttpContent content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-            MessageBox.Show(message, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                HttpResponseMessage response = await client.PostAsync("api/SimpleGetAPI/SubmitCustomizeOrder", content);
 
-            // TODO: Pass these variables to your Database handler or Cart system here
+                if (response.IsSuccessStatusCode)
+                {
+                    string resultText = await response.Content.ReadAsStringAsync();
+
+                    if (resultText.StartsWith("SUCCESS"))
+                    {
+                        string newOrderId = resultText.Split(':')[1];
+                        MessageBox.Show($"Customization saved successfully!\nYour Customization ID is: {newOrderId}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        Form MakeOrderForm = Application.OpenForms["MakeOrder"];
+                        if (MakeOrderForm != null) MakeOrderForm.Show();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"API Processing Failed: {resultText}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"HTTP Request Failed: {response.StatusCode}", "Network Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to communicate with Server API: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)

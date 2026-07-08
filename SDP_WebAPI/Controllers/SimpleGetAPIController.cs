@@ -1900,6 +1900,76 @@ namespace SDP_WebAPI.Controllers
                 return BadRequest("Failed to update order status.");
             }
         }
+        // URL: POST https://localhost:7146/api/SimpleGetAPI/SubmitCustomizeOrder
+        [HttpPost("SubmitCustomizeOrder")]
+        public string SubmitCustomizeOrder([FromBody] Dictionary<string, string> payload)
+        {
+            // 1. 驗證前端傳入的 Payload 欄位是否齊全
+            if (payload == null ||
+                !payload.ContainsKey("customerID") ||
+                !payload.ContainsKey("type") ||
+                !payload.ContainsKey("color") ||
+                !payload.ContainsKey("size") ||
+                !payload.ContainsKey("desktopMaterialName") ||
+                !payload.ContainsKey("legMaterialName") ||
+                !payload.ContainsKey("description"))
+            {
+                return "FAILED_INVALID_PAYLOAD";
+            }
+
+            int customerID = int.Parse(payload["customerID"]);
+            string type = payload["type"];
+            string color = payload["color"];
+            string size = payload["size"];
+            string desktopMaterialName = payload["desktopMaterialName"];
+            string legMaterialName = payload["legMaterialName"];
+            string description = payload["description"];
+
+            // 模擬設定與您的資料表對應的預設 ID 與基礎價格
+            string desktopMaterialID = "RM001";
+            string legMaterialID = "RM002";
+            double price = 5500.00;
+
+            string connString = _configuration["ConnectionStrings"];
+
+            // 2. 單純寫入 Customize 資料表
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                string sqlCustomize = @"INSERT INTO Customize 
+                    (customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, price, status) 
+                    VALUES 
+                    (@customerID, @type, @color, @size, @desktopMaterialID, @desktopMaterialName, @legMaterialID, @legMaterialName, @description, @price, 'processing');
+                    SELECT LAST_INSERT_ID();";
+
+                try
+                {
+                    conn.Open();
+                    long newCustomizeID = 0;
+                    using (MySqlCommand cmd = new MySqlCommand(sqlCustomize, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@customerID", customerID);
+                        cmd.Parameters.AddWithValue("@type", type);
+                        cmd.Parameters.AddWithValue("@color", color);
+                        cmd.Parameters.AddWithValue("@size", size);
+                        cmd.Parameters.AddWithValue("@desktopMaterialID", desktopMaterialID);
+                        cmd.Parameters.AddWithValue("@desktopMaterialName", desktopMaterialName);
+                        cmd.Parameters.AddWithValue("@legMaterialID", legMaterialID);
+                        cmd.Parameters.AddWithValue("@legMaterialName", legMaterialName);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@price", price);
+
+                        newCustomizeID = Convert.ToInt64(cmd.ExecuteScalar());
+                    }
+
+                    return $"SUCCESS:{newCustomizeID}";
+                }
+                catch (Exception ex)
+                {
+                    return $"ERROR:{ex.Message}";
+                }
+            }
+        }
+
     }
 }
 

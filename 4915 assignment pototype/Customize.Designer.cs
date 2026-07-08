@@ -10,7 +10,7 @@
         private System.Windows.Forms.Label lblSize;
         private System.Windows.Forms.TextBox txtSize;
         private System.Windows.Forms.Label lblColor;
-        private System.Windows.Forms.ComboBox cmbColor;
+        private System.Windows.Forms.TextBox txtColor;
         private System.Windows.Forms.Label lblDesktopMaterial;
         private System.Windows.Forms.ComboBox cmbDesktopMaterial;
         private System.Windows.Forms.Label lblLegMaterial;
@@ -37,7 +37,7 @@
             lblSize = new Label();
             txtSize = new TextBox();
             lblColor = new Label();
-            cmbColor = new ComboBox();
+            txtColor = new TextBox();
             lblDesktopMaterial = new Label();
             cmbDesktopMaterial = new ComboBox();
             lblLegMaterial = new Label();
@@ -88,11 +88,12 @@
             // 
             // cmbColor
             // 
-            cmbColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbColor.Location = new Point(158, 110);
-            cmbColor.Name = "cmbColor";
-            cmbColor.Size = new Size(176, 23);
-            cmbColor.TabIndex = 5;
+            // txtColor
+            txtColor.Location = new Point(158, 110);
+            txtColor.Name = "txtColor";
+            txtColor.Size = new Size(176, 23);
+            txtColor.TabIndex = 5;
+
             // 
             // lblDesktopMaterial
             // 
@@ -172,7 +173,7 @@
             Controls.Add(lblSize);
             Controls.Add(txtSize);
             Controls.Add(lblColor);
-            Controls.Add(cmbColor);
+            this.Controls.Add(txtColor);
             Controls.Add(lblDesktopMaterial);
             Controls.Add(cmbDesktopMaterial);
             Controls.Add(lblLegMaterial);

@@ -35,7 +35,6 @@ namespace _4915_assignment_pototype
             {
                 // Disable all buttons if nothing is selected
                 btnaccept.Enabled = false;
-                btnreject.Enabled = false;
                 btnedit.Enabled = false;
             }
         }
@@ -45,20 +44,17 @@ namespace _4915_assignment_pototype
             // Reset all
             btnaccept.Enabled = false;
             btnedit.Enabled = false;
-            btnreject.Enabled = false;
 
             switch (currentStatus.ToLower())
             {
                 case "determined":
                     btnaccept.Enabled = true;
                     btnedit.Enabled = true;
-                    btnreject.Enabled = true;
                     break;
                 case "processing":
                 case "accepted":
                     btnaccept.Enabled = true;
                     break;
-                case "rejected":
                 case "done":
 
                     break;
@@ -149,10 +145,37 @@ namespace _4915_assignment_pototype
             }
         }
 
-        private async void btnreject_Click(object sender, EventArgs e)
+
+        private async Task CallRejectApi(Dictionary<string, string> payload)
         {
-            string custID = dataCustomizeC.SelectedRows[0].Cells["customizeID"].Value.ToString();
-            await CallUpdateApi(custID, "rejected");
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // Serialize the payload to JSON
+                    string json = System.Text.Json.JsonSerializer.Serialize(payload);
+                    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                    // Post to the new API endpoint
+                    string url = $"{baseApiUrl}/RejectCustomizeOrder";
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Order rejected and stock restored successfully.");
+                        await LoadData(); // Refresh grid
+                    }
+                    else
+                    {
+                        string error = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Failed to reject order: {error}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"API Error: {ex.Message}");
+            }
         }
 
         private async void btnedit_Click(object sender, EventArgs e)

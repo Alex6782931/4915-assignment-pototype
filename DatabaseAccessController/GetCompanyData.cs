@@ -13,6 +13,13 @@ namespace DatabaseAccessController
 
         //CUSTOMIZE
         // CUSTOMIZE TABLE
+
+        public int DeleteCustomizeRequired(int customizeID)
+        {
+            // Deletes the record linked to the specific customizeID
+            string sqlCmd = $"DELETE FROM CustomizeRequired WHERE customizeID = {customizeID}";
+            return base.BatchUpdate(sqlCmd);
+        }
         public DataTable GetCustomizeRecordsData()
         {
             String sqlCmd = "SELECT * FROM Customize";

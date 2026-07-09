@@ -37,7 +37,6 @@
             dataCustomizeC = new DataGridView();
             btnBack = new Button();
             btnedit = new Button();
-            btnreject = new Button();
             ((System.ComponentModel.ISupportInitialize)dataCustomizeC).BeginInit();
             SuspendLayout();
             // 
@@ -91,7 +90,6 @@
             btnaccept.Text = "accept";
             btnaccept.UseVisualStyleBackColor = true;
             btnaccept.Click += btnaccept_Click;
-
             // 
             // label1
             // 
@@ -132,26 +130,14 @@
             btnedit.Size = new Size(118, 34);
             btnedit.TabIndex = 17;
             btnedit.Text = "edit";
-            btnedit.UseVisualStyleBackColor = true; 
+            btnedit.UseVisualStyleBackColor = true;
             btnedit.Click += btnedit_Click;
-            // 
-            // btnreject
-            // 
-            btnreject.Location = new Point(659, 575);
-            btnreject.Margin = new Padding(6, 5, 6, 5);
-            btnreject.Name = "btnreject";
-            btnreject.Size = new Size(118, 34);
-            btnreject.TabIndex = 18;
-            btnreject.Text = "reject";
-            btnreject.UseVisualStyleBackColor = true;
-            btnreject.Click += btnreject_Click;
             // 
             // customizehistort
             // 
             AutoScaleDimensions = new SizeF(11F, 23F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1205, 639);
-            Controls.Add(btnreject);
             Controls.Add(btnedit);
             Controls.Add(btnCClear);
             Controls.Add(btnCSearch);
@@ -180,6 +166,5 @@
         private DataGridView dataCustomizeC;
         private Button btnBack;
         private Button btnedit;
-        private Button btnreject;
     }
 }

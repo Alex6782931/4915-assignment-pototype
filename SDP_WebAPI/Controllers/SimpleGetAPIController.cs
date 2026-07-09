@@ -1564,15 +1564,40 @@ namespace SDP_WebAPI.Controllers
         }
 
         [HttpPost("RejectCustomizeOrder")]
-        public int RejectCustomizeOrder([FromBody] Dictionary<string, string> payload)
+        public IActionResult RejectCustomizeOrder([FromBody] Dictionary<string, string> payload)
         {
             if (payload.ContainsKey("customizeID") && int.TryParse(payload["customizeID"], out int id))
             {
                 string connString = _configuration["ConnectionStrings"];
-                GetCompanyData dbo = new GetCompanyData(connString);
-                return dbo.UpdateCustomizeStatus(id, "rejected");
+                var db = new DatabaseAccessController.DatabaseController(connString);
+
+                // 1. Fetch material usage from CustomizeRequired BEFORE deleting it
+                string getSql = $"SELECT desktopMaterialID, desktopQty, legMaterialID, legQty FROM CustomizeRequired WHERE customizeID = {id}";
+                DataTable dt = db.GetData(getSql);
+
+                if (dt.Rows.Count > 0)
+                {
+                    string dID = dt.Rows[0]["desktopMaterialID"].ToString();
+                    int dQty = Convert.ToInt32(dt.Rows[0]["desktopQty"]);
+                    string lID = dt.Rows[0]["legMaterialID"].ToString();
+                    int lQty = Convert.ToInt32(dt.Rows[0]["legQty"]);
+
+                    // 2. Add the quantities back to inventory
+                    db.BatchUpdate($"UPDATE inventory SET quantityInStock = quantityInStock + {dQty} WHERE itemID = '{dID}'");
+                    db.BatchUpdate($"UPDATE inventory SET quantityInStock = quantityInStock + {lQty} WHERE itemID = '{lID}'");
+
+                    // 3. Now delete the CustomizeRequired record
+                    GetCompanyData dbo = new GetCompanyData(connString);
+                    dbo.DeleteCustomizeRequired(id);
+                }
+
+                // 4. Update the status of the Customize record to rejected
+                GetCompanyData dboStatus = new GetCompanyData(connString);
+                int result = dboStatus.UpdateCustomizeStatus(id, "rejected");
+
+                return result > 0 ? Ok("Order rejected and stock restored.") : BadRequest("Status update failed.");
             }
-            return 0;
+            return BadRequest("Invalid customizeID.");
         }
 
         [HttpPost("ConfirmCustomizeOrder")]

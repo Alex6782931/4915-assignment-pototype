@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,43 +18,49 @@ namespace _4915_assignment_pototype
             InitializeComponent();
             this.customid = customid;
         }
+
         private void dataCustomizeC_SelectionChanged(object sender, EventArgs e)
         {
+            // Check if a row is actually selected
             if (dataCustomizeC.SelectedRows.Count > 0)
             {
-                // Safely get the status
-                string currentStatus = dataCustomizeC.SelectedRows[0].Cells["status"].Value?.ToString() ?? "";
-                UpdateButtonStates(currentStatus);
+                // Get the status from the selected row
+                string currentStatus = dataCustomizeC.SelectedRows[0].Cells["status"].Value?.ToString();
+
+                if (!string.IsNullOrEmpty(currentStatus))
+                {
+                    UpdateButtonStates(currentStatus);
+                }
             }
             else
             {
-                // Disable buttons if nothing is selected
-                btnedit.Enabled = false;
+                // Disable all buttons if nothing is selected
                 btnaccept.Enabled = false;
+                btnedit.Enabled = false;
             }
         }
 
         private void UpdateButtonStates(string currentStatus)
-        {
-            try
-            {
-                // 1. Define states
-                bool isDetermined = currentStatus.Equals("determined", StringComparison.OrdinalIgnoreCase);
-                bool isRejected = currentStatus.Equals("rejected", StringComparison.OrdinalIgnoreCase);
-                bool isProcessing = currentStatus.Equals("processing", StringComparison.OrdinalIgnoreCase);
-                bool isEdited = currentStatus.Equals("edited", StringComparison.OrdinalIgnoreCase);
+        { 
+            btnaccept.Enabled = false;
+            btnedit.Enabled = false;
 
-                // 2. LOGIC:
-                // btnaccept is ONLY enabled when status is "determined"
-                btnaccept.Enabled = isDetermined;
+            if (string.IsNullOrEmpty(currentStatus)) return;
 
-                // btnedit is enabled for rejected, processing, edited, and determined status
-                btnedit.Enabled = (isRejected || isProcessing || isEdited || isDetermined);
+            string status = currentStatus.Trim().ToLower();
+            
+             
+            if (status == "determined")
+            { 
+                btnaccept.Enabled = true;
+                btnedit.Enabled = true;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error updating buttons: " + ex.Message);
+            else if (status == "processing" || status == "accepted" || status == "edited" || status == "done")
+            { 
+                btnedit.Enabled = true;
             }
+
+            
         }
 
 
@@ -94,6 +101,7 @@ namespace _4915_assignment_pototype
             dt.Columns.Add("price");
             dt.Columns.Add("newPrice");
             dt.Columns.Add("status");
+            dt.Columns.Add("ispay");
 
             using (JsonDocument doc = JsonDocument.Parse(json))
             {
@@ -109,36 +117,151 @@ namespace _4915_assignment_pototype
             }
             return dt;
         }
-
         private async void btnaccept_Click(object sender, EventArgs e)
         {
+            // 安全防護：確保目前真的有選取一整行資料
+            if (dataCustomizeC.SelectedRows.Count == 0) return;
+
             var row = dataCustomizeC.SelectedRows[0];
             string custID = row.Cells["customizeID"].Value.ToString();
+            string furnitureType = row.Cells["type"].Value?.ToString();
             double price = Convert.ToDouble(row.Cells["price"].Value);
             object newPriceObj = row.Cells["newPrice"].Value;
 
-            if (newPriceObj == DBNull.Value || string.IsNullOrEmpty(newPriceObj.ToString()))
+            // 檢查 1：檢查這筆訂單是否已經付過錢
+            string currentIsPay = row.Cells["ispay"].Value?.ToString();
+            if (currentIsPay != null && currentIsPay.Equals("Yes", StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show("Order accepted.");
-                await CallUpdateApi(custID, "accepted");
+                MessageBox.Show("This customization request has already been paid and accepted!", "Payment Notice", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            else
+
+            // =================================================================
+            // 【核心需求修改】檢查 2：檢查這筆項目的狀態是否已經是 accepted
+            // =================================================================
+            string currentStatus = row.Cells["status"].Value?.ToString();
+            if (currentStatus != null && currentStatus.Equals("accepted", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(
+                    "This customization request has already been accepted and processed into a production order. You cannot accept it again.",
+                    "Order Already Accepted",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return; // 立即阻斷，防止往下重複發送扣款與 API 請求
+            }
+
+            double finalPrice = price;
+            double diff = 0.0;
+            bool isPriceIncreased = false;
+
+            if (newPriceObj != DBNull.Value && !string.IsNullOrEmpty(newPriceObj.ToString()))
             {
                 double newPrice = Convert.ToDouble(newPriceObj);
+                finalPrice = newPrice;
                 if (newPrice > price)
                 {
-                    // Show Payment Form for (newPrice - price)
-                    double diff = newPrice - price;
-                    // PaymentForm payForm = new PaymentForm(diff, custID);
-                    // payForm.ShowDialog();
-                }
-                else if (newPrice < price)
-                {
-                    MessageBox.Show($"Refund processed: {price - newPrice}");
-                    await CallUpdateApi(custID, "accepted");
+                    diff = newPrice - price;
+                    isPriceIncreased = true;
                 }
             }
+
+            string confirmMessage = $"Customization Order Summary:\n" +
+                                   $"-------------------------\n" +
+                                   $"Furniture Type: {furnitureType}\n" +
+                                   $"Original Base Price: ${price:N2}\n" +
+                                   $"Final Determined Price: ${finalPrice:N2}\n";
+
+            if (isPriceIncreased)
+            {
+                confirmMessage += $"Additional Payment Required: ${diff:N2}\n";
+            }
+            else if (finalPrice < price)
+            {
+                confirmMessage += $"Refund Amount to be Processed: ${price - finalPrice:N2}\n";
+            }
+
+            confirmMessage += $"\nAre you sure you want to accept this configuration and complete the payment process?";
+
+            DialogResult dialogResult = MessageBox.Show(
+                confirmMessage,
+                "Ensure Accept Customization",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (dialogResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+
+            btnaccept.Enabled = false;
+
+            bool isProfileValid = await CheckPaymentAndAddressProfileForCustomize();
+            if (!isProfileValid)
+            {
+                btnaccept.Enabled = true;
+                return;
+            }
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    if (isPriceIncreased)
+                    {
+                        MessageBox.Show($"Additional payment of ${diff:N2} processed successfully via your card.", "Payment Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else if (finalPrice < price)
+                    {
+                        MessageBox.Show($"Refund of ${price - finalPrice:N2} has been processed back to your card account.", "Refund Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    string url = $"{baseApiUrl}/AcceptAndCreateOrder?customizeID={custID}";
+                    HttpResponseMessage response = await client.PostAsync(url, null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultText = await response.Content.ReadAsStringAsync();
+
+                        if (resultText.StartsWith("SUCCESS"))
+                        {
+                            string formalOrderNum = "N/A";
+                            if (resultText.Contains(":"))
+                            {
+                                formalOrderNum = resultText.Split(':')[1];
+                            }
+
+                            row.Cells["ispay"].Value = "Yes";
+
+                            MessageBox.Show($"Success!\n\nStatus updated to 'accepted' and Payment marked as 'Yes'.\nFormal Production Order #{formalOrderNum} has been automatically generated into the system.", "Process Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            await LoadData();
+                        }
+                        else
+                        {
+                            MessageBox.Show($"API Transaction Failed: {resultText}", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Network Error: Server replied HTTP {response.StatusCode}", "API Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"System Exception occurred: {ex.Message}", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnaccept.Enabled = true;
+            }
         }
+
+
+
 
 
         private async Task CallRejectApi(Dictionary<string, string> payload)
@@ -175,6 +298,16 @@ namespace _4915_assignment_pototype
 
         private async void btnedit_Click(object sender, EventArgs e)
         {
+            if (dataCustomizeC.SelectedRows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Please select a customization record from the list before attempting to edit.",
+                    "Selection Required",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return; // 立即阻斷，絕對不允許程式往下執行 row[0] 的讀取
+            }
             var row = dataCustomizeC.SelectedRows[0];
             string customize = row.Cells["customizeID"].Value.ToString();
             Customize c = new Customize(customid, customize);
@@ -231,5 +364,59 @@ namespace _4915_assignment_pototype
         {
             this.Hide();
         }
+        // 請將這段程式碼完整貼在 customizehistort 類別內（例如 btnaccept_Click 的正下方）
+        private async Task<bool> CheckPaymentAndAddressProfileForCustomize()
+        {
+            // 這裡傳參使用的是您建構子傳入並記錄下來的 this.customid
+            var paymentPayload = new Dictionary<string, string>
+    {
+        { "customerNumber", this.customid }
+    };
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(paymentPayload);
+                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+
+                    string url = $"{baseApiUrl}/ConfirmPayment";
+                    HttpResponseMessage response = await client.PostAsync(url, content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string result = await response.Content.ReadAsStringAsync();
+
+                        if (result.StartsWith("SUCCESS_PAYMENT_COMPLETED"))
+                        {
+                            return true; // 資料齊全，驗證通過
+                        }
+                        else if (result == "FAILED_MISSING_PROFILE_DETAILS")
+                        {
+                            MessageBox.Show(
+                                "Payment Gateway Intercept:\n\nYour profile details are incomplete! You cannot accept this customization until an address and active credit card details are configured.\n\nReturning to Main Menu now...",
+                                "Account Profile Incomplete",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning
+                            );
+
+                            // 自動開啟隱藏的主選單畫面，並關閉當前畫面
+                            Form mainForm = Application.OpenForms["CustomerMain"];
+                            if (mainForm != null) mainForm.Show();
+
+                            this.Close(); // 強制退場關閉當前視窗
+                            return false;
+                        }
+                    }
+                    return false;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Gateway communication loss. Cannot verify profile data integrity.", "Network Timeout", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
     }
 }

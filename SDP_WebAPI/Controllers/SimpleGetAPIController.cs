@@ -2228,6 +2228,105 @@ namespace SDP_WebAPI.Controllers
                 }
             }
         }
+        [HttpPost("AcceptAndCreateOrder")]
+        public string AcceptAndCreateOrder([FromQuery] string customizeID)
+        {
+            if (string.IsNullOrEmpty(customizeID)) return "FAILED_INVALID_ID";
+
+            string connString = _configuration["ConnectionStrings"];
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+            using (MySqlConnection conn = new MySqlConnection(connString))
+            {
+                conn.Open();
+                using (MySqlTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. 讀取目前的客製化申請詳情 (用以同步帶入材料需求表及訂單表)
+                        string sqlSelect = "SELECT customerID, type, color, size, desktopMaterialID, legMaterialID, description, price, newPrice FROM Customize WHERE customizeID = @id FOR UPDATE;";
+                        int customerID = 0;
+                        string type = "", color = "", size = "", desktopID = "", legID = "", desc = "";
+                        double finalPrice = 0.0;
+
+                        using (MySqlCommand cmdSelect = new MySqlCommand(sqlSelect, conn, trans))
+                        {
+                            cmdSelect.Parameters.AddWithValue("@id", customizeID);
+                            using (MySqlDataReader reader = cmdSelect.ExecuteReader())
+                            {
+                                if (!reader.Read()) return "FAILED_CUSTOMIZE_NOT_FOUND";
+
+                                customerID = Convert.ToInt32(reader["customerID"]);
+                                type = reader["type"]?.ToString();
+                                color = reader["color"]?.ToString();
+                                size = reader["size"]?.ToString();
+                                desktopID = reader["desktopMaterialID"]?.ToString();
+                                legID = reader["legMaterialID"]?.ToString();
+                                desc = reader["description"]?.ToString();
+
+                                // 優先採用議價後的 newPrice，若無則採用原始 price
+                                object newPriceObj = reader["newPrice"];
+                                finalPrice = (newPriceObj == DBNull.Value || string.IsNullOrEmpty(newPriceObj.ToString()))
+                                    ? Convert.ToDouble(reader["price"])
+                                    : Convert.ToDouble(newPriceObj);
+                            }
+                        }
+
+                        // 2. 由於 orders 表格強烈依賴 CustomizeRequired (外鍵)，此處必須先在材料表生成資料
+                        string sqlInsertReq = @"INSERT INTO CustomizeRequired 
+                    (customizeID, desktopMaterialID, desktopQty, legMaterialID, legQty, type, size, color, description) 
+                    VALUES (@id, @deskID, 1, @legID, 4, @type, @size, @color, @desc);
+                    SELECT LAST_INSERT_ID();";
+
+                        long requirementID = 0;
+                        using (MySqlCommand cmdReq = new MySqlCommand(sqlInsertReq, conn, trans))
+                        {
+                            cmdReq.Parameters.AddWithValue("@id", customizeID);
+                            cmdReq.Parameters.AddWithValue("@deskID", desktopID);
+                            cmdReq.Parameters.AddWithValue("@legID", legID);
+                            cmdReq.Parameters.AddWithValue("@type", type);
+                            cmdReq.Parameters.AddWithValue("@size", size);
+                            cmdReq.Parameters.AddWithValue("@color", color);
+                            cmdReq.Parameters.AddWithValue("@desc", desc);
+                            requirementID = Convert.ToInt64(cmdReq.ExecuteScalar());
+                        }
+
+                        // 3. 在 orders 資料表建立正式訂單，並綁定剛生成的 customizeRequiredID
+                        string sqlInsertOrder = @"INSERT INTO `orders` 
+                    (`orderDate`, `customerNumber`, `totalAmount`, `orderStatus`, `customizeRequiredID`) 
+                    VALUES (@orderDate, @custNum, @totalAmount, 'Processing', @reqID);
+                    SELECT LAST_INSERT_ID();";
+
+                        long newOrderNumber = 0;
+                        using (MySqlCommand cmdOrder = new MySqlCommand(sqlInsertOrder, conn, trans))
+                        {
+                            cmdOrder.Parameters.AddWithValue("@orderDate", currentDate);
+                            cmdOrder.Parameters.AddWithValue("@custNum", customerID);
+                            cmdOrder.Parameters.AddWithValue("@totalAmount", finalPrice);
+                            cmdOrder.Parameters.AddWithValue("@reqID", requirementID);
+                            newOrderNumber = Convert.ToInt64(cmdOrder.ExecuteScalar());
+                        }
+
+                        // 4. 【核心需求修改】更新 Customize 資料表的狀態至 'accepted'，同時將全小寫的 ispay 欄位更新為 'Yes'
+                        string sqlUpdateStatus = "UPDATE Customize SET status = 'accepted', ispay = 'Yes' WHERE customizeID = @id;";
+                        using (MySqlCommand cmdUpdate = new MySqlCommand(sqlUpdateStatus, conn, trans))
+                        {
+                            cmdUpdate.Parameters.AddWithValue("@id", customizeID);
+                            cmdUpdate.ExecuteNonQuery();
+                        }
+
+                        // 5. 確認整套交易程序無誤，提交正式儲存
+                        trans.Commit();
+                        return $"SUCCESS:{newOrderNumber}";
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        return $"ERROR:{ex.Message}";
+                    }
+                }
+            }
+        }
 
 
 

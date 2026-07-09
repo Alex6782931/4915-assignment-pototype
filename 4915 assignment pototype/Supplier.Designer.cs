@@ -36,15 +36,15 @@
             label1 = new Label();
             txtSupplierSearch = new TextBox();
             label2 = new Label();
+            btnAddSupplier = new Button();
             ((System.ComponentModel.ISupportInitialize)dataSuppliers).BeginInit();
             SuspendLayout();
             // 
             // btnBack
             // 
-            btnBack.Location = new Point(10, 9);
-            btnBack.Margin = new Padding(3, 2, 3, 2);
+            btnBack.Location = new Point(11, 12);
             btnBack.Name = "btnBack";
-            btnBack.Size = new Size(82, 22);
+            btnBack.Size = new Size(94, 29);
             btnBack.TabIndex = 0;
             btnBack.Text = "Back";
             btnBack.UseVisualStyleBackColor = true;
@@ -52,10 +52,9 @@
             // 
             // btnSupplierSearch
             // 
-            btnSupplierSearch.Location = new Point(540, 78);
-            btnSupplierSearch.Margin = new Padding(3, 2, 3, 2);
+            btnSupplierSearch.Location = new Point(617, 104);
             btnSupplierSearch.Name = "btnSupplierSearch";
-            btnSupplierSearch.Size = new Size(82, 22);
+            btnSupplierSearch.Size = new Size(94, 29);
             btnSupplierSearch.TabIndex = 1;
             btnSupplierSearch.Text = "Search";
             btnSupplierSearch.UseVisualStyleBackColor = true;
@@ -63,10 +62,9 @@
             // 
             // btnSupplierClear
             // 
-            btnSupplierClear.Location = new Point(627, 76);
-            btnSupplierClear.Margin = new Padding(3, 2, 3, 2);
+            btnSupplierClear.Location = new Point(717, 101);
             btnSupplierClear.Name = "btnSupplierClear";
-            btnSupplierClear.Size = new Size(82, 22);
+            btnSupplierClear.Size = new Size(94, 29);
             btnSupplierClear.TabIndex = 2;
             btnSupplierClear.Text = "Clear";
             btnSupplierClear.UseVisualStyleBackColor = true;
@@ -74,10 +72,9 @@
             // 
             // btnSupplierUpdate
             // 
-            btnSupplierUpdate.Location = new Point(572, 323);
-            btnSupplierUpdate.Margin = new Padding(3, 2, 3, 2);
+            btnSupplierUpdate.Location = new Point(654, 431);
             btnSupplierUpdate.Name = "btnSupplierUpdate";
-            btnSupplierUpdate.Size = new Size(82, 22);
+            btnSupplierUpdate.Size = new Size(94, 29);
             btnSupplierUpdate.TabIndex = 3;
             btnSupplierUpdate.Text = "Update";
             btnSupplierUpdate.UseVisualStyleBackColor = true;
@@ -86,42 +83,51 @@
             // dataSuppliers
             // 
             dataSuppliers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataSuppliers.Location = new Point(29, 108);
-            dataSuppliers.Margin = new Padding(3, 2, 3, 2);
+            dataSuppliers.Location = new Point(33, 144);
             dataSuppliers.Name = "dataSuppliers";
             dataSuppliers.RowHeadersWidth = 51;
-            dataSuppliers.Size = new Size(681, 202);
+            dataSuppliers.Size = new Size(778, 269);
             dataSuppliers.TabIndex = 4;
             // 
             // label1
             // 
-            label1.Location = new Point(40, 80);
+            label1.Location = new Point(46, 107);
             label1.Name = "label1";
-            label1.Size = new Size(162, 19);
+            label1.Size = new Size(185, 25);
             label1.TabIndex = 5;
             label1.Text = "Search by(supplier name):";
             // 
             // txtSupplierSearch
             // 
-            txtSupplierSearch.Location = new Point(200, 78);
-            txtSupplierSearch.Margin = new Padding(3, 2, 3, 2);
+            txtSupplierSearch.Location = new Point(229, 104);
             txtSupplierSearch.Name = "txtSupplierSearch";
-            txtSupplierSearch.Size = new Size(322, 23);
+            txtSupplierSearch.Size = new Size(367, 27);
             txtSupplierSearch.TabIndex = 6;
             // 
             // label2
             // 
-            label2.Location = new Point(40, 40);
+            label2.Location = new Point(46, 53);
             label2.Name = "label2";
-            label2.Size = new Size(129, 19);
+            label2.Size = new Size(147, 25);
             label2.TabIndex = 7;
             label2.Text = "Supplier database";
             // 
+            // btnAddSupplier
+            // 
+            btnAddSupplier.Location = new Point(717, 49);
+            btnAddSupplier.Name = "btnAddSupplier";
+            btnAddSupplier.Size = new Size(94, 29);
+            btnAddSupplier.TabIndex = 8;
+            btnAddSupplier.Text = "Add";
+            btnAddSupplier.UseVisualStyleBackColor = true;
+            btnAddSupplier.Click += btnAddSupplier_Click;
+            // 
             // Supplier
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(733, 370);
+            ClientSize = new Size(838, 493);
+            Controls.Add(btnAddSupplier);
             Controls.Add(label2);
             Controls.Add(txtSupplierSearch);
             Controls.Add(label1);
@@ -130,7 +136,6 @@
             Controls.Add(btnSupplierClear);
             Controls.Add(btnSupplierSearch);
             Controls.Add(btnBack);
-            Margin = new Padding(3, 2, 3, 2);
             Name = "Supplier";
             Text = "Supplier";
             Load += Supplier_Load;
@@ -149,5 +154,6 @@
         private Label label1;
         private TextBox txtSupplierSearch;
         private Label label2;
+        private Button btnAddSupplier;
     }
 }

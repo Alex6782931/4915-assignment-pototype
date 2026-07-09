@@ -184,9 +184,11 @@ namespace _4915_assignment_pototype
         private void btnAddSupplier_Click(object sender, EventArgs e)
         {
             AddSupplierForm addForm = new AddSupplierForm();
-            addForm.ShowDialog();
-            // Refresh your supplier DataGridView here
-            Supplier_Load(null, null);
+            if (addForm.ShowDialog() == DialogResult.OK)
+            {
+                // Refresh the DataGridView after the dialog closes
+                Supplier_Load(null, null);
+            }
         }
     }
 }

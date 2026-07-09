@@ -20,7 +20,6 @@ namespace _4915_assignment_pototype
 
         private async void btnSubmitSupplier_Click(object sender, EventArgs e)
         {
-            // Now the form only sends the information the user provided
             var newSupplier = new
             {
                 SupplierName = txtSupplierName.Text,
@@ -33,14 +32,18 @@ namespace _4915_assignment_pototype
             {
                 var json = JsonSerializer.Serialize(newSupplier);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Post to the new API endpoint
                 var response = await client.PostAsync("https://localhost:7146/api/SimpleGetAPI/AddSupplier", content);
 
                 if (response.IsSuccessStatusCode)
                 {
                     MessageBox.Show("Supplier added successfully!");
+                    this.DialogResult = DialogResult.OK; // Signals success to the main form
                     this.Close();
                 }
-                else {
+                else
+                {
                     string error = await response.Content.ReadAsStringAsync();
                     MessageBox.Show("Failed to add supplier. Error: " + error);
                 }

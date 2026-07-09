@@ -1131,16 +1131,32 @@ namespace SDP_WebAPI.Controllers
         }
 
         [HttpPost("AddSupplier")]
-        public IActionResult AddSupplier([FromBody] SupplierRequest request)
+        public string AddSupplier([FromBody] Dictionary<string, string> payload)
         {
-            string connString = _configuration["ConnectionStrings"];
-            var dbo = new GetCompanyData(connString);
+            try
+            {
+                string connString = _configuration["ConnectionStrings"];
+                string sqlInsert = @"INSERT INTO suppliers (supplierName, contactName, phone, address) 
+                             VALUES (@name, @contact, @phone, @address);";
 
-            // Only pass the fields the staff actually types in
-            int result = dbo.AddNewSupplier(request.SupplierName, request.ContactName,
-                                            request.Phone, request.Address);
-
-            return result > 0 ? Ok("Supplier added successfully.") : BadRequest("Failed to add supplier.");
+                using (MySqlConnection conn = new MySqlConnection(connString))
+                {
+                    conn.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(sqlInsert, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", payload["SupplierName"]);
+                        cmd.Parameters.AddWithValue("@contact", payload["ContactPerson"]);
+                        cmd.Parameters.AddWithValue("@phone", payload["Phone"]);
+                        cmd.Parameters.AddWithValue("@address", payload["Address"]);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return "SUCCESS";
+            }
+            catch (Exception ex)
+            {
+                return $"ERROR:{ex.Message}";
+            }
         }
 
         public class SupplierRequest

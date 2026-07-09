@@ -67,7 +67,6 @@ CREATE TABLE `customer` (
   `creditLimit` double DEFAULT NULL,
   PRIMARY KEY (`customerNumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-LOCK TABLES `customer` WRITE;
 INSERT INTO `customer` (
     `customerNumber`, 
     `customerName`, 
@@ -100,7 +99,7 @@ VALUES
 (145, 'Danish Wholesale Imports', 'Petersen', 'Jytte', '31 12 3555', 'Vinbæltet 34', NULL, 'København', 'Denmark', NULL, NULL, NULL, NULL, 83400.00),
 (146, 'Saveley & Henriot Co.', 'Saveley', 'Mary', '78.32.5555', '2, rue du Commerce', NULL, 'Lyon', 'France', NULL, NULL, NULL, NULL, 123900.00),
 (148, 'Dragon Souvenirs, Ltd.', 'Natividad', 'Eric', '+65 221 7555', 'Bronzini St.', NULL, 'Singapore', 'Singapore', NULL, NULL, NULL, NULL, 103800.00);
-UNLOCK TABLES;
+
 -- ============================================================================
 -- 3. CREATE SUPPLIERS TABLE
 -- ============================================================================
@@ -190,7 +189,7 @@ CREATE TABLE `Customize` (
     `price` DOUBLE,
     `newPrice` DOUBLE DEFAULT NULL,
     `rejectResult` VARCHAR(3) DEFAULT 'No',
-    `ispay` TEXT DEFAULT NULL,
+    `ispay` TEXT DEFAULT "no",
     `status` ENUM('processing', 'rejected', 'determined', 'accepted', 'edited', 'done') DEFAULT 'processing',
     PRIMARY KEY (`customizeID`),
     CONSTRAINT `fk_cust_customer` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerNumber`),
@@ -238,7 +237,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_customize` FOREIGN KEY (`customizeRequiredID`) REFERENCES `CustomizeRequired` (`requirementID`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=latin1;
 
-LOCK TABLES `orders` WRITE;
+
 INSERT INTO `orders` (`orderNumber`, `orderDate`, `customerNumber`, `totalAmount`, `orderStatus`, `customizeRequiredID`) VALUES
 (1001, '2026-06-01', 103, 4500.00, 'Shipped', NULL),
 (1002, '2026-06-05', 112, 1250.00, 'Processing', NULL),
@@ -247,9 +246,8 @@ INSERT INTO `orders` (`orderNumber`, `orderDate`, `customerNumber`, `totalAmount
 (1005, '2026-06-14', 121, 15000.00, 'Pending', NULL),
 (1006, '2026-06-15', 124, 600.00, 'Cancelled', NULL),
 (1007, '2026-06-15', 125, 2450.00, 'Pending', NULL),
-(1008, '2026-06-16', 103, 3100.00, 'Pending', NULL),
-(1009, '2026-06-16', 103, 10000.00, 'Processing', 1);
-UNLOCK TABLES;
+(1008, '2026-06-16', 103, 3100.00, 'Pending', NULL);
+
 
 -- Order Details
 CREATE TABLE `order_details` (
@@ -264,7 +262,7 @@ CREATE TABLE `order_details` (
   CONSTRAINT `fk_details_inventory` FOREIGN KEY (`itemID`) REFERENCES `inventory` (`itemID`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `order_details` WRITE;
+
 INSERT INTO `order_details` (`orderNumber`, `itemID`, `quantity`, `unitPrice`) VALUES
 (1001, 'FG001', 3, 1500.00),
 (1002, 'FG004', 1, 1250.00),
@@ -275,7 +273,7 @@ INSERT INTO `order_details` (`orderNumber`, `itemID`, `quantity`, `unitPrice`) V
 (1007, 'FG001', 1, 1500.00),
 (1007, 'FG004', 1, 950.00),
 (1008, 'FG005', 2, 1550.00);
-UNLOCK TABLES;
+
 
 -- ============================================================================
 -- 7. PRODUCTION PROCESSING MANAGEMENT
@@ -368,5 +366,5 @@ INSERT INTO `after_service_records` (`caseID`, `orderNumber`, `requestDate`, `re
 (2, 1002, '2026-06-11', 'Replacement', 'Received correct frame layout style but table color tone too dark', 'Approved'),
 (3, 1001, '2026-06-16', 'Refund', 'Accidental duplicate charge encountered during automated billing sync', 'Open');
 
-
+DESCRIBE suppliers;
 COMMIT;

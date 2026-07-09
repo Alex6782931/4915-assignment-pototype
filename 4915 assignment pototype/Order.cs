@@ -271,44 +271,45 @@ namespace _4915_assignment_pototype
         }
 
         private async void btndelivery_Click(object sender, EventArgs e)
-        { 
-            if (dataOrders.SelectedRows.Count == 0)
+        {
+            if (dataOrders.SelectedRows.Count == 0) return;
+
+            // Retrieve values from the selected row
+            string orderNum = dataOrders.SelectedRows[0].Cells["orderNumber"].Value.ToString();
+            // Assuming the column name in your DataGridView is 'customizeRequiredID'
+            string reqID = dataOrders.SelectedRows[0].Cells["customizeRequiredID"].Value?.ToString();
+
+            if (string.IsNullOrEmpty(reqID))
             {
-                MessageBox.Show("Please select an order shipment record to process.");
+                MessageBox.Show("This order does not have a linked customization requirement.");
                 return;
             }
 
-            string orderNum = dataOrders.SelectedRows[0].Cells["orderNumber"].Value.ToString();
-
-            DialogResult confirm = MessageBox.Show($"Are you sure you want to mark order #{orderNum} as shipped?",
-                                                   "Confirm Shipment", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirm != DialogResult.Yes) return;
+            if (MessageBox.Show($"Confirm shipment for order #{orderNum}?", "Ship", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
 
             using (HttpClient client = new HttpClient())
             {
-                string url = $"https://localhost:7146/api/SimpleGetAPI/ShipOrderAndCompleteCustomization?orderNumber={orderNum}";
+                // Pass both parameters in the query string
+                string url = $"https://localhost:7146/api/SimpleGetAPI/ShipOrderAndCompleteCustomization?orderNumber={orderNum}&customizeRequiredID={reqID}";
 
-                try
+                var response = await client.PostAsync(url, null);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await client.PostAsync(url, null);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Order shipped successfully!");
-                        dataOrders.DataSource = await GetOrderRecordsDataFromApiResponse();
-                    }
-                    else
-                    {
-                        string errorMsg = await response.Content.ReadAsStringAsync();
-                        MessageBox.Show($"Failed to ship order. Error: {errorMsg}");
-                    }
+                    MessageBox.Show("Order shipped and customization marked as done!");
+                    dataOrders.DataSource = await GetOrderRecordsDataFromApiResponse();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show($"An error occurred: {ex.Message}");
+                    MessageBox.Show(result);
                 }
             }
-        
-    }
+        }
+
+
+
+
     }
 }

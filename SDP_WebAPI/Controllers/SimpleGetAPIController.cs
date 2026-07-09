@@ -1919,57 +1919,74 @@ namespace SDP_WebAPI.Controllers
 
 
         [HttpPost("ShipOrderAndCompleteCustomization")]
-        public IActionResult ShipOrderAndCompleteCustomization([FromQuery] int orderNumber)
+        public IActionResult ShipOrderAndCompleteCustomization([FromQuery] int orderNumber, [FromQuery] int customizeRequiredID)
         {
-            try
+            string connString = _configuration["ConnectionStrings"];
+            using (MySqlConnection conn = new MySqlConnection(connString))
             {
-                string connString = _configuration["ConnectionStrings"];
-                var db = new DatabaseAccessController.DatabaseController(connString);
-
-                // 1. Fetch current status
-                string checkSql = $"SELECT orderStatus FROM orders WHERE orderNumber = {orderNumber}";
-                DataTable dtStatus = db.GetData(checkSql);
-
-                if (dtStatus.Rows.Count == 0) return NotFound("Order not found.");
-
-                string currentStatus = dtStatus.Rows[0]["orderStatus"].ToString();
-
-                // 2. Validation: Only allow if status is 'Processing' or 'Shipped'
-                // If it is NOT one of these, proceed to next step (or block as needed)
-                if (!string.Equals(currentStatus, "Processing", StringComparison.OrdinalIgnoreCase) &&
-                    !string.Equals(currentStatus, "Shipped", StringComparison.OrdinalIgnoreCase))
+                conn.Open();
+                using (MySqlTransaction trans = conn.BeginTransaction())
                 {
-                    // If you want to stop the process here, uncomment the return below:
-                    return BadRequest($"Cannot process order: current status is {currentStatus}.");
-                }
-
-                // 3. Update the order status to 'Shipped'
-                string shipSql = $"UPDATE orders SET orderStatus = 'Shipped' WHERE orderNumber = {orderNumber}";
-                db.BatchUpdate(shipSql);
-
-                // 4. Proceed with customization update (logic as before)
-                string querySql = $"SELECT customizeRequiredID FROM orders WHERE orderNumber = {orderNumber}";
-                DataTable dtOrder = db.GetData(querySql);
-
-                if (dtOrder.Rows.Count > 0 && dtOrder.Columns.Contains("customizeRequiredID") && dtOrder.Rows[0]["customizeRequiredID"] != DBNull.Value)
-                {
-                    string customizeRequiredID = dtOrder.Rows[0]["customizeRequiredID"].ToString();
-                    string getSql = $"SELECT customizeID FROM CustomizeRequired WHERE customizeRequiredID = '{customizeRequiredID}'";
-                    DataTable dtCustom = db.GetData(getSql);
-
-                    if (dtCustom.Rows.Count > 0)
+                    try
                     {
-                        string customizeID = dtCustom.Rows[0]["customizeID"].ToString();
-                        string customUpdateSql = $"UPDATE Customize SET status = 'Done' WHERE customizeID = {customizeID}";
-                        db.BatchUpdate(customUpdateSql);
+                        // 1. Validation: Fetch statuses
+                        string validateSql = @"
+                    SELECT o.orderStatus AS oStatus, c.status AS cStatus, c.customizeID
+                    FROM orders o
+                    LEFT JOIN Customize c ON o.customizeRequiredID = c.customizeID
+                    WHERE o.orderNumber = @orderNum AND o.customizeRequiredID = @reqID";
+
+                        int foundCustomizeID = -1;
+                        using (MySqlCommand cmdCheck = new MySqlCommand(validateSql, conn, trans))
+                        {
+                            cmdCheck.Parameters.AddWithValue("@orderNum", orderNumber);
+                            cmdCheck.Parameters.AddWithValue("@reqID", customizeRequiredID);
+                            using (var reader = cmdCheck.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    string oStatus = reader["oStatus"].ToString();
+                                    string cStatus = reader["cStatus"] != DBNull.Value ? reader["cStatus"].ToString() : "N/A";
+                                    foundCustomizeID = reader["customizeID"] != DBNull.Value ? Convert.ToInt32(reader["customizeID"]) : -1;
+
+                                    if (!string.Equals(oStatus, "Processing", StringComparison.OrdinalIgnoreCase))
+                                        throw new Exception($"Cannot ship: Order status is '{oStatus}' (Must be 'Processing').");
+
+                                    if (cStatus != "accepted" && cStatus != "N/A")
+                                        throw new Exception($"Cannot ship: Customization status is '{cStatus}' (Must be 'accepted').");
+                                }
+                                else { throw new Exception("Order or Customization record not found."); }
+                            }
+                        }
+
+                        // 2. Update Order to 'Shipped'
+                        string updateOrderSql = "UPDATE orders SET orderStatus = 'Shipped' WHERE orderNumber = @orderNum";
+                        using (MySqlCommand cmdOrder = new MySqlCommand(updateOrderSql, conn, trans))
+                        {
+                            cmdOrder.Parameters.AddWithValue("@orderNum", orderNumber);
+                            cmdOrder.ExecuteNonQuery();
+                        }
+
+                        // 3. Update Customize record to 'done' (if a valid record was found)
+                        if (foundCustomizeID != -1)
+                        {
+                            string updateCustSql = "UPDATE Customize SET status = 'done' WHERE customizeID = @cID";
+                            using (MySqlCommand cmdCust = new MySqlCommand(updateCustSql, conn, trans))
+                            {
+                                cmdCust.Parameters.AddWithValue("@cID", foundCustomizeID);
+                                cmdCust.ExecuteNonQuery();
+                            }
+                        }
+
+                        trans.Commit();
+                        return Ok("SUCCESS");
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        return BadRequest(ex.Message);
                     }
                 }
-
-                return Ok(new { message = "Order processed successfully." });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
             }
         }
 
@@ -2244,6 +2261,7 @@ namespace SDP_WebAPI.Controllers
                 }
             }
         }
+
         [HttpPost("AcceptAndCreateOrder")]
         public string AcceptAndCreateOrder([FromQuery] string customizeID)
         {
@@ -2259,10 +2277,9 @@ namespace SDP_WebAPI.Controllers
                 {
                     try
                     {
-                        // 1. 讀取目前的客製化申請詳情 (用以同步帶入材料需求表及訂單表)
-                        string sqlSelect = "SELECT customerID, type, color, size, desktopMaterialID, legMaterialID, description, price, newPrice FROM Customize WHERE customizeID = @id FOR UPDATE;";
+                        // 1. Retrieve Customize details
+                        string sqlSelect = "SELECT customerID, price, newPrice FROM Customize WHERE customizeID = @id FOR UPDATE;";
                         int customerID = 0;
-                        string type = "", color = "", size = "", desktopID = "", legID = "", desc = "";
                         double finalPrice = 0.0;
 
                         using (MySqlCommand cmdSelect = new MySqlCommand(sqlSelect, conn, trans))
@@ -2271,47 +2288,30 @@ namespace SDP_WebAPI.Controllers
                             using (MySqlDataReader reader = cmdSelect.ExecuteReader())
                             {
                                 if (!reader.Read()) return "FAILED_CUSTOMIZE_NOT_FOUND";
-
                                 customerID = Convert.ToInt32(reader["customerID"]);
-                                type = reader["type"]?.ToString();
-                                color = reader["color"]?.ToString();
-                                size = reader["size"]?.ToString();
-                                desktopID = reader["desktopMaterialID"]?.ToString();
-                                legID = reader["legMaterialID"]?.ToString();
-                                desc = reader["description"]?.ToString();
-
-                                // 優先採用議價後的 newPrice，若無則採用原始 price
                                 object newPriceObj = reader["newPrice"];
                                 finalPrice = (newPriceObj == DBNull.Value || string.IsNullOrEmpty(newPriceObj.ToString()))
-                                    ? Convert.ToDouble(reader["price"])
-                                    : Convert.ToDouble(newPriceObj);
+                                             ? Convert.ToDouble(reader["price"])
+                                             : Convert.ToDouble(newPriceObj);
                             }
                         }
 
-                        // 2. 由於 orders 表格強烈依賴 CustomizeRequired (外鍵)，此處必須先在材料表生成資料
-                        string sqlInsertReq = @"INSERT INTO CustomizeRequired 
-                    (customizeID, desktopMaterialID, desktopQty, legMaterialID, legQty, type, size, color, description) 
-                    VALUES (@id, @deskID, 1, @legID, 4, @type, @size, @color, @desc);
-                    SELECT LAST_INSERT_ID();";
-
+                        // 2. MODIFIED: Find the existing requirementID instead of inserting a new one
+                        string sqlFindReq = "SELECT requirementID FROM CustomizeRequired WHERE customizeID = @id LIMIT 1;";
                         long requirementID = 0;
-                        using (MySqlCommand cmdReq = new MySqlCommand(sqlInsertReq, conn, trans))
+                        using (MySqlCommand cmdFind = new MySqlCommand(sqlFindReq, conn, trans))
                         {
-                            cmdReq.Parameters.AddWithValue("@id", customizeID);
-                            cmdReq.Parameters.AddWithValue("@deskID", desktopID);
-                            cmdReq.Parameters.AddWithValue("@legID", legID);
-                            cmdReq.Parameters.AddWithValue("@type", type);
-                            cmdReq.Parameters.AddWithValue("@size", size);
-                            cmdReq.Parameters.AddWithValue("@color", color);
-                            cmdReq.Parameters.AddWithValue("@desc", desc);
-                            requirementID = Convert.ToInt64(cmdReq.ExecuteScalar());
+                            cmdFind.Parameters.AddWithValue("@id", customizeID);
+                            object result = cmdFind.ExecuteScalar();
+                            if (result == null) return "FAILED_REQUIREMENT_NOT_FOUND";
+                            requirementID = Convert.ToInt64(result);
                         }
 
-                        // 3. 在 orders 資料表建立正式訂單，並綁定剛生成的 customizeRequiredID
+                        // 3. Create the order using the existing requirementID
                         string sqlInsertOrder = @"INSERT INTO `orders` 
-                    (`orderDate`, `customerNumber`, `totalAmount`, `orderStatus`, `customizeRequiredID`) 
-                    VALUES (@orderDate, @custNum, @totalAmount, 'Processing', @reqID);
-                    SELECT LAST_INSERT_ID();";
+                  (`orderDate`, `customerNumber`, `totalAmount`, `orderStatus`, `customizeRequiredID`) 
+                  VALUES (@orderDate, @custNum, @totalAmount, 'Processing', @reqID);
+                  SELECT LAST_INSERT_ID();";
 
                         long newOrderNumber = 0;
                         using (MySqlCommand cmdOrder = new MySqlCommand(sqlInsertOrder, conn, trans))
@@ -2323,7 +2323,7 @@ namespace SDP_WebAPI.Controllers
                             newOrderNumber = Convert.ToInt64(cmdOrder.ExecuteScalar());
                         }
 
-                        // 4. 【核心需求修改】更新 Customize 資料表的狀態至 'accepted'，同時將全小寫的 ispay 欄位更新為 'Yes'
+                        // 4. Update Customize status
                         string sqlUpdateStatus = "UPDATE Customize SET status = 'accepted', ispay = 'Yes' WHERE customizeID = @id;";
                         using (MySqlCommand cmdUpdate = new MySqlCommand(sqlUpdateStatus, conn, trans))
                         {
@@ -2331,7 +2331,6 @@ namespace SDP_WebAPI.Controllers
                             cmdUpdate.ExecuteNonQuery();
                         }
 
-                        // 5. 確認整套交易程序無誤，提交正式儲存
                         trans.Commit();
                         return $"SUCCESS:{newOrderNumber}";
                     }

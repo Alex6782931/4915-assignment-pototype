@@ -19,49 +19,6 @@ namespace _4915_assignment_pototype
             this.customid = customid;
         }
 
-        private void dataCustomizeC_SelectionChanged(object sender, EventArgs e)
-        {
-            // Check if a row is actually selected
-            if (dataCustomizeC.SelectedRows.Count > 0)
-            {
-                // Get the status from the selected row
-                string currentStatus = dataCustomizeC.SelectedRows[0].Cells["status"].Value?.ToString();
-
-                if (!string.IsNullOrEmpty(currentStatus))
-                {
-                    UpdateButtonStates(currentStatus);
-                }
-            }
-            else
-            {
-                // Disable all buttons if nothing is selected
-                btnaccept.Enabled = false;
-                btnedit.Enabled = false;
-            }
-        }
-
-        private void UpdateButtonStates(string currentStatus)
-        { 
-            btnaccept.Enabled = false;
-            btnedit.Enabled = false;
-
-            if (string.IsNullOrEmpty(currentStatus)) return;
-
-            string status = currentStatus.Trim().ToLower();
-            
-             
-            if (status == "determined")
-            { 
-                btnaccept.Enabled = true;
-                btnedit.Enabled = true;
-            }
-            else if (status == "processing" || status == "accepted" || status == "edited" || status == "done")
-            { 
-                btnedit.Enabled = true;
-            }
-
-            
-        }
 
 
         private async Task LoadData()
@@ -306,11 +263,29 @@ namespace _4915_assignment_pototype
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
-                return; // 立即阻斷，絕對不允許程式往下執行 row[0] 的讀取
+                return;
             }
-            var row = dataCustomizeC.SelectedRows[0];
-            string customize = row.Cells["customizeID"].Value.ToString();
-            Customize c = new Customize(customid, customize);
+
+            // FIX 1 & 2: Access the row index [0] correctly
+            var selectedRow = dataCustomizeC.SelectedRows[0];
+            string currentStatus = selectedRow.Cells["status"].Value?.ToString();
+
+            if (currentStatus != null && currentStatus.Equals("done", StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(
+                    "If the status is done, it is not required to edit the customize order.",
+                    "Action Not Allowed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
+
+            // FIX 3: Use the variable you just defined
+            string customizeID = selectedRow.Cells["customizeID"].Value.ToString();
+
+            // Ensure the Customize constructor matches these arguments
+            Customize c = new Customize(customizeID, customizeID);
             c.ShowDialog();
             LoadData();
         }

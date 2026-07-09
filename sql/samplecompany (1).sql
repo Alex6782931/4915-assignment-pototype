@@ -121,13 +121,13 @@ INSERT INTO `suppliers` (`supplierName`, `contactName`, `phone`, `address`) VALU
 ('Eco-Plastics & Veneers', 'Lisa Wong', '+852 6789 0123', 'Fanling Plastics Zone, HK');
 
 -- ============================================================================
--- 4. SYSTEM SECURITY & CONTROL (User Credentials) - 🌟已修复反引号与外键类型错误
+-- 4. SYSTEM SECURITY & CONTROL (User Credentials) 
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS `user_accounts` (
   `username` varchar(50) NOT NULL,
   `passwordHash` varchar(255) NOT NULL,
   `staffID` varchar(10) DEFAULT NULL,
-  `customerID` int(11) DEFAULT NULL, -- 🌟 修复：补全反引号并将类型改成 int(11) 以对齐客户表主键
+  `customerID` int(11) DEFAULT NULL, 
   `accessLevel` varchar(20) NOT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `fk_user_staff` FOREIGN KEY (`staffID`) REFERENCES `staff` (`staffID`) ON DELETE CASCADE,
@@ -188,16 +188,18 @@ CREATE TABLE `Customize` (
     `description` TEXT,
     `file` LONGBLOB,
     `price` DOUBLE,
-    `newPrice` DOUBLE DEFAULT NULL,        -- New attribute added
-    `rejectResult` TEXT DEFAULT NULL,      -- New attribute added
-    `status` ENUM('processing', 'rejected', 'determined', 'accepted', 'edited') DEFAULT 'processing',
+    `newPrice` DOUBLE DEFAULT NULL,
+    `rejectResult` VARCHAR(3) DEFAULT 'No',
+    `ispay` TEXT DEFAULT NULL,
+    `status` ENUM('processing', 'rejected', 'determined', 'accepted', 'edited', 'done') DEFAULT 'processing',
     PRIMARY KEY (`customizeID`),
     CONSTRAINT `fk_cust_customer` FOREIGN KEY (`customerID`) REFERENCES `customer` (`customerNumber`),
     CONSTRAINT `fk_cust_desktop` FOREIGN KEY (`desktopMaterialID`) REFERENCES `inventory` (`itemID`),
     CONSTRAINT `fk_cust_leg` FOREIGN KEY (`legMaterialID`) REFERENCES `inventory` (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-INSERT INTO Customize (customerID, type, color, size, desktopMaterialID,desktopMaterialName, legMaterialID,legMaterialName, description, price, status) 
-VALUES (103, 'Desk', 'Mahogany', 'Large', 'RM001','123', 'RM002','123', 'Test Customization', 5500.00, 'processing');
+
+INSERT INTO Customize (customerID, type, color, size, desktopMaterialID, desktopMaterialName, legMaterialID, legMaterialName, description, price, status,ispay) 
+VALUES (103, 'Desk', 'Mahogany', 'Large', 'RM001', '123', 'RM002', '123', 'Test Customization', 5500.00, 'determined','no');
 
 -- CustomizeRequired Table: Stores specific material usage for a confirmed request
 CREATE TABLE  `CustomizeRequired` (
@@ -245,29 +247,9 @@ INSERT INTO `orders` (`orderNumber`, `orderDate`, `customerNumber`, `totalAmount
 (1005, '2026-06-14', 121, 15000.00, 'Pending', NULL),
 (1006, '2026-06-15', 124, 600.00, 'Cancelled', NULL),
 (1007, '2026-06-15', 125, 2450.00, 'Pending', NULL),
-(1008, '2026-06-16', 103, 3100.00, 'Pending', NULL);
+(1008, '2026-06-16', 103, 3100.00, 'Pending', NULL),
+(1009, '2026-06-16', 103, 10000.00, 'Processing', 1);
 UNLOCK TABLES;
-
-DELIMITER //
-
-CREATE TRIGGER after_order_cancel
-AFTER UPDATE ON orders
-FOR EACH ROW
-BEGIN
-    -- Check if the status is changing TO 'Cancelled'
-    IF (OLD.orderStatus != 'Cancelled' AND NEW.orderStatus = 'Cancelled') THEN
-        
-        -- Add the quantity back to inventory based on order items
-        UPDATE inventory i
-        JOIN order_details od ON i.itemID = od.itemID
-        SET i.quantityInStock = i.quantityInStock + od.quantity
-        WHERE od.orderNumber = NEW.orderNumber;
-        
-    END IF;
-END;
-//
-
-DELIMITER ;
 
 -- Order Details
 CREATE TABLE `order_details` (
@@ -278,6 +260,7 @@ CREATE TABLE `order_details` (
   PRIMARY KEY (`orderNumber`,`itemID`),
   KEY `idx_order_item` (`itemID`),
   CONSTRAINT `fk_details_order` FOREIGN KEY (`orderNumber`) REFERENCES `orders` (`orderNumber`) ON DELETE CASCADE,
+  CONSTRAINT `fk_order_details_item` FOREIGN KEY (`itemID`) REFERENCES `inventory` (`itemID`),
   CONSTRAINT `fk_details_inventory` FOREIGN KEY (`itemID`) REFERENCES `inventory` (`itemID`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -385,17 +368,5 @@ INSERT INTO `after_service_records` (`caseID`, `orderNumber`, `requestDate`, `re
 (2, 1002, '2026-06-11', 'Replacement', 'Received correct frame layout style but table color tone too dark', 'Approved'),
 (3, 1001, '2026-06-16', 'Refund', 'Accidental duplicate charge encountered during automated billing sync', 'Open');
 
--- ============================================================================
--- MESSAGE
--- ============================================================================
 
-CREATE TABLE `StaffMessages` (
-  `MessageID` int(11) NOT NULL AUTO_INCREMENT,
-  `SenderID` varchar(10) NOT NULL,
-  `ReceiverID` varchar(10) NOT NULL,
-  `MessageContent` text NOT NULL,
-  `Timestamp` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`MessageID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO StaffMessages (SenderID, ReceiverID, MessageContent) VALUES ('1', '1', 'Test message');
+COMMIT;

@@ -169,6 +169,18 @@ namespace DatabaseAccessController
             string sqlCmd = "SELECT * FROM staff";
             return base.GetData(sqlCmd);
         }
+        public int AddNewStaff(string id, string name, string role, string dept, string email)
+        {
+            // Sanitize inputs to prevent SQL Injection
+            string sqlCmd = $@"INSERT INTO staff (staffID, fullName, role, department, email) 
+                      VALUES ('{id.Replace("'", "''")}', 
+                              '{name.Replace("'", "''")}', 
+                              '{role.Replace("'", "''")}', 
+                              '{dept.Replace("'", "''")}', 
+                              '{email.Replace("'", "''")}')";
+
+            return base.BatchUpdate(sqlCmd);
+        }
 
         //LOGISTICS TABLE
 
@@ -192,6 +204,19 @@ namespace DatabaseAccessController
         {
             String sqlCmd = "SELECT * FROM suppliers";
             return base.GetData(sqlCmd);
+        }
+
+        public int AddNewSupplier(string name, string contact, string phone, string address)
+        {
+            // We specify the 4 columns, and then provide 4 values. 
+            // This perfectly matches the table structure.
+            string sqlCmd = $@"INSERT INTO suppliers (supplierName, contactName, phone, address) 
+                      VALUES ('{name.Replace("'", "''")}', 
+                              '{contact.Replace("'", "''")}', 
+                              '{phone.Replace("'", "''")}', 
+                              '{address.Replace("'", "''")}')";
+            System.Diagnostics.Debug.WriteLine("DEBUG: " + sqlCmd);
+            return base.BatchUpdate(sqlCmd);
         }
 
         //USER_ACCOUNT TABLE

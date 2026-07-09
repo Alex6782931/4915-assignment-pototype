@@ -872,6 +872,27 @@ namespace SDP_WebAPI.Controllers
             catch (Exception) { return 0; }
         }
 
+        [HttpPost("AddStaff")]
+        public IActionResult AddStaff([FromBody] StaffRequest request)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            var dbo = new GetCompanyData(connString);
+
+            int result = dbo.AddNewStaff(request.StaffID, request.FullName, request.Role, request.Department, request.Email);
+
+            return result > 0 ? Ok("Staff added successfully.") : BadRequest("Failed to add staff.");
+        }
+
+        // Add this class at the bottom of the controller
+        public class StaffRequest
+        {
+            public string StaffID { get; set; }
+            public string FullName { get; set; }
+            public string Role { get; set; }
+            public string Department { get; set; }
+            public string Email { get; set; }
+        }
+
         //LOGISTICS TABLE
 
         [HttpGet("GetLogisticsRecordsData")]
@@ -1108,6 +1129,30 @@ namespace SDP_WebAPI.Controllers
             }
             catch (Exception) { return 0; }
         }
+
+        [HttpPost("AddSupplier")]
+        public IActionResult AddSupplier([FromBody] SupplierRequest request)
+        {
+            string connString = _configuration["ConnectionStrings"];
+            var dbo = new GetCompanyData(connString);
+
+            // Only pass the fields the staff actually types in
+            int result = dbo.AddNewSupplier(request.SupplierName, request.ContactName,
+                                            request.Phone, request.Address);
+
+            return result > 0 ? Ok("Supplier added successfully.") : BadRequest("Failed to add supplier.");
+        }
+
+        public class SupplierRequest
+        {
+            // SupplierID is removed from here
+            public string SupplierName { get; set; }
+            public string ContactName { get; set; }
+            public string Phone { get; set; }
+            public string Address { get; set; }
+        }
+
+
         // --- NEW ENDPOINT: GET CUSTOMER ADDRESS ---
         // URL Path: GET https://localhost:7146/api/SimpleGetAPI/GetCustomerAddress?customerNumber=103
         [HttpGet("GetCustomerAddress")]

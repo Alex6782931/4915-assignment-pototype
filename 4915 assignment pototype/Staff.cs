@@ -182,6 +182,13 @@ namespace _4915_assignment_pototype
             this.Close();
         }
 
+        private void btnAddStaff_Click(object sender, EventArgs e)
+        {
+            AddRecordForm addForm = new AddRecordForm();
+            addForm.ShowDialog(); // Use ShowDialog to wait for the user to finish
 
+            // Refresh the staff list after the form closes
+            Staff_Load(null, null);
+        }
     }
 }

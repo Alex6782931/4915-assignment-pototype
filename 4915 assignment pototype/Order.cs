@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace _4915_assignment_pototype
 {
@@ -221,9 +222,9 @@ namespace _4915_assignment_pototype
             string status = selectedRow.Cells["orderStatus"].Value?.ToString();
 
             // 2. Enforce the "Processing" condition
-            if (!string.Equals(status, "Processing", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(status, "Pending", StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show("Only orders with 'Processing' status can be cancelled.",
+                MessageBox.Show("Only orders with 'Pending' status can be cancelled.",
                                 "Invalid Action", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -269,9 +270,45 @@ namespace _4915_assignment_pototype
             }
         }
 
+        private async void btndelivery_Click(object sender, EventArgs e)
+        { 
+            if (dataOrders.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Please select an order shipment record to process.");
+                return;
+            }
 
+            string orderNum = dataOrders.SelectedRows[0].Cells["orderNumber"].Value.ToString();
 
+            DialogResult confirm = MessageBox.Show($"Are you sure you want to mark order #{orderNum} as shipped?",
+                                                   "Confirm Shipment", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
 
+            using (HttpClient client = new HttpClient())
+            {
+                string url = $"https://localhost:7146/api/SimpleGetAPI/ShipOrderAndCompleteCustomization?orderNumber={orderNum}";
 
+                try
+                {
+                    var response = await client.PostAsync(url, null);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Order shipped successfully!");
+                        dataOrders.DataSource = await GetOrderRecordsDataFromApiResponse();
+                    }
+                    else
+                    {
+                        string errorMsg = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Failed to ship order. Error: {errorMsg}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred: {ex.Message}");
+                }
+            }
+        
+    }
     }
 }

@@ -181,5 +181,12 @@ namespace _4915_assignment_pototype
             this.Close();
         }
 
+        private void btnAddSupplier_Click(object sender, EventArgs e)
+        {
+            AddSupplierForm addForm = new AddSupplierForm();
+            addForm.ShowDialog();
+            // Refresh your supplier DataGridView here
+            Supplier_Load(null, null);
+        }
     }
 }

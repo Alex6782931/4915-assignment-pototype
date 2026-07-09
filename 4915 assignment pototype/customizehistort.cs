@@ -17,47 +17,42 @@ namespace _4915_assignment_pototype
             InitializeComponent();
             this.customid = customid;
         }
-
         private void dataCustomizeC_SelectionChanged(object sender, EventArgs e)
         {
-            // Check if a row is actually selected
             if (dataCustomizeC.SelectedRows.Count > 0)
             {
-                // Get the status from the selected row
-                string currentStatus = dataCustomizeC.SelectedRows[0].Cells["status"].Value?.ToString();
-
-                if (!string.IsNullOrEmpty(currentStatus))
-                {
-                    UpdateButtonStates(currentStatus);
-                }
+                // Safely get the status
+                string currentStatus = dataCustomizeC.SelectedRows[0].Cells["status"].Value?.ToString() ?? "";
+                UpdateButtonStates(currentStatus);
             }
             else
             {
-                // Disable all buttons if nothing is selected
-                btnaccept.Enabled = false;
+                // Disable buttons if nothing is selected
                 btnedit.Enabled = false;
+                btnaccept.Enabled = false;
             }
         }
 
         private void UpdateButtonStates(string currentStatus)
         {
-            // Reset all
-            btnaccept.Enabled = false;
-            btnedit.Enabled = false;
-
-            switch (currentStatus.ToLower())
+            try
             {
-                case "determined":
-                    btnaccept.Enabled = true;
-                    btnedit.Enabled = true;
-                    break;
-                case "processing":
-                case "accepted":
-                    btnaccept.Enabled = true;
-                    break;
-                case "done":
+                // 1. Define states
+                bool isDetermined = currentStatus.Equals("determined", StringComparison.OrdinalIgnoreCase);
+                bool isRejected = currentStatus.Equals("rejected", StringComparison.OrdinalIgnoreCase);
+                bool isProcessing = currentStatus.Equals("processing", StringComparison.OrdinalIgnoreCase);
+                bool isEdited = currentStatus.Equals("edited", StringComparison.OrdinalIgnoreCase);
 
-                    break;
+                // 2. LOGIC:
+                // btnaccept is ONLY enabled when status is "determined"
+                btnaccept.Enabled = isDetermined;
+
+                // btnedit is enabled for rejected, processing, edited, and determined status
+                btnedit.Enabled = (isRejected || isProcessing || isEdited || isDetermined);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error updating buttons: " + ex.Message);
             }
         }
 

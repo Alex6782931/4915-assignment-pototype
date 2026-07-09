@@ -189,7 +189,7 @@ CREATE TABLE `Customize` (
     `file` LONGBLOB,
     `price` DOUBLE,
     `newPrice` DOUBLE DEFAULT NULL,
-    `rejectResult` VARCHAR(3) DEFAULT 'No';,
+    `rejectResult` VARCHAR(3) DEFAULT 'No',
     `ispay` TEXT DEFAULT NULL,
     `status` ENUM('processing', 'rejected', 'determined', 'accepted', 'edited', 'done') DEFAULT 'processing',
     PRIMARY KEY (`customizeID`),

@@ -1145,7 +1145,7 @@ namespace SDP_WebAPI.Controllers
 
         public class SupplierRequest
         {
-            // SupplierID is removed from here
+            // SupplierID is removed from here   
             public string SupplierName { get; set; }
             public string ContactName { get; set; }
             public string Phone { get; set; }

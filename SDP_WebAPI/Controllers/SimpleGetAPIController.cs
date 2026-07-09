@@ -1,5 +1,6 @@
 ﻿using DatabaseAccessController;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -199,6 +200,22 @@ namespace SDP_WebAPI.Controllers
                     if (userCount > 0)
                     {
                         return "FAILED_USER_EXISTS";
+                    }
+                }
+
+                string sqlpassCheck = "SELECT COUNT(*) FROM user_accounts WHERE passwordHash = @passwordHash;";
+
+                using (MySqlCommand cmdCheck = new MySqlCommand(sqlpassCheck, conn))
+                {
+                    // Ensure you are using the hashed version of the password here
+                    cmdCheck.Parameters.AddWithValue("@passwordHash", password);
+
+                    long count = Convert.ToInt64(cmdCheck.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+
+                        return "FAILED_PASSWORD_ALREADY_USED";
                     }
                 }
 

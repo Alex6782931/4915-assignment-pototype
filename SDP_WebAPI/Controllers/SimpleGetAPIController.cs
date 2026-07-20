@@ -1315,7 +1315,7 @@ namespace SDP_WebAPI.Controllers
         }
 
         // --- NEW ENDPOINT: UPDATE CUSTOMER PAYMENT ---
-        // URL 路徑: POST https://localhost:7146/api/SimpleGetAPI/UpdateCustomerPayment
+        
         [HttpPost("UpdateCustomerPayment")]
         public string UpdateCustomerPayment([FromBody] Dictionary<string, string> payload)
         {
@@ -1338,7 +1338,6 @@ namespace SDP_WebAPI.Controllers
                         string expiredDay = payload.GetValueOrDefault("expiredDay")?.Trim();
                         string cvv = payload.GetValueOrDefault("cvv")?.Trim();
 
-                        // 驗證必要欄位是否遺漏
                         if (string.IsNullOrEmpty(cardNumber) || string.IsNullOrEmpty(expiredDay) || string.IsNullOrEmpty(cvv))
                         {
                             return "FAILED_MANDATORY_FIELDS_MISSING";
@@ -2229,7 +2228,6 @@ namespace SDP_WebAPI.Controllers
                 {
                     conn.Open();
 
-                    // 1. 嚴格對應您的 customer 資料表欄位進行查詢
                     string sqlCheckProfile = @"SELECT addressLine1, city, country, cardNumber, expiredDay, cvv 
                                                FROM customer 
                                                WHERE customerNumber = @custNum;";
@@ -2244,17 +2242,14 @@ namespace SDP_WebAPI.Controllers
                                 return "FAILED_USER_NOT_FOUND";
                             }
 
-                            // 2. 讀取並檢查地址相關欄位 (addressLine1, city, country 均不可為空)
                             string addressLine1 = reader["addressLine1"]?.ToString();
                             string city = reader["city"]?.ToString();
                             string country = reader["country"]?.ToString();
 
-                            // 3. 讀取並檢查付款相關欄位 (cardNumber, expiredDay, cvv)
                             string cardNumber = reader["cardNumber"]?.ToString();
                             string expiredDay = reader["expiredDay"]?.ToString();
                             string cvv = reader["cvv"]?.ToString();
 
-                            // 4. 核心商務邏輯判斷：任一欄位為空或空白，即代表資料不齊全
                             if (string.IsNullOrWhiteSpace(addressLine1) ||
                                 string.IsNullOrWhiteSpace(city) ||
                                 string.IsNullOrWhiteSpace(country) ||
@@ -2267,8 +2262,6 @@ namespace SDP_WebAPI.Controllers
                         }
                     }
 
-                    // 5. 通過檢查，在此處可以執行您的實際扣款或更新訂單狀態邏輯
-                    // (例如將該客戶的 Pending 訂單改為 Paid)
 
                     return "SUCCESS_PAYMENT_COMPLETED";
                 }

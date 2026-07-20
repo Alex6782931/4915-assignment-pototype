@@ -182,7 +182,6 @@ namespace _4915_assignment_pototype
                 {
                     MessageBox.Show("Order cancelled successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // 🌟 關鍵修改 5：直接呼叫封裝好的優化方法，維持客戶篩選狀態
                     await RefreshOrderGrid();
                 }
                 else

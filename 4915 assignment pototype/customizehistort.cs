@@ -76,7 +76,6 @@ namespace _4915_assignment_pototype
         }
         private async void btnaccept_Click(object sender, EventArgs e)
         {
-            // 安全防護：確保目前真的有選取一整行資料
             if (dataCustomizeC.SelectedRows.Count == 0) return;
 
             var row = dataCustomizeC.SelectedRows[0];
@@ -85,7 +84,6 @@ namespace _4915_assignment_pototype
             double price = Convert.ToDouble(row.Cells["price"].Value);
             object newPriceObj = row.Cells["newPrice"].Value;
 
-            // 檢查 1：檢查這筆訂單是否已經付過錢
             string currentIsPay = row.Cells["ispay"].Value?.ToString();
             if (currentIsPay != null && currentIsPay.Equals("Yes", StringComparison.OrdinalIgnoreCase))
             {
@@ -93,9 +91,6 @@ namespace _4915_assignment_pototype
                 return;
             }
 
-            // =================================================================
-            // 【核心需求修改】檢查 2：檢查這筆項目的狀態是否已經是 accepted
-            // =================================================================
             string currentStatus = row.Cells["status"].Value?.ToString();
             if (currentStatus != null && currentStatus.Equals("accepted", StringComparison.OrdinalIgnoreCase))
             {
@@ -105,7 +100,7 @@ namespace _4915_assignment_pototype
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning
                 );
-                return; // 立即阻斷，防止往下重複發送扣款與 API 請求
+                return;  
             }
 
             double finalPrice = price;
@@ -339,10 +334,8 @@ namespace _4915_assignment_pototype
         {
             this.Hide();
         }
-        // 請將這段程式碼完整貼在 customizehistort 類別內（例如 btnaccept_Click 的正下方）
         private async Task<bool> CheckPaymentAndAddressProfileForCustomize()
         {
-            // 這裡傳參使用的是您建構子傳入並記錄下來的 this.customid
             var paymentPayload = new Dictionary<string, string>
     {
         { "customerNumber", this.customid }
@@ -364,7 +357,7 @@ namespace _4915_assignment_pototype
 
                         if (result.StartsWith("SUCCESS_PAYMENT_COMPLETED"))
                         {
-                            return true; // 資料齊全，驗證通過
+                            return true; 
                         }
                         else if (result == "FAILED_MISSING_PROFILE_DETAILS")
                         {
@@ -375,11 +368,11 @@ namespace _4915_assignment_pototype
                                 MessageBoxIcon.Warning
                             );
 
-                            // 自動開啟隱藏的主選單畫面，並關閉當前畫面
+                             
                             Form mainForm = Application.OpenForms["CustomerMain"];
                             if (mainForm != null) mainForm.Show();
 
-                            this.Close(); // 強制退場關閉當前視窗
+                            this.Close();  
                             return false;
                         }
                     }

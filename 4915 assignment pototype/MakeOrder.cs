@@ -28,9 +28,6 @@ namespace _4915_assignment_pototype
 
         private async void btnorder_Click_1(object sender, EventArgs e)
         {
-            // =================================================================
-            // 階段 1：前端 UI 欄位與商品選擇驗證
-            // =================================================================
             string selectedItemID = GetSelectedItemID();
             if (string.IsNullOrEmpty(selectedItemID))
             {
@@ -44,17 +41,10 @@ namespace _4915_assignment_pototype
                 return;
             }
 
-            // =================================================================
-            // 新增：動態取得商品名稱與總金額
-            // =================================================================
-            string selectedItemName = GetItemNameByID(selectedItemID); // 轉換為易讀的商品名稱
+            string selectedItemName = GetItemNameByID(selectedItemID);
             double unitPrice = await GetItemPriceFromApi(selectedItemID);
             double totalAmount = unitPrice * quantity;
 
-            // =================================================================
-            // 階段 2：雙重確認（包含商品名稱與總金額顯示）
-            // =================================================================
-            // 【關鍵修改】將原來的 Item ID 欄位替換為 Item Name
             string confirmMessage = $"Order Summary:\n" +
                                    $"-------------------------\n" +
                                    $"Item Name: {selectedItemName}\n" +
@@ -73,46 +63,41 @@ namespace _4915_assignment_pototype
 
             if (dialogResult != DialogResult.Yes)
             {
-                return; // 用戶取消付款
+                return;
             }
 
-            btnorder.Enabled = false; // 禁用按鈕防止連續點擊
-
-            // 檢查用戶是否有地址與信用卡資料
+            btnorder.Enabled = false;
             bool isProfileValid = await CheckPaymentAndAddressProfile();
             if (!isProfileValid)
             {
                 btnorder.Enabled = true;
-                return; // 阻斷，不可往下跑去執行下單
-            }
+                return;
 
-            // =================================================================
-            // 階段 3：通過所有檢查，正式發送訂單
-            // =================================================================
-            var orderPayload = new Dictionary<string, string>
+                var orderPayload = new Dictionary<string, string>
             {
                 { "customerNumber", currentCustomerNumber.ToString() },
                 { "itemID", selectedItemID },
                 { "quantity", quantity.ToString() }
             };
 
-            string result = await SubmitOrderToApi(orderPayload);
-            btnorder.Enabled = true;
+                string result = await SubmitOrderToApi(orderPayload);
+                btnorder.Enabled = true;
 
-            if (result.StartsWith("SUCCESS"))
-            {
-                string orderNum = result.Split(':')[1];
-                MessageBox.Show($"Payment completed successfully!\nOrder #{orderNum} placed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtcount.Clear();
-            }
-            else if (result.StartsWith("FAILED_INSUFFICIENT_STOCK"))
-            {
-                string availableStock = result.Split('=')[1];
-                MessageBox.Show($"Order failed. Insufficient stock! Current available stock is {availableStock}.", "Stock Out", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                MessageBox.Show($"Order compilation failed: {result}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (result.StartsWith("SUCCESS"))
+                {
+                    string orderNum = result.Split(':')[1];
+                    MessageBox.Show($"Payment completed successfully!\nOrder #{orderNum} placed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtcount.Clear();
+                }
+                else if (result.StartsWith("FAILED_INSUFFICIENT_STOCK"))
+                {
+                    string availableStock = result.Split('=')[1];
+                    MessageBox.Show($"Order failed. Insufficient stock! Current available stock is {availableStock}.", "Stock Out", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show($"Order compilation failed: {result}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
         private string GetItemNameByID(string itemID)
@@ -128,14 +113,14 @@ namespace _4915_assignment_pototype
             }
         }
 
-        // 新增：獨立出來呼叫您現有的 GetItemPrice API 端點
+         
         private async Task<double> GetItemPriceFromApi(string itemID)
         {
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // 呼叫您控制器中的 [HttpGet("GetItemPrice")] 
+                    
                     string url = $"{baseApiUrl}/GetItemPrice?itemID={itemID}";
                     HttpResponseMessage response = await client.GetAsync(url);
 
@@ -152,7 +137,7 @@ namespace _4915_assignment_pototype
             }
             catch
             {
-                return 0.0; // 發生網路錯誤時的回退安全值
+                return 0.0; 
             }
         }
 

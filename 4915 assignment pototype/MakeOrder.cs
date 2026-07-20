@@ -72,7 +72,7 @@ namespace _4915_assignment_pototype
             {
                 btnorder.Enabled = true;
                 return;
-
+            }
                 var orderPayload = new Dictionary<string, string>
             {
                 { "customerNumber", currentCustomerNumber.ToString() },
@@ -99,7 +99,7 @@ namespace _4915_assignment_pototype
                     MessageBox.Show($"Order compilation failed: {result}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
+        
         private string GetItemNameByID(string itemID)
         {
             switch (itemID)
